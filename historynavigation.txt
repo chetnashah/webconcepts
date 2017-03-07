@@ -1,0 +1,30 @@
+
+location object in window tells you where you are with location.href.
+
+Query in url starts with ?
+Fragments in url start with #
+
+History API helps transform URLs like http://domain.com to
+http://domain.com/hello, without triggering a page refresh.
+
+There is a unique History object defined for each tab.
+
+history.back() - Navigate to previous URL in history stack
+history.forward() - Navigate to next URL in history stack
+history.go() - Navigate to URL specified index in history stack
+history.length - amount of URLs in history stack
+history.state - Returns state object at top of history stack
+history.pushState(obj, title, [, url]) - add url to history stack with obj state. This will cause URL bar to display url but not load it.
+history.replaceState(obj, title, [, location.href]) - Updates rather than adds currentURL on history stack with provided state info.
+
+
+History object represents the tab's session history as a flat,
+comma seperated of session entries.
+Each session entry consists of tuple: 
+(state obj, title, Document obj, form data, scroll pos)
+
+popState event : Event dispatched to window, every time active history
+entry changes between two history session entries.
+Note: just calling history.pushState() or history.replaceState()
+does not trigger popstate event, it is only trigger by doing
+browser action as navigating to page or back/refresh.
