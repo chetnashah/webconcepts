@@ -32,3 +32,18 @@ Although we write px in media queries it is actually points.
 
 Responsive design using media queries define breakpoints:
 Sizes of viewport at which presentation changes. 
+
+
+HOw to interpret min-width and max-width in media queries, and what are
+all the rules?
+
+Image it this way : min-width < my-width < max-width
+
+Read the media query as following:
+is my-width less than max-width? Yes -> it matches.
+is my-width greater than min-width? Yes -> it matches.
+As per rules of cascading style sheets,
+all subsequently matched queries will override properties when common
+properties found.
+
+
