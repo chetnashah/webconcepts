@@ -1,0 +1,31 @@
+
+/* CSS means cascading style sheets i.e.
+rules that are at the bottom override rulest that are on the top */
+h2 {
+    color: green;
+}
+
+p {
+    color: blue;
+}
+
+body {
+    background-color: powderblue;
+}
+
+/* media queries */
+/* when we go less than 500 this will be matched */
+/* 500px size is also called the breakpoint bcoz that is point where design
+breaks into different style */
+@media screen and (max-width: 500px) {
+    body {
+        background-color: white;
+    }
+}
+
+/* when we go less than 240 this will be matched, above one also applies */
+@media screen and (max-width: 240px) {
+    h2 {
+        color: red;
+    }
+}

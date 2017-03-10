@@ -1,0 +1,22 @@
+
+
+HTML5 let web designers take control of viewport through <meta> tag.
+
+A good practice is to add first line
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+initial scale is zoom scale, and width will be set to device width
+
+
+Some other good practices :
+1. do not use large fixed width elements.
+2. Use css media queries to apply different styling for small and large screen.
+
+To consider border width as a part of width of the view,
+one should set
+box-sizing: border-box
+
+
