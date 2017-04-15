@@ -1,0 +1,18 @@
+
+
+HTTP basic authentication:
+
+
+
+
+HTTP access control with CORS :
+
+
+HTTP Caching :
+
+
+
+
+HTTP Cookie managmenet :
+
+

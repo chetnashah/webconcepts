@@ -46,4 +46,26 @@ As per rules of cascading style sheets,
 all subsequently matched queries will override properties when common
 properties found.
 
+Responsive images :
+Responsive images are about saving download bandwidth on low width devices.
+and not downloading full bleed images.
+
+This is where picture tag (with source tags )comes in :
+A typical tag is specified like following:
+```
+    <picture>
+      <source srcset="small.jpg" media="(max-width: 480px)">
+      <source srcset="medium.jpg" media="(max-width: 768px)">
+      <img srcset="big.jpg">
+    </picture>
+```
+
+Picturefill is a polyfill for picture tag if picture tag is not supported in browser
+
+A responsive design framework is a bundling of best practices mentioned above into a package:
+some of well known responsive design frameworks are 
+1. Skeleton
+2. Foundation
+3. Bootstrap
+
 
