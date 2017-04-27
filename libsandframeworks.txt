@@ -4,3 +4,10 @@ Modernizr is a library for feature detection in browsers
 
 Initializr is an HTML5 templates generator to help you getting started with a new project based on HTML5 Boilerplate.
 
+nice html5 templates
+https://html5up.net/
+
+Convert HTML to Jade:
+http://html2jade.aaron-powell.com/
+
+

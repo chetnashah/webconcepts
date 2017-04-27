@@ -1,0 +1,3 @@
+
+es6 import exports, default and named:
+http://stackoverflow.com/questions/36795819/when-should-i-use-curly-braces-for-es6-import/36796281#36796281

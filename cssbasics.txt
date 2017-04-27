@@ -1,0 +1,44 @@
+
+Note: also check to use devtools to maximize style work productivity
+
+CSS has rules about inheritance and cascading,
+in case of conflicts, some styles will take precedence over other,
+and styles are inherited into children,
+The order and rules in which the final styles are determined can
+be found in:
+
+https://developer.mozilla.org/en-US/docs/Learn/CSS/Introduction_to_CSS/Cascade_and_inheritance
+
+Importance:
+
+Specificity:
+Specificity is measure of how specific a selector is.
+Element selectors have lower specifity that class selectors.
+So class selectors will win against element selectors,
+Similarly id selectors will win against class selectors.
+The only way to win against ID selector is to use !important
+
+Source order:
+
+If multiple competing selectors have same importance,
+and same specificity, the third factor that comes into
+play is source order, i.e. later rules will win over
+earlier rules
+
+e.g.
+  p {
+      color: blue;
+  }
+
+  p {
+      color: red;
+  }
+
+will result in red color for paragraph selector
+
+Also order of overriding as follows:
+
+1. browser default
+2. External stylesheet
+3. internal stylesheet
+4. inline style
