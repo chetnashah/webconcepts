@@ -1,0 +1,76 @@
+
+<html>
+    <head>
+        <style>
+            #block {
+                background-color: gray;
+            }
+            #nothing {
+                background-color: yellowgreen;
+                height: 50;
+            }
+            .dog {
+                width: 350;
+            }
+        </style>
+        <script>
+            function dragover_handler(ev) {
+                console.log('dragoverhandler');
+                ev.preventDefault();
+                ev.dataTransfer.dropEffect = 'copy';
+            }
+
+            function dragenter_handler(ev) {
+                console.log('dragenterhandler');
+                ev.preventDefault();
+            }
+            function drop_handler(ev) {
+                console.log('drop handler target ev =', ev.dataTransfer);
+             ev.preventDefault();
+             // Get the id of the target and add the moved element to the target's DOM
+            var data = ev.dataTransfer.getData("text");
+                ev.target.textContent = data;
+            }
+
+        </script>
+    </head>
+    <body>
+        <p> start of body</p>
+        type text
+        <input type="text" name="firstbox" >
+        type button 
+        <input type="button" name="firstbutton">
+        type checkbox
+        <input type="checkbox" name="firstcheckbox">
+        type color
+        <input type="color" name="firstcolor">
+        type date
+        <input type="date" name="firstdate">
+        type email
+        <input type="email" name="firstemail">
+        <br />
+        type file
+        <input type="file" name="firstfile">
+        type number
+        <input type="number" name="firstnumber">
+        type password
+        <input type="password" name="firstpassword">
+        type radio
+        <input type="radio" name="firstradio">
+        type range
+        <input type="range" name="firstrange">
+        <div draggable="true" ondragstart="event.dataTransfer.setData('text/plain', 'This text may be dragged')">
+            This text <strong>may</strong> be dragged.
+          </div>
+        <div id="block">
+            <p> drag image and drop into green colored drop zone </p>
+            <!-- images are draggable by default -->
+            <img class="dog" src="images/doggy.jpg" draggable="true"/>
+        </div>
+        <div id="nothing" 
+            ondragenter="dragenter_handler(event);"
+            ondrop="drop_handler(event);"
+            ondragover="dragover_handler(event);">
+        </div>
+    </body>
+</html>
