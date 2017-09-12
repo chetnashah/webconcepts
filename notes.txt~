@@ -1,0 +1,12 @@
+
+installation directory: /opt/PostgreSQL/9.6
+
+Data directory: /opt/PostgreSQL/9.6/data
+
+port number listen on : 5433
+
+Stack builder is used to download additional tools
+
+
+psql is command to launch command line postgresql shell
+
