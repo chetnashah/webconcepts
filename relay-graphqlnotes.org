@@ -1,0 +1,114 @@
+
+
+*** GraphQL support
+
+**** graphql-relay-js
+     Needed to make relay compliant graphql server.
+     As per relay website main three kinds of support provided are:
+
+***** Object Identification
+      
+      The Node interface contains a single field, id, 
+      which is a ID!. The node root field takes a single
+      argument, a ID!, and returns a Node. 
+      These two work in concert to allow refetching; 
+      if we pass the id returned in that field to the node field, 
+      we get the object back.
+
+      Requirements from the spec:
+      - We refer to objects with identifiers as "nodes"
+        e.g. users, ships, cars etc.
+      - Node Interface : Server must provide an interface named Node
+        and this interface must contain exactly one
+        field called id that returns a non-null ID.
+        This id should be a globally Unique id. And
+        given just this id, server should be able to
+        refetch the object. User defined types like
+        user implements NodeInterface, car implements nodeInterface 
+      - Node root field: Server must provide a root field
+        called node that returns the Node interface.
+        The root field must take exactly a nonNull ID
+        name id.
+      - If query returns an object that implements Node,
+        e.g user, then this root field node should 
+        refetch the identical object when id given in
+        user is given to root node field.
+
+****** nodeDefinitions
+       returns Node interface that objects can implement
+       and returns the node root field to include on
+       the query type. To implement this, it takes a 
+       function to resolve an globalID to an object, and to
+       determne the type of a given object.
+#+BEGIN_SRC js
+// nodeInterface used by type, nodeField kept as rootField
+var {nodeInterface, nodeField} = nodeDefinitions(
+  // given id return data
+  (globalId) => {
+    var {type, id} = fromGlobalId(globalId);
+    return data[type][id];
+  },
+  // given obj return type
+  (obj) => {
+    return obj.ships ? factionType : shipType;
+  }
+);
+#+END_SRC
+
+****** toGlobalId
+       takes a type name and ID specific to that type name
+       and returns a "global ID" that is unique among all
+       types.
+       #+BEGIN_SRC js
+       var globallyUniqueUserId = toGlobalId('User', userId);
+       #+END_SRC
+
+****** fromGlobalId
+       takes "global ID" created by toGlobalID and returns
+       type name and ID used to create it.
+       #+BEGIN_SRC js
+       var {type, id} = fromGlobalId(globalId);
+       #+END_SRC
+
+****** globalIdField
+       creates the configuration for an id field on a node.
+
+****** pluralIdentifyingRootField
+       creates a filed that accepts a list of non-ID 
+       identifiers (like a username) and maps them
+       to corresponding objects
+
+#+BEGIN_SRC js
+var {nodeInterface, nodeField} = nodeDefinitions(
+  // given id return data
+  (globalId) => {
+    var {type, id} = fromGlobalId(globalId);
+    return data[type][id];
+  },
+  // given obj return type
+  (obj) => {
+    return obj.ships ? factionType : shipType;
+  }
+);
+
+var factionType = new GraphQLObjectType({
+  name: 'Faction',
+  fields: () => ({
+    id: globalIdField(),
+  }),
+  interfaces: [nodeInterface]
+});
+
+var queryType = new GraphQLObjectType({
+  name: 'Query',
+  fields: () => ({
+    node: nodeField
+  })
+});
+#+END_SRC
+
+
+***** Connections
+
+***** Mutations
+      

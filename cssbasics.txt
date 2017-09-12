@@ -1,4 +1,57 @@
 
+* About links:
+
+  * Sometimes we want to add links, before hand knowing where they
+  will link to, in which case, set href="#" also known as a dead link.
+
+  * you can turn any dom element into link(e.g img(, by nesting them into anchor tag
+
+* Understanding CSS border-radius:
+(Find out more at https://www.w3.org/TR/css3-border/#border-radius)
+Whenever we give border radius, border-radius actually takes
+two values x/y (horizontal raidus/vertical radius) i.e.
+```
+border-radius: 12;
+```
+is same as
+```
+border-radius: 12 12;
+```
+
+So what is it look like to have different x/y radius for
+border-radius?
+It is a 90 degree part of ellipse, you know ellipse has two radii
+so greater x/horizontal radius will result n a horiontally fatter
+ellipse portion, and greater y/vertical radius is vertically longer
+ellipse portion
+
+Using percentages in border radius: percentages are calcualted
+with respect to border box width for x/horizontal
+and with respect to border box height for y/vertiical
+
+Corner curves must not overlap: When the sum of any two adjacent border radii exceeds the size of the border box, UAs must proportionally reduce the used values of all border radii until none of them overlap
+and
+reducing the radii of the circle to half the size of the smallest side.
+e.g. 
+https://stackoverflow.com/questions/29966499/border-radius-in-percentage-and-pixels-px-or-em
+
+
+* CSS borders have properties like style, color and width,
+which are aptly named : border-color, boder-width and border-style
+e.g.
+```
+.thick-green-border {
+  border-color: green;
+  border-width: 10px;
+  border-style: solid;
+}
+```
+
+* give two classes to an tag using spaces in class string e.g.
+```
+<img class="class1 class2">
+```
+
 Note: also check to use devtools to maximize style work productivity
 
 CSS has rules about inheritance and cascading,
