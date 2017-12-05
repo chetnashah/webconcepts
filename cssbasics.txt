@@ -1,4 +1,78 @@
 
+
+#### Selectors syntax
+
+A CSS Rule consists of a list of (one or more)selectors and a list
+of declarations.
+
+A CSS declaration consists of a property and a value seperated by ':'
+
+* Element/Type/Tag Selector : Simple consists of tag name. e.g.
+``` css
+p {
+    text-align: center;
+    color: red;
+}
+```
+
+* Class Selector: Uses a period before class name (.) , matches class name e.g.
+``` css
+.center {
+    text-align: center;
+    color: red;
+}
+```
+
+* Id Selector: Uses a hash '#' to match elements in html with specified id. e.g.
+``` css
+#para1 {
+    text-align: center;
+    color: red;
+}
+```
+
+* Attribute Selector: Attribute selectors are a special kind of selector 
+that will match elements based on their attributes and attribute values. 
+Their generic syntax consists of square brackets ([]) containing an attribute name 
+followed by an optional condition to match against the value of the attribute. 
+Attribute selectors can be divided into two categories depending on the 
+way they match attribute values: 
+Presence and value attribute selectors and Substring value attribute selectors
+(https://developer.mozilla.org/en-US/docs/Learn/CSS/Introduction_to_CSS/Attribute_selectors)
+
+* Grouping/Multiple Selectors: When you want to have more than one selectors to have
+same declarations, you should seperate them by comma ','
+e.g. 
+``` css
+h1, h2, p, .yetanotherclass {
+    text-align: center;
+    color: red;
+}
+```
+
+* Nested selectors: Uses Space (' '), also known as decendent combinator. 
+Only match when given nesting matches in dom structure.
+e.g.
+``` css
+#top p { /* only matches when there is a p tag inside a div with id top */
+    color: red;
+    font-weight: bold;
+}
+```
+In order to match only direct children, use child combinator '>'
+e.g. `#top > p` will match only p's that are direct children of elemnts with id top.
+
+
+* Pseudo classes: Psedu-classes are bolted on to a selector with colon ':',
+to specify a relation/state along with selector. commonly used for hover etc. 
+``` css
+selector:pseudo-class {
+    property:value;
+}
+```
+
+
+
 * About links:
 
   * Sometimes we want to add links, before hand knowing where they
@@ -95,3 +169,9 @@ Also order of overriding as follows:
 2. External stylesheet
 3. internal stylesheet
 4. inline style
+
+
+
+* https://github.com/reworkcss/css is a good CSS parser, i.e. converts css string input
+to CSS AST. used in various css tooling.
+

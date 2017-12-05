@@ -67,3 +67,18 @@ One can provide onScroll function as a property to div
 'Whenever you feel like criticizing anyone,' he told me, just remember that all the people in this world haven't had the advantages that you've had.'</div>
 ```
 Note these events fire at a high rate and thus function will be called numerouse times and hence its execution must be throttled.
+
+* **Speculative Parsing** : Both WebKit and Firefox do this optimization. While executing scripts, another thread parses the rest of the document and finds out what other resources need to be loaded from the network and loads them. In this way, resources can be loaded on parallel connections and overall speed is improved. Note: the speculative parser only parses references to external resources like external scripts, style sheets and images: it doesn't modify the DOM tree–that is left to the main parser.
+
+### Evaluation of Scripts
+
+Synchronous. Authors expect scripts to be parsed
+and executed immediately when parser reaches a script tag.
+Parsing of document halts until script is executed (yes executed).
+In case script is an external resource, then it must be fetched (synchronously). Authors can add "defer" attribute to script to skip halting of document parsing, and such deferred script will execute after document is parsed.
+
+### Evaluation of stylesheets
+
+Ideally scripts should not affect dom tree, and hence should be parsed independently but,
+Often scripts will ask for style information in stylesheets, and Firefox blocks all scripts when there is a style sheet that is still being loaded and parsed. WebKit blocks scripts only when they try to access certain style properties that may be affected by unloaded style sheets. 
+

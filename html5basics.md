@@ -35,3 +35,30 @@ alt attribute on images is useful for screenreaders, show text when
 image does not load and SEO optimization
 
 
+* A polyfill, or polyfiller is a peice of code that provides the technology that you the developer expect the browser to provide natively.
+
+Example of a polyfill of String `startsWith()` method
+``` js
+if (!String.prototype.startsWith) {
+  String.prototype.startsWith = function (searchString, position) {
+    position = position || 0;
+    return this.substr(position, searchString.length) === searchString;
+  };
+}
+```
+
+* There are polyfills for all sorts of browser features:
+
+SVG
+Canvas
+Web Storage (local storage / session storage)
+Video
+HTML5 elements
+Accessibility
+Web Sockets
+and many more!
+
+for which you can use Modernizr https://github.com/Modernizr/Modernizr/wiki/HTML5-Cross-Browser-Polyfills
+
+
+
