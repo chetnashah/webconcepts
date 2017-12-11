@@ -82,3 +82,12 @@ In case script is an external resource, then it must be fetched (synchronously).
 Ideally scripts should not affect dom tree, and hence should be parsed independently but,
 Often scripts will ask for style information in stylesheets, and Firefox blocks all scripts when there is a style sheet that is still being loaded and parsed. WebKit blocks scripts only when they try to access certain style properties that may be affected by unloaded style sheets. 
 
+
+### What is module bundling ?
+It refers to bundling javascript modules(e.g. es6 modules, commonjs, AMD, UMD) into a single file/bundle for use in production environments.
+
+### What is server side rendering ?
+
+Generate HTML and CSS on the server and sent it to client, usually very useful for first loads.
+If our first render itself is dependent on JS to construct HTML, it will take some time to show first load since the JS has to be parse and executed
+in order to generate that HTML.

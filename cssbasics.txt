@@ -50,6 +50,14 @@ h1, h2, p, .yetanotherclass {
 }
 ```
 
+* Next sibling combinator: 'E + F', i.e. uses + between two selectors.
+Only match when E and F share same parent and E immediately preces F.
+``` css
+h1 + h2 {
+    opacity: 0.8;
+}
+```
+
 * Nested selectors: Uses Space (' '), also known as decendent combinator. 
 Only match when given nesting matches in dom structure.
 e.g.
