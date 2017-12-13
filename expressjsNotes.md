@@ -71,3 +71,50 @@ app.use(router)
 ```
 
 https://hackernoon.com/middleware-the-core-of-node-js-apps-ab01fee39200
+
+### Serving static files in express
+
+The main thing to add is :
+``` js
+app.use(express.static('public'))
+// This means there is a folder named public, and all 
+// file paths relative to url are resolved relative to this path
+// e.g.
+http://localhost:3000/images/kitten.jpg -> public/images/kitten.jpg
+http://localhost:3000/css/style.css -> public/css/styles.css
+http://localhost:3000/js/app.js -> public/js/app.js
+http://localhost:3000/hello.html -> public/hello.html
+```
+**NOTE** : Express looks up the files relative to the static directory, so the name of the static directory is not part of the URL.
+
+To unambiguosly specify a route prefix for all static assets, the optional path in app.use API can be used. e.g.
+``` js
+app.use('/static', express.static('public'))
+// http://localhost:3000/static/images/kitten.jpg
+// http://localhost:3000/static/css/style.css
+```
+
+### Error handling in Express
+
+Usually you should add last middlewares (to catch) 
+that will be reached only when all of the above middlewares could not successfully send a 
+response.
+``` js
+// catch 404 and forward to error handler
+app.use(function(req, res, next) {
+  var err = new Error('Not Found');
+  err.status = 404;
+  next(err);
+});
+
+// error handler - always four arguments
+app.use(function(err, req, res, next) {
+  // set locals, only providing error in development
+  res.locals.message = err.message;
+  res.locals.error = req.app.get('env') === 'development' ? err : {};
+
+  // render the error page
+  res.status(err.status || 500);
+  res.render('error');
+});
+```
