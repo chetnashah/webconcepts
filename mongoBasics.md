@@ -205,3 +205,15 @@ All _id within a given collection are unique (no guarantees of global uniqueness
   3. Positional matching: we provide exact position and item in array we want to match.
 
   e.g. For e.g. cast in movie is usually a field whose value is array of strings
+
+
+### Mongoose Concepts
+
+#### Schema
+ In mongoose, you have to define your schema structure. There has to be a fixed schema.
+The Schema allows you to define the fields stored in each document along with their validation requirements and default values.
+
+#### Model
+A model is a compiled schema used to instantiate documents of the particular structure.
+
+The model represents collection of documents in the database that you can search, while the model's instances represent individual documents that you can save and retrieve.
