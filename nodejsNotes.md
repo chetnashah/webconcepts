@@ -16,3 +16,8 @@ and .emit(eventName) -> synchronously calls all registered listeners.
 
 The process object is a global that provides information about, and control over, the current Node.js process. As a global, it is always available to Node.js applications without using require().
 Process object is and instance of EventEmitter.
+
+### Hiding secrets in Node appp
+
+Use `dotenv` module. Usually we make a `.env` file a root of project and put it in gitignore so that our secrets are not commited to public repo.
+At runtime all the secrets that were put into `.env` are available in `process.env.secret`.

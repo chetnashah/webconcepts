@@ -118,3 +118,20 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 ```
+
+#### Serving dynamic web pages
+
+Depending on what request wants,
+Usually `res.send(string)` only sends the static string down the wire,
+but we can send html parametrized with values fetched from db. which
+shows as a web page on the server, this process is known as server side rendering of html,
+usually via templates or other technology.
+
+The convention is to put the template files inside `views` directory.
+Specify views directory to express using  `app.set('views', viewsDirPathString)`):
+
+Using a template to render is as following: (assumes views directory is already specified)
+`res.render(templateFileName, variablesToBeUsedByTemplateInJSON)`
+
+Consolidate is a library that is a wrapper around a set of templating engines.
+conviniently used as `var engines = require('consolidate')`
