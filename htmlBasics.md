@@ -1,3 +1,7 @@
+### Want to read chrome source code?
+
+https://cs.chromium.org/ has well x-refed chromium source.
+Refresh your c++ a little.
 
 #### What are block and inline elements?
 
@@ -36,6 +40,46 @@ Examples of iniline elements are :
 * select,
 * textarea.
 
+### What is a Dom Element ?
+Element is general base class from which all objects in a `Document` inherit.
+For e.g. `HTMLElement` interface is base interface for HTML Elements.
+
+### Difference between Node and Element
+For the most part they are same.
+but Element hierarchy starts only at
+`document.documentElement.parentElement === null` which is
+root Element and it's parentElement is null.
+Where as Nodes are more generic than Element, e.g. documentElement has parentNode `document.documentElement.parentNode === document`.
+Also non-tag parts like Text, Comments are all nodes, have parentNodes etc.
+
+Other differences are nodeName exists for all Nodes, where as tagName exists only if an object is an Element. 
+
+### What is Document?
+Document interface represents any webpage
+loaded in browser and serves as entry point
+into web page's content, which is Dom Tree.
+It contains elements like `document.body`
+and `document.head` and many other direct properties, like a facade for the webpage.
+Although, the root Element is `document.documentElement` which represents
+`<html></html>`.
+
+### Event bubbling and event capturing
+https://javascript.info/ui
+https://javascript.info/bubbling-and-capturing
+https://www.quirksmode.org/js/events_order.html
+
+#### Throttling and debouncing of events.
+
+Throttle(function, durationms) returns a a function that will called
+at most once per duration ms.
+e.g. you want a function to be called only once per 250 ms, use throttle.
+
+debounce(fn, waitms)
+Debounce is used to know when some repeated event stopped happening.
+It will keep delaying the call to given function until waitms elapsed,
+if the call was received within waitms, the countdown timer is reset.
+
+
 #### How to use Drag and drop in HTML5?
 Steps on draggable element:
 1. declare an element to be dragabble by specifying draggable="true" attribute on element.
@@ -70,6 +114,7 @@ Note these events fire at a high rate and thus function will be called numerouse
 
 * **Speculative Parsing** : Both WebKit and Firefox do this optimization. While executing scripts, another thread parses the rest of the document and finds out what other resources need to be loaded from the network and loads them. In this way, resources can be loaded on parallel connections and overall speed is improved. Note: the speculative parser only parses references to external resources like external scripts, style sheets and images: it doesn't modify the DOM tree–that is left to the main parser.
 
+
 ### Evaluation of Scripts
 
 Synchronous. Authors expect scripts to be parsed
@@ -91,3 +136,4 @@ It refers to bundling javascript modules(e.g. es6 modules, commonjs, AMD, UMD) i
 Generate HTML and CSS on the server and sent it to client, usually very useful for first loads.
 If our first render itself is dependent on JS to construct HTML, it will take some time to show first load since the JS has to be parse and executed
 in order to generate that HTML.
+
