@@ -1,3 +1,8 @@
+
+#### What is load event for a web page?
+The load event only happens once per URL/location, when all its resources
+are loaded.
+
 ### Want to read chrome source code?
 
 https://cs.chromium.org/ has well x-refed chromium source.
@@ -136,4 +141,8 @@ It refers to bundling javascript modules(e.g. es6 modules, commonjs, AMD, UMD) i
 Generate HTML and CSS on the server and sent it to client, usually very useful for first loads.
 If our first render itself is dependent on JS to construct HTML, it will take some time to show first load since the JS has to be parse and executed
 in order to generate that HTML.
+
+### Mobile quirks...
+
+Apparently in IOS devices, onScroll events in javascript are not triggered during scroll, but only when scrolling is stopped. Apparently all javascript is paused while scrolling is happening(confirm this).
 

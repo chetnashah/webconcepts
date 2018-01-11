@@ -35,3 +35,25 @@ which we usually write in jsx as following
 ```
 
 **NOTE** : don't name your ComponentName with a small case letter or it will treat it as a native element like 'div' or 'h1', to remind babel/react that it is a class/function, custom component names should be capitalized.
+
+#### ReactElement
+
+ReactElements form a lightweight vDom which just contains
+types and props.
+
+``` jsx
+<CmpName
+  prop={propVal1}
+>
+  children
+</CmpName>
+```
+is sugar for
+``` js
+{
+  type: CmpName,
+  props: {
+    prop: propVal1
+  }
+}
+```
