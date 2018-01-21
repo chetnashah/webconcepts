@@ -1,0 +1,39 @@
+<html>
+  <head>
+    <title>All about forms</title>
+    <style>
+      .formdiv {
+        background-color: beige;
+        padding: 1em;
+      }
+    </style>
+    <script>
+      function someClick(ev) {
+        console.log('Somebody clicked '+ev);
+      }
+
+      function formOnChange() {
+        console.log('something changed in form');
+      }
+    </script>
+  </head>
+  <body>
+    <div class="formdiv">
+      <p>A test form</p>
+        <form method="post">
+          <input type="text" />
+          <!-- shows a submit button -->
+          <input type="submit" />
+          <!-- implicit type is submit -->
+          <button onclick="someClick(event)">Doesn't work</button>
+          <!-- button submits by default if button is inside form 
+            unless the type is button (which prevents default) or one can do ev.preventdefault in the
+          onclick listener -->
+          <button type="button" onclick="someClick(event)">Working button</button>
+        </form>
+        <!-- a better practice then using onclick
+          is to buttonElement.addEventListener('click', listener) -->
+        <button onclick="someClick(event)">Wow</button>
+    </div>
+  </body>
+</html>

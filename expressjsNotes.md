@@ -35,6 +35,13 @@ var birds = require('birds');
 app.use('/birds', birds); // takes care of /birds, /birds/about and shows timelogs for birds
 ```
 
+### Express route parameters via colon(:)
+
+Route parameters are named URL segments used to capture the values specified at their position in the URL. 
+The named segments are prefixed with a colon and then the name (e.g. `/:your_parameter_name/`. The captured values are stored in the req.params object using the parameter names as keys (e.g. `req.params.your_parameter_name`).
+
+
+
 ### MiddleWare
 
 Middleware functions are functions that have access to req, res and next middleware function.
@@ -56,7 +63,7 @@ const myloggermiddleware = function(req, res, next) {
 
 app.use is generally used for middlewares, and app.method is for method & routing
 ``` js
-app.use(middlewarefunction);
+app.use(middlewarefunction);// executes for all requests
 // or
 app.use('/some/path', middlewarefunction); // path is optional, when specified middleware function only executes for specified path
 // or middlewarefunction array or middlewarefunction seperated by commas

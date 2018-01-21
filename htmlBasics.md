@@ -73,6 +73,20 @@ https://javascript.info/ui
 https://javascript.info/bubbling-and-capturing
 https://www.quirksmode.org/js/events_order.html
 
+Let's say you are clicking, hovering, etc. on an element (like a button) you are not only triggering the eventlistener
+on button , but all its ancestors in the dom tree.
+
+When the event handler/listener is invoked, the `this` keyword inside the handler is set to the DOM element on which the handler is registered. The event handler also gets access to the event as first argument of the callback.
+
+When discussing the various methods of listening to events,
+event listener refers to a function or object registered via EventTarget.addEventListener(),
+whereas event handler refers to a function registered via on... attributes or properties. e.g. onclick
+
+
+### event.stopPropogation vs event.preventDefault
+
+
+
 #### Throttling and debouncing of events.
 
 Throttle(function, durationms) returns a a function that will called
@@ -145,4 +159,6 @@ in order to generate that HTML.
 ### Mobile quirks...
 
 Apparently in IOS devices, onScroll events in javascript are not triggered during scroll, but only when scrolling is stopped. Apparently all javascript is paused while scrolling is happening(confirm this).
+
+
 
