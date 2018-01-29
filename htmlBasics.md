@@ -68,7 +68,128 @@ and `document.head` and many other direct properties, like a facade for the webp
 Although, the root Element is `document.documentElement` which represents
 `<html></html>`.
 
+## Events
+
+### Key events
+
+Key Events contain two data properties. KeyCode and Charachter code.
+
+#### `keydown` event
+
+Fired when a key goes down. Repeats.
+``` js
+// try document.body for el
+el.onkeydown = function(e) {
+    var realKey = e.keyCode;
+    console.log('realKey = ', realKey);
+}
+```
+
+Preventing default key behavior (can be useful in providing custom navigation behavior):
+``` js
+// try document.body for el
+el.onkeydown = function(e) {
+    var realKey = e.keyCode;
+    console.log('realKey = ', realKey);
+    if (realKey === 40) {// down arrow key
+        console.log('one of arrow key will not work');
+        e.preventDefault();// this will prevent scrolling which is default behavior of down arrow key
+    }
+}
+```
+
+#### `keypress` event
+
+Fired only when a charachter key goes down. Repeats.
+
+#### `keyup` event
+
+Fired when a key goes up. Once.
+
+### Mouse Event
+
+#### Simple Mouse Events
+
+**mousedown/mouseup** - mouse button clicked or released over element.
+**mouseover/mouseout** - mouse pointer is brought in the same area, removed from the area.
+**mousemove** - between mouse over and mouseout
+
+#### Complex Mouse Events
+
+These are made from simple ones but are present for convinience.
+
+**click** - triggered if mousedown and mouseup occured over a same element with left button clicked. order is mousedown->mouseup->click.
+Click event has a which property which tells left(1),middle(2) or right(3) mouse-button was clicked.
+
+**contextmenu** - triggered if mousedown and mouseup occured with right mouse button
+
+**dblclick** - some delay between clicks
+
+#### Mouse modifier keys
+
+All mouse events include the information about pressed modifier keys.
+
+The properties are:
+
+shiftKey
+altKey
+ctrlKey
+metaKey (Cmd for Mac)
+Try below
+``` js
+<button id="button">Alt+Shift+Click on me!</button>
+
+<script>
+  button.onclick = function(event) {
+    if (event.altKey && event.shiftKey) {
+      alert('Hooray!');
+    }
+  };
+</script>
+```
+
+Window-relative coordinates: clientX/clientY.
+
+Document-relative coordinates: pageX/clientX.
+
+
+
+### Touch Event
+
+Three basic types:
+touchstart, touchmove and touchend
+
+Each touch event includes three lists of touches:
+
+**touches**: a list of all fingers currently on the screen.
+**targetTouches**: a list of fingers on the current DOM element.
+**changedTouches**: a list of fingers involved in the current event. For example, in a touchend event, this will be the finger that was removed.
+
+
+These lists consist of objects that contain touch information:
+**identifier**: a number that uniquely identifies the current finger in the touch session.
+**target**: the DOM element that was the target of the action.
+**client/page/screen coordinates**: where on the screen the action happened.
+radius coordinates and rotationAngle: describe the ellipse that approximates finger shape.
+
+### Change Event
+
+The change event is fired when the value of
+a form field is changed.
+
+The onChange event is only called when you have changed the value of the field and it loses focus. e.g. onChange event does not fire when you change text in a textfield, but when you leave the textfield, onChange is fired.
+
+For checkboxes&radios though, onChange should be fired as soon as value changes, no need of blurring to happen
+
 ### Event bubbling and event capturing
+
+Mouse and key events -> bubble all the way to document,
+Interface events - submit, load, change, focus and blur. In general they do not bubble.
+
+click is one of the some rare events,
+that can be fired via a mouse click,
+as well as as a keyboard click
+
 https://javascript.info/ui
 https://javascript.info/bubbling-and-capturing
 https://www.quirksmode.org/js/events_order.html
@@ -81,6 +202,17 @@ When the event handler/listener is invoked, the `this` keyword inside the handle
 When discussing the various methods of listening to events,
 event listener refers to a function or object registered via EventTarget.addEventListener(),
 whereas event handler refers to a function registered via on... attributes or properties. e.g. onclick
+
+
+### Some of browser default actions for given events
+
+**mousedown** – starts the selection (move the mouse to select).
+**click on `<input type="checkbox">`** – checks/unchecks the input.
+**submit – clicking an `<input type="submit">` or hitting Enter inside a form field** causes this event to happen, and the browser submits the form after it.
+**wheel** – rolling a mouse wheel event has scrolling as the default action.
+**keydown** – pressing a key may lead to adding a character into a field, or other actions.
+**contextmenu** – the event happens on a right-click, the action is to show the browser context menu.
+
 
 
 ### event.stopPropogation vs event.preventDefault
