@@ -62,6 +62,20 @@ User would always like to know where he is in the navigation, hence the breadcru
 
 Different set of context/settings depending on user demographic.
 
+### Polymorphism in UX
+
+User experience especially digital ones can be made to be polymorphic in many
+parameters:
+
+e.g. 
+1. layout polymorphism depending on device dimensions
+2. demographic polymorphism depending on age/ease of use/target audience, accessibility
+3. Content polymorphism, behavior changes based on content.
+4. State polymorphism, environment based behavior e.g. offline, online etc.
+
+Although being polymorphic, it should also be consistent.
+Consistent experience for given parameters.
+
 ### Infinite scrolling
 
 In context of scrollable views,
