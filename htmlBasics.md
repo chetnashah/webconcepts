@@ -308,5 +308,19 @@ Quirks mode is not, however, a standard. The rendering of any page in quirks mod
 Generally, quirks mode is turned on when there is no correct DOCTYPE declaration, and turned off when there is a DOCTYPE definition. However, invalid HTML - with respect to the chosen DOCTYPE - can also cause the browser to switch to quirks mode.
 
 
+## Scheduling in JS
 
+There are four main APIs used for user based scheduling:
+1. setTimeout(cb, timeinms)
+2. setInterval(cb, timeinms)
+3. requestIdleCallback(cb, [options])
+4. requestAnimationFrame(cb)
+
+### requestIdleCallback
+
+The `window.requestIdleCallback()` method queues a function to be called during a browser's idle periods. This enables developers to perform background and low priority work on the main event loop, without impacting latency-critical events such as animation and input response. Functions are generally called in first-in-first-out order; however, callbacks which have a timeout specified may be called out-of-order if necessary in order to run them before the timeout elapses.
+
+You can call requestIdleCallback() within an idle callback function to schedule another callback to take place no sooner than the next pass through the event loop.
+
+Ideally don't do dom mutations in idlecallbacks. Use it for stuff that has less priority. Your idle callback should avoid doing anything that could take an unpredictable amount of time
 
