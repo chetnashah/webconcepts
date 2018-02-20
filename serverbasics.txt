@@ -1,7 +1,0 @@
-
-
-
-    A proxy is a server, used by the client, to indirectly access other servers. To the server serving the contents, it will view the proxy server as the client, and be oblivious to the original client.
-
-    A reverse proxy is the other way around. The application server (our Express application) responds to the client through our nginx web server, but the client has no idea this was done. In the client's view, the response came directly from the web server. Hence the name - reverse proxy.
-
