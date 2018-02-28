@@ -1,5 +1,5 @@
 
-What are HTML forms?
+### What are HTML forms?
 An HTML form is a collection of widgets containing data, that can be sent to
 a server.
 
@@ -15,8 +15,27 @@ The two important attributes here are:
 
   * method : the HTTP method used to send the data with.
 
+#### HTML forms and buttons
 
-When and how to use images on your website?
+A button in a form is created using a `<button>` element or an `<input>` element. 
+Technically speaking, there is almost no difference between a button defined with the `<button>` element or the `<input>` element. The only noticeable difference is the label of the button itself. Within an `<input>` element, the label can only be character data, whereas in a `<button>` element, the label can be HTML, so it can be styled accordingly.
+
+
+
+It's the value of type that specifies what kind of button is displayed:
+  1. submit - submit form on button click
+  2. reset - rest form on button click
+
+``` html
+<button type="submit">
+    This a <br><strong>submit button</strong>
+</button>
+
+<input type="submit" value="This is a submit button">
+```
+
+
+### When and how to use images on your website?
 If you own an image, it is usually good idea to put it
 inside the filesystem where your webpage is, coz if you put to
 a link e.g. src="https://www.example.com/imgname.png", it will

@@ -300,3 +300,6 @@ http://mongoosejs.com/docs/populate.html
 
 Mongoose provides built-in and custom validators, and synchronous and asynchronous validators. It allows you to specify both the acceptable range or values and the error message for validation failure in all cases
 
+#### Querying data in js using mongoose
+
+https://stackoverflow.com/questions/31549857/mongoose-what-does-the-exec-function-do

@@ -45,6 +45,14 @@ Examples of iniline elements are :
 * select,
 * textarea.
 
+### Name vs id attributes in elements
+
+id is used to identify the HTML element through the Document Object Model (via JavaScript or styled with CSS). id is expected to be unique within the page.
+
+name corresponds to the form element and identifies what is posted back to the server, e.g. in a form.
+
+
+
 ### What is a Dom Element ?
 Element is general base class from which all objects in a `Document` inherit.
 For e.g. `HTMLElement` interface is base interface for HTML Elements.

@@ -1,39 +1,132 @@
 <html>
-  <head>
-    <title>All about forms</title>
-    <style>
-      .formdiv {
-        background-color: beige;
-        padding: 1em;
-      }
-    </style>
-    <script>
-      function someClick(ev) {
-        console.log('Somebody clicked '+ev);
-      }
 
-      function formOnChange() {
-        console.log('something changed in form');
-      }
-    </script>
-  </head>
-  <body>
-    <div class="formdiv">
-      <p>A test form</p>
-        <form method="post">
-          <input type="text" />
-          <!-- shows a submit button -->
-          <input type="submit" />
-          <!-- implicit type is submit -->
-          <button onclick="someClick(event)">Doesn't work</button>
-          <!-- button submits by default if button is inside form 
+<head>
+  <title>All about forms</title>
+  <style>
+    .formdiv {
+      background-color: beige;
+      padding: 1em;
+    }
+  </style>
+  <script>
+    function someClick(ev) {
+      console.log('Somebody clicked ' + ev);
+    }
+
+    function formOnChange() {
+      console.log('something changed in form');
+    }
+  </script>
+</head>
+
+<body>
+  <div class="formdiv">
+    <p>A test form</p>
+    <form method="post">
+      <input type="text" />
+      <!-- shows a submit button -->
+      <input type="submit" />
+      <!-- implicit type is submit -->
+      <button onclick="someClick(event)">Doesn't work</button>
+      <!-- button submits by default if button is inside form 
             unless the type is button (which prevents default) or one can do ev.preventdefault in the
           onclick listener -->
-          <button type="button" onclick="someClick(event)">Working button</button>
-        </form>
-        <!-- a better practice then using onclick
+      <button type="button" onclick="someClick(event)">Working button</button>
+    </form>
+    <!-- a better practice then using onclick
           is to buttonElement.addEventListener('click', listener) -->
-        <button onclick="someClick(event)">Wow</button>
+    <button onclick="someClick(event)">Wow</button>
+  </div>
+
+  <div class="triedoncodepen">
+    <input type="search" value="ohoho" multiple id="uid" name="uid" />
+    <input type="tel" multiple placeholder="tel" id="tel" name="tel" />
+    <textarea cols="30" rows="10"></textarea>
+    <div>select examples
+      <select id="simple" name="simple">
+        <option>Banana</option>
+        <option>Cherry</option>
+        <option>Lemon</option>
+      </select>
+
+      <select id="groups" name="groups">
+        <optgroup label="fruits">
+          <option>Banana</option>
+          <option selected>Cherry</option>
+          <option>Lemon</option>
+        </optgroup>
+        <optgroup label="vegetables">
+          <option>Carrot</option>
+          <option>Eggplant</option>
+          <option>Potato</option>
+        </optgroup>
+      </select>
     </div>
-  </body>
+
+
+    <div>Select with multiple
+      <select multiple id="multi" name="multi">
+        <option>Banana</option>
+        <option>Cherry</option>
+        <option>Lemon</option>
+      </select>
+    </div>
+
+    <div>
+      Autocomplete box
+      <label for="myFruit">What's your favorite fruit? </label>
+      <!-- using a list attribute and a datalist tag -->
+      <input type="text" name="myFruit" id="myFruit" list="mySuggestion" />
+      <datalist id="mySuggestion">
+        <option>Apple</option>
+        <option>Banana</option>
+        <option>Blackberry</option>
+        <option>Blueberry</option>
+        <option>Lemon</option>
+        <option>Lychee</option>
+        <option>Peach</option>
+        <option>Pear</option>
+      </datalist>
+
+    </div>
+
+    <div>
+      <br/> Checkable Items
+      <input type="checkbox" checked id="carrots" name="carrots" value="carrots">
+
+      <input type="radio" checked id="soup" name="meal">
+
+    </div>
+
+    <div>
+      <br/> Number picker
+      <input type="number" name="age" id="age" min="1" max="10" step="2" />
+
+    </div>
+
+    <div>
+      <br/> Slider
+      <input type="range" name="beans" id="beans" min="0" max="500" step="10">
+
+    </div>
+
+    <div>
+      <br/> Date picker
+      <input type="date" name="datetime" id="datetime">
+      <br/> Time picker
+      <input type="time" name="time" id="time">
+
+    </div>
+
+
+    <div>
+      <br/> File picker
+      <!-- accept and multiple are usfeul attributes -->
+      <input type="file" name="file" id="file" accept="image/*" multiple>
+
+    </div>
+
+  </div>
+</body>
+
 </html>
