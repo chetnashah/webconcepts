@@ -66,6 +66,11 @@ if (!String.prototype.startsWith) {
 }
 ```
 
+### Form validation
+
+Web forms that use a basic submit-and-refresh model of interactivity don’t respond until you hit the “submit” button—but it doesn’t have to be this way. Real-time inline validation (validation as you type) can help people complete web forms more quickly and with less effort, fewer errors, and (surprise!) more satisfaction.
+
+
 * There are polyfills for all sorts of browser features:
 
 SVG
