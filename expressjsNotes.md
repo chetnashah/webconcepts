@@ -103,6 +103,30 @@ app.use('/static', express.static('public'))
 
 ### Error handling in Express
 
+
+Let's say your middleware queries some data from server and could
+not find it, and the db api returned an error, then how do u handle it?
+
+``` js
+// all middlewares have a next, so 
+// in case of an error make an Error object and pass it to next.
+app.get('/users/:id', (req, res, next) => {
+  const userId = req.params.id
+  if (!userId) {
+    const error = new Error('missing id')
+    error.httpStatusCode = 400
+    return next(error)
+  }
+  Users.get(userId, (err, user) => {
+    if (err) {
+      err.httpStatusCode = 500
+      return next(err)
+    }
+    res.send(users)
+  })
+})
+```
+
 Usually you should add last middlewares (to catch) 
 that will be reached only when all of the above middlewares could not successfully send a 
 response.
