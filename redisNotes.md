@@ -116,4 +116,16 @@ HMSET user:1000 id 1000 name "JON WICK" age 44
 ```
 
 
+### Setting up node redis client
 
+Setting up node-redis client is pretty straight forward:
+
+``` js
+const redis = require('redis'); // npm package
+const redisUrl = 'redis://127.0.0.1:6379':
+const client = redis.createClient(redisUrl);
+
+client.set('key', 'value');
+client.get('key', nodeback);// passing in a node style callback
+client.get('key', console.log);// debugging
+```

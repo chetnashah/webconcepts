@@ -15,3 +15,28 @@ in theory the URI space under your domain name is totally under your control, so
 When you change a URI on your server, you can never completely tell who will have links to the old URI. They might have made links from regular web pages. They might have bookmarked your page. They might have scrawled the URI in the margin of a letter to a friend.
 
 When someone follows a link and it breaks, they generally lose confidence in the owner of the server.
+
+
+### Websocket basics on the browser
+
+Standard api (on the browser/client) is following:
+``` js
+var connection = new WebSocket('ws://html5rocks.websocket.org/echo', ['soap', 'xmpp']);
+
+// When the connection is open, send some data to the server
+connection.onopen = function () {
+  connection.send('Ping'); // Send the message 'Ping' to the server
+};
+
+// Log errors
+connection.onerror = function (error) {
+  console.log('WebSocket Error ' + error);
+};
+
+// Log messages from the server
+connection.onmessage = function (e) {
+  console.log('Server: ' + e.data);
+};
+```
+
+Find more at: https://www.html5rocks.com/en/tutorials/websockets/basics/

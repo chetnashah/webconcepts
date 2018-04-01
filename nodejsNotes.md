@@ -21,3 +21,45 @@ Process object is and instance of EventEmitter.
 
 Use `dotenv` module. Usually we make a `.env` file a root of project and put it in gitignore so that our secrets are not commited to public repo.
 At runtime all the secrets that were put into `.env` are available in `process.env.secret`.
+
+
+### Server creation weirdness in Expres/Node world
+
+The app returned by `express()` is in fact a JavaScript Function, DESIGNED TO BE PASSED to Node’s HTTP servers as a callback to handle requests.
+
+This makes it easy to provide both HTTP and HTTPS versions of your app with the same code base, as the app does not inherit from these (it is simply a callback):
+``` js
+var app = express();
+http.createServer(app).listen(80);// ssee node js api, app acts as cb
+https.createServer(options, app).listen(443);
+```
+
+The `app.listen()` method returns an `http.Server` object and (for HTTP) is a convenience method for the following:
+``` js
+app.listen = function() {
+  var server = http.createServer(this);
+  return server.listen.apply(server, arguments);
+};
+```
+
+
+### Node source
+
+**tick** - one start-end execution of the while true body of uv loop.
+
+In js code, require cpp modules using
+``` js
+var pbkdf2 = process.binding('pbkdf2');
+```
+
+which is exported from cpp side using
+``` cpp
+  env->SetMethod(target, "PBKDF2", PBKDF2);
+```
+
+Major kinds of events/messages on the uv loop:
+1. timers with cbs
+2. Os level ops with cbs
+
+Most fs functions and some of the crypto functions, use the uv thread pool (which has a default size of 4)
+

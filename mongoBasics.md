@@ -14,6 +14,13 @@ UI for seeing mongodb
 Mongos Db as a service
 
 
+### Setting up mLab
+
+1. Login with your account on website.
+2. Create new database deployment with free tier.
+3. Create a user + pwd for that database deployment.
+4. now we have the URI, which can be used in our app.
+
 #### Basic terminology
 
 1. collection = table
@@ -303,3 +310,5 @@ Mongoose provides built-in and custom validators, and synchronous and asynchrono
 #### Querying data in js using mongoose
 
 https://stackoverflow.com/questions/31549857/mongoose-what-does-the-exec-function-do
+
+
