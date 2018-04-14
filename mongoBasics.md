@@ -311,4 +311,19 @@ Mongoose provides built-in and custom validators, and synchronous and asynchrono
 
 https://stackoverflow.com/questions/31549857/mongoose-what-does-the-exec-function-do
 
+There are multiple ways to make fetch execution via mongoose.
+When we make a query, it by default is lazy and will not be fetched unless told to do so.
+Below are the three equivalent ways to fetch data from mongodb given query.
+``` js
+query.exec(nodeback);
+// same as
+query.then(result => console.log(result));
+// same as
+const result = await query;
+```
+
+Calling exec without argument returns a promise.
+Also if one uses then/await on a query, 
+the query is a thenable and follows appropriately.
+
 

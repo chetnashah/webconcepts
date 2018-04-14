@@ -166,3 +166,25 @@ Using a template to render is as following: (assumes views directory is already 
 
 Consolidate is a library that is a wrapper around a set of templating engines.
 conviniently used as `var engines = require('consolidate')`
+
+
+### passport js and sessions and cookies
+
+Sessions
+In a typical web application, the credentials used to authenticate a user will only be transmitted during the login request. If authentication succeeds, a session will be established and maintained via a cookie set in the user's browser.
+
+Each subsequent request will not contain credentials, but rather the unique cookie that identifies the session. In order to support login sessions, Passport will serialize and deserialize user instances to and from the session.
+
+Strategy configuration for passport happens via `passport.use(new StrategName(){})`
+
+Express comes to know about passport via its list of middlewares
+``` js
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(passport.initialize());
+app.use(passport.session());
+```
+
+* Purpose of `serializeUser` and `deserializeUser` : Convert a db record for a user to a cookie and vice-versa. Usually we take the record and just extract the id and send it as a cookie to browser. And when a client request comes with cookie containing user id, we deserialize the user record from db using the id inside the cookie that came in the request.
+
+
+
