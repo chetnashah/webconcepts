@@ -225,6 +225,21 @@ whereas event handler refers to a function registered via on... attributes or pr
 
 ### event.stopPropogation vs event.preventDefault
 
+propogation means propogation in hierarchy via bubbling.
+preventdefault on the other hand prevents default action like checking checkbox, or submitting form etc.
+
+``` js
+function() {
+  return false;
+}
+
+// IS EQUAL TO
+
+function(e) {
+  e.preventDefault();
+  e.stopPropagation();
+}
+```
 
 
 #### Throttling and debouncing of events.

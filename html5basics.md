@@ -1,4 +1,29 @@
 
+### HTMLElement vs jQuery objects
+
+I would like to understand relationship between jQuery object and DOM element
+
+A jQuery object is an array-like object that contains DOM element(s). A jQuery object can contain multiple DOM elements depending on the selector you use.
+
+Also what methods can operate on jQuery object vs DOM element? Can a single jQuery object represent multiple DOM elements ?
+
+jQuery functions (a full list is on the website) operate on jQuery objects and not on DOM elements. You can access the DOM elements inside a jQuery function using `.get()` or accessing the element at the desired index directly:
+```js
+$("selector")[0] // Accesses the first DOM element in this jQuery object
+$("selector").get(0) // Equivalent to the code above
+$("selector").get() // Retrieve a true array of DOM elements matched by this selector
+```
+In other words, the following should get you the same result:
+```html
+<div id="foo"></div>
+```
+```js
+alert($("#foo")[0]);
+alert($("#foo").get(0));
+alert(document.getElementById("foo"));
+```
+For more information on the jQuery object, see the documentation. Also check out the documentation for .get()
+
 ### What are HTML forms?
 An HTML form is a collection of widgets containing data, that can be sent to
 a server.
@@ -20,8 +45,6 @@ The two important attributes here are:
 A button in a form is created using a `<button>` element or an `<input>` element. 
 Technically speaking, there is almost no difference between a button defined with the `<button>` element or the `<input>` element. The only noticeable difference is the label of the button itself. Within an `<input>` element, the label can only be character data, whereas in a `<button>` element, the label can be HTML, so it can be styled accordingly.
 
-
-
 It's the value of type that specifies what kind of button is displayed:
   1. submit - submit form on button click
   2. reset - rest form on button click
@@ -34,6 +57,30 @@ It's the value of type that specifies what kind of button is displayed:
 <input type="submit" value="This is a submit button">
 ```
 
+If the user hits enter when a text field is focused, the browser should find the first submit button in the form and click it.
+Or in other words pressing enter key submits forms.
+
+So, in a form with no submit buttons, implicit submission will be done if only one input is present. Therefore, pressing enter in this textbox will submit the form:
+
+``` js
+<form>
+    <label for="name">Name:</label>
+    <input type="text" name="name" id="name">
+</form>
+```
+But in below form it will not because there are multiple fields:
+```js
+<form>
+    <label for="name">Name:</label>
+    <input type="text" name="name" id="name">
+    <label for="address">Address:</label>
+    <input type="text" name="address" id="address">
+</form>
+```
+
+Therefore, if you have a form with more than one input field, always include a submit button. Specifically an `<input>` with the type="submit" attribute, or a `<button>` element should be present.
+
+If you need to run some JavaScript before the form is submitted (validation, data manipulation, etc), do it in a submit event handler on the form, not a click handler on a button.
 
 ### When and how to use images on your website?
 If you own an image, it is usually good idea to put it

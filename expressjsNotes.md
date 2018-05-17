@@ -175,7 +175,7 @@ In a typical web application, the credentials used to authenticate a user will o
 
 Each subsequent request will not contain credentials, but rather the unique cookie that identifies the session. In order to support login sessions, Passport will serialize and deserialize user instances to and from the session.
 
-Strategy configuration for passport happens via `passport.use(new StrategName(){})`
+Strategy configuration for passport happens via `passport.use(new StrategyName(){})`
 
 Express comes to know about passport via its list of middlewares
 ``` js
@@ -186,5 +186,72 @@ app.use(passport.session());
 
 * Purpose of `serializeUser` and `deserializeUser` : Convert a db record for a user to a cookie and vice-versa. Usually we take the record and just extract the id and send it as a cookie to browser. And when a client request comes with cookie containing user id, we deserialize the user record from db using the id inside the cookie that came in the request.
 
+There is 1:1 relationship between cookie's sid <-> user, managed by passport.
+
+#### 
+
+`passport.session()` acts as a middleware to alter the req object and change the 'user' value that is currently the session id (from the client cookie) into the true deserialized user object.
+
+Whilst the other answers make some good points I thought that some more specific detail could be provided.
+
+`app.use(passport.session());`
+is equivalent to
+
+`app.use(passport.authenticate('session'));`
+Where 'session' refers to the following strategy that is bundled with passportJS.
+
+https://github.com/jaredhanson/passport/blob/master/lib/strategies/session.js
+
+Specifically lines 59-60:
+``` js
+var property = req._passport.instance._userProperty || 'user';
+req[property] = user;
+```
+Where it essentially acts as a middleware and alters the value of the 'user' property in the req object to contain the deserialized identity of the user. To allow this to work correctly you must include serializeUser and deserializeUser functions in your custom code.
+
+``` js
+passport.serializeUser(function (user, done) {
+    done(null, user.id);
+});
+
+passport.deserializeUser(function (user, done) {
+    //If using Mongoose with MongoDB; if other you will need JS specific to that schema
+    User.findById(id, function (err, user) {
+        done(err, user);
+    });
+});
+```
+This will find the correct user from the database and pass it as a closure variable into the callback done(err,user); so the above code in the passport.session() can replace the 'user' value in the req object and pass on to the next middleware in the pile.
+
+
+### express-session vs cookie-session
+
+The basic difference between both these relates to how and where is the session data being stored. Cookie session is basically used for lightweight session applications where the session data is stored in a cookie but within the client [browser], whereas, Express Session stores just a mere session identifier within a cookie in the client end, whilst storing the session data entirely on the server. Cookie Session is helpful in applications where no database is used in the back-end. However, the session data cannot exceed the cookie size. On conditions where a database is used, it acts like a cache to stop frequent database lookups which is expensive.
+
+* cookie-session: Create a new cookie session middleware with the provided options. This middleware will attach the property session to req, which provides an object representing the loaded session. This session is either a new session if no valid session was provided in the request, or a loaded session from the request.
+
+The middleware will automatically add a Set-Cookie header to the response if the contents of req.session were altered. Note that no Set-Cookie header will be in the response (and thus no session created for a specific user) unless there are contents in the session, so be sure to add something to req.session as soon as you have identifying information to store for the session.
+
+e.g
+``` js
+var cookieSession = require('cookie-session')
+var express = require('express')
+var app = express()
+
+app.use(cookieSession({
+  name: 'session',
+  keys: ['key1', 'key2']
+}));
+
+app.get('/', function (req, res, next) {
+  // Update views
+  req.session.views = (req.session.views || 0) + 1
+
+  // Write response
+  res.end(req.session.views + ' views');
+});
+
+app.listen(3000)
+```
 
 

@@ -58,6 +58,43 @@ is sugar for
 }
 ```
 
+### React HOCs
+
+```js
+/* hoc builders are usually exposed as functions
+ passed with existing component to enhance it.
+ hocfn :: Component -> Component */
+export default function(WrappedComponent) {
+    class Authentication extends Component {
+        // add extra functionality
+        render() {
+            // passing through given props,
+            // consume props which are only meant for hoc
+            return (<WrappedComponent
+                        {...this.props}
+                    />);
+        }
+    }
+
+    return Authentication;
+}
+```
+
+HOCs are used typically by all state management libraries to create containers with data,
+like redux's connect, or relay's createContainer to inject props of data into our dumb-components. 
+
+### React Context
+
+#### Legacy React Context (pre-16.3)
+
+The place where context is used, you have to use via `this.context.interestingproperty` along with specifying `Component.contextTypes = { interestingProperty: interestingPropertyType}`. If contextTypes is not defined, then context will be an empty object.
+
+
+Also somewhere in the ancestors, we need to specify `getChildContext(){}` and `Ancestor.childContextTypes =  interestingProperty: interestingPropertyType`
+
+#### React Context (16.3 and after)
+
+
 ### React lifecycle for a composite component in Stack reconciler
 
 ``` 
@@ -88,6 +125,85 @@ is sugar for
  */
  ```
 
+### React Fiber - ReactUpdateQueue
+
+// UpdateQueue is a linked list of prioritized updates.
+//
+// Like fibers, update queues come in pairs: a current queue, which represents
+// the visible state of the screen, and a work-in-progress queue, which is
+// can be mutated and processed asynchronously before it is committed — a form
+// of double buffering. If a work-in-progress render is discarded before
+// finishing, we create a new work-in-progress by cloning the current queue.
+//
+// Both queues share a persistent, singly-linked list structure. To schedule an
+// update, we append it to the end of both queues. Each queue maintains a
+// pointer to first update in the persistent list that hasn't been processed.
+// The work-in-progress pointer always has a position equal to or greater than
+// the current queue, since we always work on that one. The current queue's
+// pointer is only updated during the commit phase, when we swap in the
+// work-in-progress.
+//
+// For example:
+//
+//   Current pointer:           A - B - C - D - E - F
+//   Work-in-progress pointer:              D - E - F
+//                                          ^
+//                                          The work-in-progress queue has
+//                                          processed more updates than current.
+//
+// The reason we append to both queues is because otherwise we might drop
+// updates without ever processing them. For example, if we only add updates to
+// the work-in-progress queue, some updates could be lost whenever a work-in
+// -progress render restarts by cloning from current. Similarly, if we only add
+// updates to the current queue, the updates will be lost whenever an already
+// in-progress queue commits and swaps with the current queue. However, by
+// adding to both queues, we guarantee that the update will be part of the next
+// work-in-progress. (And because the work-in-progress queue becomes the
+// current queue once it commits, there's no danger of applying the same
+// update twice.)
+//
+// Prioritization
+// --------------
+//
+// Updates are not sorted by priority, but by insertion; new updates are always
+// appended to the end of the list.
+//
+// The priority is still important, though. When processing the update queue
+// during the render phase, only the updates with sufficient priority are
+// included in the result. If we skip an update because it has insufficient
+// priority, it remains in the queue to be processed later, during a lower
+// priority render. Crucially, all updates subsequent to a skipped update also
+// remain in the queue *regardless of their priority*. That means high priority
+// updates are sometimes processed twice, at two separate priorities. We also
+// keep track of a base state, that represents the state before the first
+// update in the queue is applied.
+//
+// For example:
+//
+//   Given a base state of '', and the following queue of updates
+//
+//     A1 - B2 - C1 - D2
+//
+//   where the number indicates the priority, and the update is applied to the
+//   previous state by appending a letter, React will process these updates as
+//   two separate renders, one per distinct priority level:
+//
+//   First render, at priority 1:
+//     Base state: ''
+//     Updates: [A1, C1]
+//     Result state: 'AC'
+//
+//   Second render, at priority 2:
+//     Base state: 'A'            <-  The base state does not include C1,
+//                                    because B2 was skipped.
+//     Updates: [B2, C1, D2]      <-  C1 was rebased on top of B2
+//     Result state: 'ABCD'
+//
+// Because we process updates in insertion order, and rebase high priority
+// updates when preceding updates are skipped, the final result is deterministic
+// regardless of priority. Intermediate state may vary according to system
+// resources, but the final state is always the same.
+
 
  ## React Fiber
 
@@ -95,7 +211,7 @@ is sugar for
 
  React Fiber also takes into account work priorities for the processing of render related work.
 
-Work In Progress tags:
+Work In Progress/TypeOfWork tags:
 1. IntermediateComponent
 2. FunctionalComponet
 3. ClassComponent
@@ -110,6 +226,20 @@ Work In Progress tags:
 12. Mode
 13. ContextProvider
 14. ContextConsumer
+
+Effect Tags:
+``` js
+  const effects = {
+    1: 'Performed Work',
+    2: 'Placement',
+    4: 'Update',
+    8: 'Deletion',
+    16: 'Content reset',
+    32: 'Callback',
+    64: 'Err',
+    128: 'Ref',
+  };
+```
 
 Fiber struct:
 // A Fiber is work on a Component that needs to be done or was done. There can
