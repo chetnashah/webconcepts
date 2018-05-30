@@ -326,4 +326,17 @@ Calling exec without argument returns a promise.
 Also if one uses then/await on a query, 
 the query is a thenable and follows appropriately.
 
+### Mongoose instance methods.
 
+Remember that instances of models are documents.
+Documents have some built in methods like `save` etc.
+
+But we can add our on methods on instances using `abcSchema.methods.doSomething = () => {}`
+
+```js
+// methods lies on schema
+userSchema.methods.doingSomething = function(cb) {
+  console.log(this); // inside function this is the document
+  cb();// go back
+}
+```

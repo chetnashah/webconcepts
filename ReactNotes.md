@@ -21,6 +21,58 @@ e.g.
 this.setState({quantity: 2})
 ```
 
+All three types of usages of setstate shown below.
+```js
+this.setState({ counter: 2 });
+this.setState({ counter: 5},() => {
+    // cb executed only after render is complete
+    console.log('cb reading state', this.state);// prints 6
+});
+// setstate with updater function
+this.setState((prevState, props) => {
+    console.log('updater fn, prevState = ', prevState);// 5
+    return { counter: prevState.counter + 1};
+});
+```
+
+#### React controlled Components
+
+In React, this is usually solved by making a component “controlled”. Just like the DOM `<input>` accepts both a `value` and an `onChange` prop, so can the custom TemperatureInput accept both `temperature` and `onTemperatureChange` props from its parent Calculator. Also known as moving state up.
+
+#### React render props
+
+a render prop is a function prop that a component uses to know what to render. One interesting thing to note about render props is that you can implement most higher-order components (HOC) using a regular component with a render prop. In fact, any prop that is a function that a component uses to know what to render is technically a “render prop”.
+
+##### Render props and PureComponent optimization
+
+Using a render prop can negate the advantage that comes from using React.PureComponent if you create the function inside a render method. This is because the shallow prop comparison will always return false for new props, and each render in this case will generate a new value for the render prop.
+
+This can be avoided by not creating new functions on each render.
+```jsx
+class MouseTracker extends React.Component {
+  // Defined as an instance method, `this.renderTheCat` always
+  // refers to *same* function when we use it in render
+  renderTheCat(mouse) {
+    return <Cat mouse={mouse} />;
+  }
+
+  render() {
+    return (
+      <div>
+        <h1>Move the mouse around!</h1>
+        <Mouse render={this.renderTheCat} />
+      </div>
+    );
+  }
+}
+```
+
+#### React Context
+
+Context provides a way to pass data through the component tree without having to pass props down manually at every level.
+
+In a typical React application, data is passed top-down (parent to child) via props, but this can be cumbersome for certain types of props (e.g. locale preference, UI theme) that are required by many components within an application. Context provides a way to share values like these between components without having to explicitly pass a prop through every level of the tree.
+
 #### React JSX syntax
 
 In react, JSX syntax is just sugar for `react.createElement(ComponentName, props, children)`,

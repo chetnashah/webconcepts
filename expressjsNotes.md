@@ -175,7 +175,7 @@ In a typical web application, the credentials used to authenticate a user will o
 
 Each subsequent request will not contain credentials, but rather the unique cookie that identifies the session. In order to support login sessions, Passport will serialize and deserialize user instances to and from the session.
 
-Strategy configuration for passport happens via `passport.use(new StrategyName(){})`
+Strategy configuration for passport happens via `passport.use(new StrategyName(opts, verifycb){})`
 
 Express comes to know about passport via its list of middlewares
 ``` js
@@ -187,6 +187,15 @@ app.use(passport.session());
 * Purpose of `serializeUser` and `deserializeUser` : Convert a db record for a user to a cookie and vice-versa. Usually we take the record and just extract the id and send it as a cookie to browser. And when a client request comes with cookie containing user id, we deserialize the user record from db using the id inside the cookie that came in the request.
 
 There is 1:1 relationship between cookie's sid <-> user, managed by passport.
+
+#### Verify Callback in Passport
+
+Strategies require what is known as a verify callback. The purpose of a verify callback is to find the user that possesses a set of credentials.
+
+verifycb :: credentials -> done(user);
+
+When Passport authenticates a request, it parses the credentials contained in the request. It then invokes the verify callback with those credentials as arguments, in this case username and password. If the credentials are valid, the verify callback invokes done to supply Passport with the user that authenticated.
+
 
 #### 
 
@@ -223,6 +232,21 @@ passport.deserializeUser(function (user, done) {
 ```
 This will find the correct user from the database and pass it as a closure variable into the callback done(err,user); so the above code in the passport.session() can replace the 'user' value in the req object and pass on to the next middleware in the pile.
 
+### Controlling access to routes via passport
+
+We would want some routes of our application to be accessed only if the user is successfull authenticated e.g. `/home/settings` etc.
+
+This is done by putting `passport.authenticate('abc')` in list of middleware before the route handler.
+
+e.g.
+```js
+app.get('/home/settings', passport.authenticate('google'), (req, res) => {
+  res.send('you are accessing settings bcoz u were authenticated');
+});
+// if user did not authenticate earlier to accessing route, 
+// it will either start a process of asking for creds etc.
+// or return unauthorized
+```
 
 ### express-session vs cookie-session
 
