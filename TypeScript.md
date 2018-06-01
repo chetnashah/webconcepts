@@ -1,4 +1,8 @@
 
+Typescript is an os-level install usually since it is a compiler, so installed by `npm install -g typescript` flag, and does not appear in project dependencies.
+
+**Note** - when using typescript with webpack it is better idea to keep a local copy of typescript, also webpack uses typescript-loader to do the work.
+
 Use //ts-check
 for type checking in any file.
 
@@ -23,9 +27,30 @@ tsc --outfile bundle.js f1.ts f2.ts f3.ts // order matters
 
 * noImplicityAny - If set to true, will set type of unininitialized variables implicitly to "any".
 
+### What to compile ?
 
+1. explicitly specify via `files`: telling to compile only given list.
 
+2. `exclude`: compile everything except what is present in exclude value.
 
+**Note** - when compiling a single file specified at sh/cmd e.g. `tsc app.ts` instead of `tsc`, the tsconfig.json does not come into picture, you have to use command line flags to achieve a similar effect.
+
+### What are typescript definition files ?
+
+Typescript definition files i.e. `filename.d.ts` are typically a translation layer between simple Javsascript library/projects without types to an interface that provides types to the user of the library.
+ Helps IDEs and language services with autocompletion and type checking.
+ The repository DefinitelyTyped on github contains typescript definition files for all well known projects.
+
+ Find everything at https://www.typescriptlang.org/docs/handbook/declaration-files/introduction.html
+
+### @types - npm level access to definitely typed repo
+used post-2.0 typescript, save types as a dependency, ends up in node_modules.
+`npm install --save-dev @types/jquery`
+
+### typings - the types package manager
+Used pre-2.0 typescript
+`typings install` installs types in a `typings` folder at project level dir.
+`typings.json` is the config file for type management.
 
 ### How type-checkers usually work
 

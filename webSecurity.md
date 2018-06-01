@@ -1,4 +1,8 @@
 
+### Password management and bcrypt
+
+http://dustwell.com/how-to-handle-passwords-bcrypt.html
+
 ### What is XSS(cross site scripting) ?
 
 Find more at (Thanks to https://excess-xss.com/).
