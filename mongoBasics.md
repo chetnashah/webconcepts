@@ -81,6 +81,7 @@ Also you can use tab completion in mongo shell to prevent incorrect commands/que
 show dbs                  #show all databses
 use dbName                #select a given dbName
 db                        #db refers to currently selected database
+show collections          #show collections in current db
 ```
 
 In windows start mongo server/daemon using mongod.exe, put MongoDB/bin in PATH,
@@ -221,6 +222,12 @@ For every document added to collection, mongodb adds an _id key and the value is
   3. Positional matching: we provide exact position and item in array we want to match.
 
   e.g. For e.g. cast in movie is usually a field whose value is array of strings
+
+#### Sorting
+
+* `Cursor based sort`:
+
+The query results in a cursor which has a method `.sort` on it, hence `cursor.sort({ fieldName: -1 })` sorts by fieldName in descending order and `cursor.sort({ fieldName: 1 })` sorts by fieldName in ascending order.
 
 #### BSON
 BSON stands for binary JSON,

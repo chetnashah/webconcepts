@@ -14,3 +14,7 @@ react-router fakes it by simply changing url, and reacting to it, using the `Lin
 
 ### Switch Component
 Takes in a list of Routes and renders only the first one that matches url.
+
+### `<Link>` Component
+
+Takes a `to` prop telling the url bar to switch to new url, This component simply changes url via history. **It does not** trigger a request to server or anything like that. It is completely upon the developer to make api requests when Component corresponding to the route is mounted.
