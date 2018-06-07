@@ -183,3 +183,29 @@ Also order of overriding as follows:
 * https://github.com/reworkcss/css is a good CSS parser, i.e. converts css string input
 to CSS AST. used in various css tooling.
 
+### SCSS and SaSS
+
+Meta language (supports variables etc) that compiles to css,
+SCSS has semicolons, Sass does not, otherwise both are same. 
+
+### BEM convention
+
+BEM stands for block-element-modifier.
+
+Always using classes, no element selectors etc.
+No nesting of selectors
+
+```css
+.some-blockName__some-elementName--some-modifier
+```
+
+The whole point of a naming convention is to make things easier on humans. You can read the selector and get some good information about how and where it should be used. The BEM naming convention could have started off with "--" for modifiers and "__" for elements, but it didn't. They went with "__" for elements and "--" for modifiers.
+
+Take a look at these classes: `button`, `button__icon`, `button--secondary`
+
+Without a convention, there's no real rhyme or reason to the above. With the rules in place though you can glance at those three a know that we:
+
+1. Have a button class
+2. Have a secondary button style available to use
+3. Can add icons into the button with button__icon
+
