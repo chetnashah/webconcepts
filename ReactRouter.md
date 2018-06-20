@@ -40,3 +40,11 @@ const routes = (
   </Router>
 );
 ```
+
+### Programmatic navigation with react router
+
+https://tylermcginnis.com/react-router-programmatically-navigate/
+
+1. Use `this.props.history.push(path)`
+2. Use `Redirect` component.
+
