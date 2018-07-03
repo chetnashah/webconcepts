@@ -43,7 +43,9 @@ Tracker.autorun(cbfn);
 
 Helps us enable transparent reactive programming.
 Think of it as a live query that has subscribed to a reactive data source.
-When you call a function that supports reactive updates (such as a database query), it automatically saves the current Computation object, if any (representing, for example, the current template being rendered). Later, when the data changes, the function can “invalidate” the Computation, causing it to rerun/autorun
+When you call a function that supports reactive updates (such as a database query), it automatically saves the current Computation object, if any (representing, for example, the current template being rendered). Later, when the data changes, the function can “invalidate” the Computation, causing it to rerun/autorun.
+
+It is an independent library of its own also and it is bundled with meteor for convinience.
 
 #### Tracker.computation
 
@@ -63,3 +65,41 @@ Each time a computation runs, it may access various reactive data sources that s
 ### Server
 
 `startup` is called when server initialization is finished. `startup` takes a callback which is called when init is finished.
+
+### Account management
+
+Recommended package is `accounts-base` takes care of everything from hashing password, storing etc. finally populates Metero.user and Metero.userId if loggedIn.
+
+Checking user status in dev-tools console:
+`require('meteor/meteor').Meteor.user()` which prints user info if logged in and null if logged out.
+
+Meteor stores loginTokens and userId info in localStorage.
+
+#### Signing Up
+
+```js
+import { Accounts } from 'meteor/accounts-base';
+
+Accounts.createUser({ email, password}, (err) => {
+    console.log('signup callback', err);
+});
+```
+
+#### Logging In
+
+```js
+import { Meteor } from 'meteor/meteor';
+
+Meteor.loginWithPassword(email, password, (err) => {
+    console.log('login callback', err);
+})
+```
+
+#### Logging out
+
+```js
+import { Accounts } from 'meteor/accounts-base';
+
+Accounts.logout();
+```
+

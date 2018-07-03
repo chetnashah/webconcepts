@@ -15,6 +15,15 @@ test('two plus two is four', () => {
 
 Similarly there are other matchers like toContain, toThrow etc.
 
+### Snapshot testing
+
+Snapshot testing is not limited to react, but it is useful for
+testing anything that is serializable, e.g. large json trees with 
+deep equality etc.
+
+When `expect(something).toMatchSnapshot()` is called for the first time,
+a `__snapshots__` folder is created where a `something.js.snap` file is created. Subsequent updates to `something`, will prompt to update the serialized represantation of `something`.
+
 ### Spies a.k.a mock functions
 
 Mock functions are also known as "spies", because they let you spy on the behavior of a function that is called indirectly by some other code, rather than just testing the output. 

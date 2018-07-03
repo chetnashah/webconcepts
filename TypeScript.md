@@ -56,3 +56,9 @@ Used pre-2.0 typescript
 
 They start with values/atoms like numbers, strings booleans  etc. and operations like *, + etc. and flow the types into variables in such a way that a constraint satisfaction problem is solved, and the most general type is given to variables that are not directly connected to values.
 
+### Typescript "declare" keyword
+
+var creates a new variable. declare is used to tell TypeScript that the variable has been created elsewhere. If you use declare, nothing is added to the JavaScript that is generated - it is simply a hint to the compiler.
+
+For example, if you use an external script that defines var externalModule, you would use declare var externalModule to hint to the TypeScript compiler that externalModule has already been set up
+
