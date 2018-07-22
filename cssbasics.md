@@ -1,4 +1,31 @@
 
+https://hacks.mozilla.org/2015/03/understanding-inline-box-model/
+### display block
+
+Now, the difference between display: inline-block and display: block is that, with display: block, a line break happens after the element, so a block element doesn’t sit next to other elements.
+
+### display inline
+
+the width and height are not respected, and how the padding top and bottom are present, but overlap over the lines above and under.
+
+1. respect left & right margins and padding, but not top & bottom
+2. cannot have a width and height set
+3. allow other elements to sit to their left and right.
+4. see very important side notes on this here.
+
+
+### display inline-block
+
+Compared to display: inline, the major difference is that inline-block allows to set a width and height on the element. Also, with display: inline, top and bottom margins & paddings are not respected, and with display: inline-block they are.
+
+Here the width, height and padding are respected, but the two copies of the element can still sit side by side.
+
+1. allow other elements to sit to their left and right
+2. respect top & bottom margins and padding
+3. respect height and width
+
+
+
 
 #### Selectors syntax
 
@@ -67,6 +94,8 @@ e.g.
     font-weight: bold;
 }
 ```
+**Note**: only descendant is selected.
+
 In order to match only direct children, use child combinator '>'
 e.g. `#top > p` will match only p's that are direct children of elemnts with id top.
 

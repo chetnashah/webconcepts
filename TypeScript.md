@@ -62,3 +62,29 @@ var creates a new variable. declare is used to tell TypeScript that the variable
 
 For example, if you use an external script that defines var externalModule, you would use declare var externalModule to hint to the TypeScript compiler that externalModule has already been set up
 
+### Gotchas
+
+* excess property checks with object literals
+Object literals get special treatment and undergo excess property checking when assigning them to other variables, or passing them as arguments. If an object literal has any properties that the “target type” doesn’t have, you’ll get an error(object literal may specify only known properties)
+
+* All things are structurally typed
+
+Here is a big disucussion thread on github for nominal type support.
+https://github.com/Microsoft/TypeScript/issues/202#issuecomment-329914167
+
+* Modules
+
+In TypeScript, just as in ECMAScript 2015, any file containing a top-level import or export is considered a module. Conversely, a file without any top-level import or export declarations is treated as a script whose contents are available in the global scope (and therefore to modules as well).
+
+### String index signatures
+
+here we’re saying a SquareConfig can have any number of properties, and as long as they aren’t color or width, their types don’t matter.
+
+```ts
+interface SquareConfig {
+    color?: string;
+    width?: number;
+    [propName: string]: any;
+}
+```
+
