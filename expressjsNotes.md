@@ -1,4 +1,43 @@
 
+### Starting traditional node apps
+
+```js
+var http = require('http');
+
+var server = http.createServer(function(req, res){
+  console.log('this is a request handler for all requests');
+});
+// need to specify listen with port to actually listen
+server.listen(3000, () => {
+  console.log('server listening now!!');
+})
+```
+
+### Starting express apps
+
+Two ways:
+
+1. just use express, no node requires
+```js
+var express = require('express');
+var app = express();
+
+app.get('/', (req, res) => { /* doSomething */ });
+app.listen(3000);
+```
+
+2. express combined with nodejs
+
+```js
+var express = require('express')
+  , http = require('http');
+
+var app = express(); 
+app.get('/', (req, res) => { /* doSomething */ });
+
+var server = http.createServer(app);// app is the request handler
+server.listen(3000);
+```
 
 
 ### express.Router

@@ -1,6 +1,14 @@
 **AngularJS is Angular 1.x**
 
 
+### angular.element
+
+Wraps a raw DOM element or HTML string as a jQuery element.
+
+If jQuery is available, `angular.element` is an alias for the jQuery function. If jQuery is not available, `angular.element` delegates to AngularJS's built-in subset of jQuery, called "jQuery lite" or `jqLite`.
+
+**Note: Keep in mind that this function will not find elements by tag name / CSS selector. For lookups by tag name, try instead angular.element(document).find(...) or $document.find(), or use the standard DOM APIs, e.g. document.querySelectorAll().**
+
 ### provider
 
 The Provider recipe is syntactically defined as a custom type that implements a `$get` method. This method is a factory function just like the one we use in the Factory recipe. In fact, if you define a Factory recipe, an empty Provider type with the `$get` method set to your factory function is automatically created under the hood.
@@ -48,3 +56,64 @@ During application bootstrap, before AngularJS goes off creating all services, i
 2. run phase
 Once the configuration phase is over, interaction with providers is disallowed and the process of creating services starts. We call this part of the application life-cycle the run phase.
 
+### $scope.$apply, $scope.$watch and $scope.$digest
+
+http://tutorials.jenkov.com/angularjs/watch-digest-apply.html
+
+#### $scope.$apply
+
+Execute a function in context of angularjs.
+The `$scope.$apply()` function takes a function as parameter which is executed, and after that `$scope.$digest()` is called internally. That makes it easier for you to make sure that all watches are checked, and thus all data bindings refreshed.
+
+#### $scope.$watch
+
+`$watch(watchExpression, listener, [objectEquality]);`
+`$scope.$watch` takes in two arguments, a `value function`, which should return an expression that is supposed to be watched, and a `listener function`, which will be executed whenever the value of the expression returned by value function changed.
+
+```js
+module.controller('CounterController', ['$scope' ,function($scope){
+    $scope.count = 0;
+    $scope.$watch(function($scope){// value fn -return expr to be watched
+        return $scope.count;
+    },function(newValue, oldValue){// listener function
+        console.log('watch expression value changed! '+ oldValue + ' -> '+newValue);
+    });
+    // setTimeout is outside control of angularjs, put inside code
+    // in a $apply
+    setInterval(function(){
+        $scope.$apply(function(){
+            $scope.count = $scope.count + 5;
+        });
+    }, 1500);
+}]);
+```
+
+
+#### $scope.$digest
+
+The `$scope.$digest()` function iterates through all the watches in the `$scope` object, and its child `$scope` objects (if it has any). When `$digest()` iterates over the watches, it calls the value function for each watch. If the value returned by the value function is different than the value it returned the last time it was called, the listener function for that watch is called.
+
+The `$digest()` function is called whenever AngularJS thinks it is necessary. For instance, after a button click handler has been executed, or after an AJAX call returns (after the `done()` / `fail()` callback function has been executed).
+
+You may encounter some corner cases where AngularJS does not call the $digest() function for you. You will usually detect that by noticing that the data bindings do not upate the displayed values. In that case, call `$scope.$digest()` and it should work. Or, you can perhaps use `$scope.$apply()` instead which I will explain in the next section.
+
+### custom directives
+
+When should I use an attribute versus an element? Use an element when you are creating a component that is in control of the template. The common case for this is when you are creating a Domain-Specific Language for parts of your template. Use an attribute when you are decorating an existing element with new functionality.
+
+#### scope option for custom directive
+
+creates isolated scope for directive
+
+1. If you specify true, it is a child scope (prototype inheritance)
+2. but if you specify object or something else, it is an isolated scope.
+
+#### Isolated scope parameters (@, =, &)
+
+Communication between isolated scope and outside world
+
+#### link vs controller
+
+Savvy readers may be wondering what the difference is between link and controller. The basic difference is that controller can expose an API, and link functions can interact with controllers using require.
+
+Best Practice: use controller when you want to expose an API to other directives. Otherwise use link.
