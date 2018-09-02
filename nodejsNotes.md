@@ -1,4 +1,9 @@
 
+### http module
+
+1. `http.request(options, callback)` : Represents an inprogress request.
+ The callback will be added as one time listener for `response` event. This method returns an instance of `http.ClientRequest` class. The `ClientRequest` instance is a writeablestream. It represents an inprogress request from node itself.
+The `response` event on `http.ClientRequest` instance, contains a single argument which is an instance of `http.IncomingMessage`.
 
 ### Buffer
 
@@ -11,6 +16,39 @@ Now that TypedArray has been added in ES6, the Buffer class implements the Uint8
 Has methods .on(listener) -> to register listeners,
 and .emit(eventName) -> synchronously calls all registered listeners.
 
+All readable and writable streams are event-emitters in nodejs.
+
+### Readable stream events
+
+1. `close`
+2. `data`
+3. `end`
+4. `error`
+5. `readable`
+
+### Writable stream events
+
+1. `close`
+2. `drain`
+3. `error`
+4. `finish`
+5. `pipe`
+6. `unpipe`
+
+### IncomingMessage events
+
+1. `aborted`
+2. `close`
+
+### ClientRequest events
+
+1. `abort`
+2. `connect`
+3. `continue`
+4. `response`
+5. `socket`
+6. `upgrade`
+7. 
 
 ### Process
 
