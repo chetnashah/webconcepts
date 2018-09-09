@@ -101,6 +101,46 @@ You may encounter some corner cases where AngularJS does not call the $digest() 
 
 When should I use an attribute versus an element? Use an element when you are creating a component that is in control of the template. The common case for this is when you are creating a Domain-Specific Language for parts of your template. Use an attribute when you are decorating an existing element with new functionality.
 
+#### Directive definition Object
+
+The correct way to define custom directives,
+Here is a sample that contains all possible fields:
+```js
+var myModule = angular.module(...);
+
+myModule.directive('directiveName', function factory(injectables) {
+  var directiveDefinitionObject = {
+    priority: 0,
+    template: '<div></div>', // or // function(tElement, tAttrs) { ... },
+    // or
+    // templateUrl: 'directive.html', // or // function(tElement, tAttrs) { ... },
+    transclude: false,
+    restrict: 'A',
+    templateNamespace: 'html',
+    scope: false,
+    controller: function($scope, $element, $attrs, $transclude, otherInjectables) { ... },
+    controllerAs: 'stringAlias',
+    require: 'siblingDirectiveName', // or // ['^parentDirectiveName', '?optionalDirectiveName', '?^optionalParent'],
+    compile: function compile(tElement, tAttrs, transclude) {
+      return {
+        pre: function preLink(scope, iElement, iAttrs, controller) { ... },
+        post: function postLink(scope, iElement, iAttrs, controller) { ... }
+      }
+      // or
+      // return function postLink( ... ) { ... }
+    },
+    // or
+    // link: {
+    //  pre: function preLink(scope, iElement, iAttrs, controller) { ... },
+    //  post: function postLink(scope, iElement, iAttrs, controller) { ... }
+    // }
+    // or (most frequently used)
+    // link: function postLink( ... ) { ... }
+  };
+  return directiveDefinitionObject;
+});
+```
+
 #### scope option for custom directive
 
 creates isolated scope for directive
@@ -112,8 +152,34 @@ creates isolated scope for directive
 
 Communication between isolated scope and outside world
 
+If `scope` property of DDO is set to {} (object hash), then a new "isolate" scope is created. The 'isolate' scope differs from normal scope in that it does not prototypically inherit from the parent scope. This is useful when creating reusable components, which should not accidentally read or modify data in the parent scope.
+
+- `@` : bind a local scope property to the value of DOM attribute. The result is always a string since DOM attributes are strings. 
+
+- `=` or `=attr`: set up bi-directional binding between a local scope property and the parent scope property of name defined via the value of the attr attribute.
+
+- `&` or `&attr` - provides a way to execute an expression in the context of the parent scope.
+
 #### link vs controller
 
 Savvy readers may be wondering what the difference is between link and controller. The basic difference is that controller can expose an API, and link functions can interact with controllers using require.
 
 Best Practice: use controller when you want to expose an API to other directives. Otherwise use link.
+
+### Transclusion
+
+Transclusion is the process of extracting a collection of DOM element from one part of the DOM and copying them to another part of the DOM, while maintaining their connection to the original AngularJS scope from where they were taken.
+
+Transclusion is used (often with ngTransclude) to insert the original contents of a directive's element into a specified place in the template of the directive. `The benefit of transclusion, over simply moving the DOM elements manually, is that the transcluded content has access to the properties on the scope from which it was taken, even if the directive has isolated scope`.
+This makes it possible for the widget to have private state for its template, while the transcluded content has access to its originating scope.
+
+When `transclude` property is true in DDO,
+transclusion function is provided to controller and link function.
+
+This transclusion function is a special linking function that will return the compiled contents linked to a new transclusion scope.
+
+When to use transclusion function?
+If you are just using ngTransclude then you don't need to worry about this function, since ngTransclude will deal with it for us.
+If you want to manually control the insertion and removal of the transcluded content in your directive then you must use this transclude function. When you call a transclude function it returns a a jqLite/JQuery object that contains the compiled DOM, which is linked to the correct transclusion scope.
+
+
