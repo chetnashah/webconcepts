@@ -183,3 +183,49 @@ If you are just using ngTransclude then you don't need to worry about this funct
 If you want to manually control the insertion and removal of the transcluded content in your directive then you must use this transclude function. When you call a transclude function it returns a a jqLite/JQuery object that contains the compiled DOM, which is linked to the correct transclusion scope.
 
 
+### Firing events in angular
+
+`$emit` fires upwards w.r.t scope.
+`$broadcast` fires downwards w.r.t scope
+
+```js
+// firing an event upwards
+$scope.$emit('myCustomEvent', 'Data to send');
+
+// firing an event downwards
+$scope.$broadcast('myCustomEvent', {
+  someProp: 'Sending you an Object!' // send whatever you want
+});
+
+// listen for the event in the relevant $scope
+$scope.$on('myCustomEvent', function (event, data) {
+  console.log(data); // 'Data to send'
+});
+```
+
+#### firing events with `$scope`
+
+The key thing to remember when using $scope to fire your events, is that they will communicate only with descendant parent or child scopes only! Scopes aren’t always child and parent. We might have sibling scopes. Using $scope to fire an event will miss out sibling scopes, and just carry on up! 
+
+#### rootScope broadcast and rootScope emit
+
+The $rootScope Object has the identical $emit, $broadcast, $on methods, but they work slightly differently to how $scope implements them. 
+
+As $rootScope has no $parent, using an $emit would be pointless, right? Nope, instead, `$rootScope.$emit` will fire an event for all `$rootScope.$on` listeners only. The interesting part is that `$rootScope.$broadcast` will notify all `$rootScope.$on` as well as `$scope.$on` listeners, subtle but very important difference if you want to avoid issues in your application.
+
+#### Unsubscribing on destroy
+
+```js
+app.controller('ParentCtrl',
+  function ParentCtrl ($scope) {
+
+  // $rootScope $on
+  var myListener = $rootScope.$on('child', function (event, data) {
+    //
+  });
+
+  // $scope $destroy
+  $scope.$on('$destroy', myListener);
+
+});
+```
