@@ -1,5 +1,13 @@
 
 
+### URL encoding
+
+When putting user-input data as a part of url, it should be url-encoded first.
+e.g. in google whatever you type in searchbar is appended to url as `?q=some%20search`.
+Also other charachters that have special meaning e.g. `&`, `#` etc need to be escaped
+before becoming part of the url components.
+Also note that url encoding is NOT idempotent.
+
 ### Http keep-alive/persistent connection
 
 HTTP persistent connection, also called HTTP keep-alive, or HTTP connection reuse, is the idea of using a single TCP connection to send and receive multiple HTTP requests/responses, as opposed to opening a new connection for every single request/response pair. The newer HTTP/2 protocol uses the same idea and takes it further to allow multiple concurrent requests/responses to be multiplexed over a single connection.
