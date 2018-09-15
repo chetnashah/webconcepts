@@ -229,3 +229,51 @@ app.controller('ParentCtrl',
 
 });
 ```
+
+### AngularJS Controller As syntax
+
+Pre v1.2 controllers
+```js
+// <div ng-controller="MainCtrl"></div>
+app.controller('MainCtrl', function ($scope) {
+  $scope.title = 'Some title';
+});
+```
+
+New way: (Also known as namespacing stuff)
+We use controller as varname with `this` in controller constructor function.
+
+```html
+<div ng-controller="MainCtrl as main">
+  // MainCtrl doesn't exist, we get the `main` instance only
+  {{main.title}}
+</div>
+```
+```js
+// we declare as usual, just using the `this` Object instead of `$scope`
+app.controller('MainCtrl', function () {
+  this.title = 'Some title';
+});
+```
+
+
+
+### AngularJS components
+
+Easier form/standardization for specifying directives.
+Isolate scoped by default.
+1. using `this` for model. ditching `$scope` variable name
+2. using `$ctrl` for controller scope.
+3. Can be only used as html elements.
+4. components do not have link functions, they have lifecycle hooks.
+
+#### Defining a component
+Note the definition takes an object  and not a function.
+
+```js
+myModule.component('myComponent', {
+  template: "...",
+  bindings: { /* ... */ },
+  controller: function(){ /* ... */ },
+});
+```
