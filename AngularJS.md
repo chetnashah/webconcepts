@@ -88,6 +88,14 @@ module.controller('CounterController', ['$scope' ,function($scope){
 }]);
 ```
 
+#### $parse vs $compile
+
+`$parse` takes in expressions and translates them to functions which can
+take as arguments the `context/scope` in which to evaluate the expression.
+
+`$compile` compiles an element and returns a link function,
+which can be used to link scope.
+Also this means that scope/context is not available at compilation time.
 
 #### $scope.$digest
 
@@ -175,6 +183,13 @@ This makes it possible for the widget to have private state for its template, wh
 
 When `transclude` property is true in DDO,
 transclusion function is provided to controller and link function.
+
+Possible values of `transclude`:
+1. true
+2. `element`: This causes the element itself to be transcluded (e.g. in `ng-repeat`), so it becomes the responsibility of the link function to add it to the dom now.
+
+https://stackoverflow.com/questions/18449743/when-to-use-transclude-true-and-transclude-element-in-angular
+
 
 This transclusion function is a special linking function that will return the compiled contents linked to a new transclusion scope.
 
