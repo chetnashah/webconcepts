@@ -105,6 +105,11 @@ The `$digest()` function is called whenever AngularJS thinks it is necessary. Fo
 
 You may encounter some corner cases where AngularJS does not call the $digest() function for you. You will usually detect that by noticing that the data bindings do not upate the displayed values. In that case, call `$scope.$digest()` and it should work. Or, you can perhaps use `$scope.$apply()` instead which I will explain in the next section.
 
+### $scope.$apply vs $scope.$digest
+
+`$scope.$apply` starts running digests from the root scope.
+where as `$scope.$digest` runs digest cycle on the scope it is called on, and its descendants.
+
 ### custom directives
 
 When should I use an attribute versus an element? Use an element when you are creating a component that is in control of the template. The common case for this is when you are creating a Domain-Specific Language for parts of your template. Use an attribute when you are decorating an existing element with new functionality.
