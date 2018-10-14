@@ -297,3 +297,123 @@ myModule.component('myComponent', {
   controller: function(){ /* ... */ },
 });
 ```
+
+
+### routing in angularjs (ngRoute & $route)
+
+If you want to navigate to different pages in your application, but you also want the application to be a SPA (Single Page Application), with no page reloading, you can use the `ngRoute` module.
+
+The `ngRoute` module routes your application to different pages without reloading the entire application.
+
+Routing does not come out of the box and we need an external script to use it i.e.
+```html
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-route.js"></script>
+```
+
+In order to use routing features, we must add `ngRoute` as a dependency of our app. i.e.
+```js
+var app = angular.module("myApp", ["ngRoute"]);
+```
+
+Setting up routing:
+1. specify routes via `$routeProvider` in `app.config`.
+2. The UI where routes are shown are `ng-view` e.g. `<div ng-view></div>`.
+
+```js
+var app = angular.module("myApp", ["ngRoute"]);
+app.config(function($routeProvider) {
+    $routeProvider
+    .when("/", {
+        templateUrl : "main.htm"
+    })
+    .when("/london", {
+        templateUrl : "london.htm",
+        controller : "londonCtrl"
+    })
+    .when("/paris", {
+        templateUrl : "paris.htm",
+        controller : "parisCtrl"
+    });
+});
+app.controller("londonCtrl", function ($scope) {
+    $scope.msg = "I love London";
+});
+app.controller("parisCtrl", function ($scope) {
+    $scope.msg = "I love Paris";
+});
+```
+
+### routing via ui-router library
+
+UI-Router is a state based routing library:
+
+1. State - Each state is described by a) URL, b) UI c) data and other pre requeisites (e.g. auth)
+
+Before activating a state, UI-Router first fetches any prerequisites (asynchronously), and then activates the view(s) and updates the URL.
+
+UI-Router states are hierarchical; states can be nested inside other states, forming a tree.
+Child states may inherit data and behavior (such as authentication) from their parent states.
+
+2. View - A view is a UI component that is placed in a viewport(`ui-view`),
+when state is activated.
+
+A named view can target an arbitrary viewport, anywhere in the DOM (even outside the component hierarchy of the parent state). This can be used to fill (or override) named viewports such as footers, or nagivation, when some nested state is active.
+
+3. URL - A state can define a URL, but it isn’t required. If a state has defined a URL, the browser’s location is updated to that URL when the state is active.
+
+A state’s URL is actually a URL fragment. Each state defines only the fragment (portion) of the URL that it “owns”.
+
+4. Parameters:
+
+A state can be parameterized, the parameters can be sent in path, in query params or programmatically without showing up in URL.
+
+- **Path**: in the URL's path: `/foo/{fooId}` matches '123' in `http://mysite.com/foo/123`
+- **Query**: in the URL's query string: `/foo?fooId` matches '123' in `http://mysite.com/foo?fooId=123`
+- **Non-url**: arbitrary parameter data may be passed programmatically, and not reflect in the URL
+
+Parameters can be typed. Typed parameters are encoded as strings in the URL, but are converted to a native type when retrieved in javascript code. There are a few built in parameter types: string, int, bool, date, json.
+
+5. Resolve data
+
+The resolve mechanism allows data retrieval to be a first class participant in the transition. When a state is being entered, its resolve data is fetched. If any of the resolve promises are rejected (perhaps due to a 401, 404, or 500 server response from a REST API), then the transition’s promise is rejected and the error hooks are invoked.
+
+A state defines what data should be fetched (generally by delegating to a service).
+
+A resolve may depend on some other resolve’s result (within the same state, or from any ancestor state).
+
+The resolve process is asynchronous. If a resolve returns a Promise, the transition is suspended until the promise is settled. Because of this, the resolve data participates in the transition lifecycle.
+
+Resolve data is made available to the views, as well as transition hooks.
+
+
+6. Transitions:
+
+Transitions between states are transaction-like, i.e., they either completely succeed or completely fail.
+
+Lifecycle: transitions have a well defined lifecycle
+1. before: before the asyc portion of a transition has begun
+2. start: the transition has begun
+3. exit: the transition is exiting states
+4. retain: states are retained (a state was active, and is neither being exited nor entered)
+5. enter: the transition is entering states
+6. finish: the transition is finishing
+7. success/error: after the transition is complete
+
+
+Transition Lifecycle Hooks:
+Hooks may be registered for any stage of the transition lifecycle.
+Hooks can alter the transition:
+* pause the transition, waiting on some promise
+* cancel the transition
+* redirect the transition to a new target state
+
+match criteria:
+A hook can choose which transitions it should be applied to.
+* to/from: only run the hook if the transition is going to or coming from a specific state
+* entering/exiting: only run the hook if the transition is going to enter or exit a specific state
+
+criteria types:
+* state name: the hook’s match criteria can be state names, such as banking.account
+* glob: the criteria can be a state glob pattern, such ash banking.**
+* callback: the criteria can be a callback function, such as tostate => tostate.data.requiresAuth == true
+
