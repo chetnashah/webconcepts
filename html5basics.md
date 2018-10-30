@@ -132,4 +132,24 @@ and many more!
 for which you can use Modernizr https://github.com/Modernizr/Modernizr/wiki/HTML5-Cross-Browser-Polyfills
 
 
+### pushState vs replaceState
+
+Both of them manipulate url without loading them.
+
+`replaceState()` will change the URL in the browser (ie. pressing the back button won't take you back)
+
+`pushState()` will change the URL, and keep the old one in the browser history (ie. pressing the back button will take you back)
+
+The definition looks like below
+```js
+history.pushState(stateObj, title, URL);
+
+//e.g
+//This will cause the URL bar to display http://mozilla.org/bar.html, but won't cause the browser to load bar2.html or even check that bar2.html exists.
+var stateObj = { foo: "bar" };
+history.pushState(stateObj, "page 2", "bar.html");
+
+// get current state of history
+var currentState = history.state;
+```
 

@@ -1,5 +1,26 @@
 **AngularJS is Angular 1.x**
 
+Beware that using `angular.module('myModule', [])` will create the module myModule and overwrite any existing module named myModule. Use `angular.module('myModule')` to retrieve an existing module.
+
+
+
+### Injectors in AngularJS
+
+Services & Factories under the hood are created by providers. Even when we call angular.module(“somemodule”).service(), under the hood a provider is created which encapsulates the service code.
+
+Two kinds
+1. `Instance Injector`: Commonly used, what we perceive as $injector.
+ This is the injector which is exposed and comes into play when controllers need access to a service. This is the thing which makes Dependency Injection possible. Caches instances
+
+2. `Provider Injector`: Internally used injector. Caches Providers
+
+### Useful methods on injector
+
+1. `get(name, [caller])`
+2. `invoke(fn, [self], [locals])`
+3. `has(name)`
+4. `annotate(fn, [strictdi])`
+5. `instantiate(Type, [locals])`
 
 ### angular.element
 
@@ -9,11 +30,13 @@ If jQuery is available, `angular.element` is an alias for the jQuery function. I
 
 **Note: Keep in mind that this function will not find elements by tag name / CSS selector. For lookups by tag name, try instead angular.element(document).find(...) or $document.find(), or use the standard DOM APIs, e.g. document.querySelectorAll().**
 
-### provider
+### Provider
 
 The Provider recipe is syntactically defined as a custom type that implements a `$get` method. This method is a factory function just like the one we use in the Factory recipe. In fact, if you define a Factory recipe, an empty Provider type with the `$get` method set to your factory function is automatically created under the hood.
 
 Provide any kind of values with provider.
+
+Usually declaring providers instead of factories or services is overkill. The primary use case of provider is service/factory configuration before it is instantiated by injector.
 
 ### factories
 
@@ -347,7 +370,7 @@ app.controller("parisCtrl", function ($scope) {
 
 UI-Router is a state based routing library:
 
-1. State - Each state is described by a) URL, b) UI c) data and other pre requeisites (e.g. auth)
+1. State - Each state is described by a) URL, b) name c) data d) UI and other pre requeisites (e.g. auth)
 
 Before activating a state, UI-Router first fetches any prerequisites (asynchronously), and then activates the view(s) and updates the URL.
 
@@ -373,18 +396,57 @@ A state can be parameterized, the parameters can be sent in path, in query param
 
 Parameters can be typed. Typed parameters are encoded as strings in the URL, but are converted to a native type when retrieved in javascript code. There are a few built in parameter types: string, int, bool, date, json.
 
+The `$transition$` is a special injectable object with information about the current state transition.
+
+e.g.
+```js
+{
+  name: 'person',
+  url: '/people/{personId}',
+  component: 'person',
+  resolve: {
+    person: function(PeopleService, $transition$) {
+      return PeopleService.getPerson($transition$.params().personId);
+    }
+  }
+}
+```
+
+To pass parameters to a state using ui-sref, add parenthesis after the state name.
+An expression string inside the parenthesis is used as the target state parameter key/value pairs. The expression is evaluated against the enclosing scope.
+e.g
+```html
+  <li ng-repeat="person in $ctrl.people">
+    <a ui-sref="person({ personId: person.id })">
+      {{person.name}}
+    </a>
+  </li>
+```
+
+
 5. Resolve data
 
-The resolve mechanism allows data retrieval to be a first class participant in the transition. When a state is being entered, its resolve data is fetched. If any of the resolve promises are rejected (perhaps due to a 401, 404, or 500 server response from a REST API), then the transition’s promise is rejected and the error hooks are invoked.
+When a user switches back and forth between states of a single page web app, the app often needs to fetch application data from a server API, such as a REST endpoint.
 
-A state defines what data should be fetched (generally by delegating to a service).
+A state can specify the data it requires by using a resolve: block. When the user tries to activate a state which has a resolve: block, UI-Router will fetch the required data before activating the state.
 
-A resolve may depend on some other resolve’s result (within the same state, or from any ancestor state).
+An AngularJS (1.x) resolve: block is an object on a state definition. Each key is the name of some data to load, and each value is a function which returns a promise for the data.
 
-The resolve process is asynchronous. If a resolve returns a Promise, the transition is suspended until the promise is settled. Because of this, the resolve data participates in the transition lifecycle.
+When fetching data, we recommend delegating to services which return promises.
 
-Resolve data is made available to the views, as well as transition hooks.
-
+e.g.
+```js
+var peopleState = {
+  name: 'people',
+  url: '/people',
+  component: 'people',
+  resolve: {
+    people: function(PeopleService) {
+      return PeopleService.getAllPeople();
+    }
+  }
+};
+```
 
 6. Transitions:
 
