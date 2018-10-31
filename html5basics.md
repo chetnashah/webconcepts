@@ -82,6 +82,55 @@ Therefore, if you have a form with more than one input field, always include a s
 
 If you need to run some JavaScript before the form is submitted (validation, data manipulation, etc), do it in a submit event handler on the form, not a click handler on a button.
 
+When a form is sent using Enter on an input field, a click event triggers on the `<input type="submit">`.
+
+#### Explicit form submit on clicks
+
+Each formElement has a `submit()` method that should be called in order to
+submit form manually, e.g. on a click listener.
+
+```js
+    document.getElementById('mylink').onclick = function() {
+        document.getElementById('myform').submit();
+        return false;
+    };
+```
+
+#### Listening to form submit events
+
+The submit event triggers when the form is submitted, it is usually used to validate the form before sending it to the server or to abort the submission and process it in JavaScript
+
+**Note**
+The `submit` event is raised when the user clicks a submit button in a form (`<input type="submit"/>`).
+
+The submit event is not raised when the user calls `form.submit()` function directly.
+
+The default action of submit event is to post form according to `action` attribute. This behaviour can be prevented in onSubmit listener.
+
+Practical use case: The handler can check the data, and if there are errors, show them and call `event.preventDefault()`, then the form won’t be sent to the server.
+
+
+Inline listener in form element:
+```html
+<form onsubmit="myFunction()">
+  Enter name: <input type="text">
+  <input type="submit">
+</form>
+```
+
+Or via eventListener in JS
+```js
+formElement.addEventListener("submit", function(ev){
+  console.log('checking validity');
+  if (allValid){
+    // do submission manually
+  } else {
+    // show errors
+  }
+  ev.preventDefault();// don't do action url stuff
+});
+```
+
 ### When and how to use images on your website?
 If you own an image, it is usually good idea to put it
 inside the filesystem where your webpage is, coz if you put to
