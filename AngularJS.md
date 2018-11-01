@@ -111,6 +111,9 @@ module.controller('CounterController', ['$scope' ,function($scope){
 }]);
 ```
 
+The watchExpression is called on every call to `$digest()` and should return the value that will be watched. (watchExpression should not change its value when executed multiple times with the same input because it may be executed multiple times by `$digest()`. That is, watchExpression should be idempotent.)
+
+
 #### $parse vs $compile
 
 `$parse` takes in expressions and translates them to functions which can
