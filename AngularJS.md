@@ -123,6 +123,22 @@ take as arguments the `context/scope` in which to evaluate the expression.
 which can be used to link scope.
 Also this means that scope/context is not available at compilation time.
 
+#### $scope.$eval
+
+`$scope.$eval([expression], [locals])`: Evaluates
+given expression(string or function), in the context of scope.
+Also optional locals can be used in expression.
+**Note**: Returns the result of expression evaluation.
+
+e.g.
+```js
+$scope.a = 1;
+$scope.b = 2;
+
+expect($scope.$eval('a+b')).toBe(3);
+expect($scope.$eval(function(sc){ return sc.a + sc.b; })).toBe(3);
+```
+
 #### $scope.$digest
 
 The `$scope.$digest()` function iterates through all the watches in the `$scope` object, and its child `$scope` objects (if it has any). When `$digest()` iterates over the watches, it calls the value function for each watch. If the value returned by the value function is different than the value it returned the last time it was called, the listener function for that watch is called.
@@ -135,6 +151,9 @@ You may encounter some corner cases where AngularJS does not call the $digest() 
 
 `$scope.$apply` starts running digests from the root scope.
 where as `$scope.$digest` runs digest cycle on the scope it is called on, and its descendants.
+
+`$scope.$apply` is used to integrate external code
+with digest cycle.
 
 ### custom directives
 
