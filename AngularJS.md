@@ -139,6 +139,18 @@ expect($scope.$eval('a+b')).toBe(3);
 expect($scope.$eval(function(sc){ return sc.a + sc.b; })).toBe(3);
 ```
 
+**`$evalAsync`** : It takes a function to be executed,
+and schedules to be executed later, but still in the ongoing digest.
+Useful for deferring code from watch listeners.
+
+Preferred over `$timeout`, since `$timeout` relinquishes control to browser.
+
+**Note**: Althought `$evalAsync` triggers a digest,
+It is advisable to use `$applyAsync` to execute such
+code.
+
+
+
 #### $scope.$digest
 
 The `$scope.$digest()` function iterates through all the watches in the `$scope` object, and its child `$scope` objects (if it has any). When `$digest()` iterates over the watches, it calls the value function for each watch. If the value returned by the value function is different than the value it returned the last time it was called, the listener function for that watch is called.
@@ -153,7 +165,32 @@ You may encounter some corner cases where AngularJS does not call the $digest() 
 where as `$scope.$digest` runs digest cycle on the scope it is called on, and its descendants.
 
 `$scope.$apply` is used to integrate external code
-with digest cycle.
+with digest cycle. The reason for this is: `$apply` takes as its argument a function (which takes scope as its argument), runs that function via `$eval` followed by a `$digest`. This way non-angular can modify scope values and is digested by angularjs.
+
+e.g. pseudo-code implementation of `$apply`:
+```js
+/**
+* $apply: expr => any
+* expr: (scope) => any
+*/
+function $apply(expr) {
+  try {
+    return $eval(expr);
+  } catch (e) {
+    $exceptionHandler(e);
+  } finally {
+    // note: digest starts at root scope.
+    $root.$digest();
+  }
+}
+```
+
+**`$applyAsync`**: batch multiple expr given to apply in single digest.
+Original motivation: If there are lot of HTTP responses at once, `$http`
+service can be configured to use `$applyAsync` instead, in which case HTTP
+response arriving very close to each other will be coalasced into a single
+digest.
+
 
 ### custom directives
 
