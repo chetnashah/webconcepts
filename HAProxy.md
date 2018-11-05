@@ -65,6 +65,21 @@ Is the time from the first client byte received, until last byte sent to the cli
 The time to keep a connection open between haproxy and the client (after the client response is sent out). This has nothing to do with the backend response time. This has nothing to do with the length of a single request (i.e. http-request timeout). This allows faster responses if the user requests multiple ressources (i.e. html, img, and js). With keep alive the single requests can make use of the same tcp connection. This way the load time for a full webpage is reduced.
 
 **timeout server**
-
 This is the timeout for your backend servers. When reached, haproxy replies with 504 (gateway timeout). This also has nothing to do with keep alive, as it is only about the connection between proxy and backend.
 
+This is the maximum time to receive HTTP response headers from the server (after it received the full client request). Basically, this is the processing time from your servers, before it starts sending the response.
+
+**timeout client**
+The inactivity timeout applies when the client is expected to acknowledge or send data. In HTTP mode, this timeout is particularly important to consider during the first phase, when the client sends the request, and during the response while it is reading data sent by the server.
+
+This is the maximum time to receive HTTP request headers from the client.
+3G/4G/56k/satellite can be slow at times. Still, they should be able to send HTTP headers in a few seconds, NOT 30.
+
+
+
+**timeout connect**
+Set the maximum time to wait for a connection attempt to a server to succeed.
+The maximum time a server has to accept a TCP connection
+
+**timeout check**
+When performing a healthcheck, the server has timeout connect to accept the connection then timeout check to give the response
