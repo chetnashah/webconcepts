@@ -37,18 +37,41 @@ All readable and writable streams are event-emitters in nodejs.
 
 ### IncomingMessage events
 
+Implements ReadableStream.
+
 1. `aborted`
 2. `close`
 
 ### ClientRequest events
 
+Outgoing request made by node.
+
 1. `abort`
 2. `connect`
 3. `continue`
-4. `response`
+4. `response` - indicates we have got a response
 5. `socket`
 6. `upgrade`
 7. 
+
+### ServerResponse events
+
+Response by a node server.
+
+1. `close`
+2. `finish`
+
+### Server Events
+
+1. `checkContinue`
+2. `checkExcpectation`
+3. `clientError` - when client connection emits an 'error' event. default behaviour is close the socket with 400.
+4. `close` - when server closes
+5. `connect` - HTTP "CONNECT" method
+6. `connection` - when tcp connection established.
+7. `request` - when server got a request
+8. `upgrade`
+9. 
 
 ### Process
 

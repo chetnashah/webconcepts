@@ -191,6 +191,9 @@ service can be configured to use `$applyAsync` instead, in which case HTTP
 response arriving very close to each other will be coalasced into a single
 digest.
 
+`$applyAsync` always defers execution. It never executes in the same digest cycle (supposing it is invoked in a listener function etc.)
+Also the batching of effects in multiple `$applyAsync` are all combined inside one single `$apply`.
+
 
 ### custom directives
 
