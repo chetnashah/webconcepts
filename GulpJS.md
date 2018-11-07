@@ -3,6 +3,10 @@
 
 https://github.com/gulpjs/gulp/tree/v3.9.1/docs/recipes
 
+### What not to use
+
+https://github.com/gulpjs/plugins/blob/master/src/blackList.json
+
 ### Globs
 
 Patterns used to match a set of files, e.g.
