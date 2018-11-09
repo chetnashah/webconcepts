@@ -365,6 +365,7 @@ app.controller('MainCtrl', function () {
 
 ### AngularJS components
 
+Main intent : combine a controller with template.
 Easier form/standardization for specifying directives.
 Isolate scoped by default.
 1. using `this` for model. ditching `$scope` variable name
@@ -382,7 +383,6 @@ myModule.component('myComponent', {
   controller: function(){ /* ... */ },
 });
 ```
-
 
 ### routing in angularjs (ngRoute & $route)
 
@@ -444,6 +444,9 @@ when state is activated.
 
 A named view can target an arbitrary viewport, anywhere in the DOM (even outside the component hierarchy of the parent state). This can be used to fill (or override) named viewports such as footers, or nagivation, when some nested state is active.
 
+Where does the template get inserted?
+When a state is activated, its templates are automatically inserted into the `ui-view` of its parent state's template. If it's a top-level state—which 'contacts' is because it has no parent state–then its parent template is `index.html`.
+
 3. URL - A state can define a URL, but it isn’t required. If a state has defined a URL, the browser’s location is updated to that URL when the state is active.
 
 A state’s URL is actually a URL fragment. Each state defines only the fragment (portion) of the URL that it “owns”.
@@ -465,7 +468,7 @@ e.g.
 {
   name: 'person',
   url: '/people/{personId}',
-  component: 'person',
+  component: 'person', // instead of template
   resolve: {
     person: function(PeopleService, $transition$) {
       return PeopleService.getPerson($transition$.params().personId);
@@ -541,3 +544,50 @@ criteria types:
 * glob: the criteria can be a state glob pattern, such ash banking.**
 * callback: the criteria can be a callback function, such as tostate => tostate.data.requiresAuth == true
 
+### Using `$state`
+
+#### `$state.go(stateName)`
+
+Programmatically jump to Absolute State Name or Relative State Path with `$state.go(stateName)`
+Returns a Promise representing the state of the transition.
+
+e.g.
+```js
+$state.go('about');// jumps to about state
+```
+
+`$state.go` internally calls `$state.transitionTo` which is a lower
+level method.
+
+Absolute State Name or Relative State Path.
+The name of the state that will be transitioned to or a relative state path. If the path starts with `^` or `.` then it is relative, otherwise it is absolute.
+
+Some examples:
+```js
+$state.go('contact.detail') will go to the 'contact.detail' state
+$state.go('^') will go to a parent state.
+$state.go('^.sibling') will go to a sibling state.
+$state.go('.child') will go to a child state.
+$state.go('.child.grandchild') will go to a grandchild state.
+```
+
+### `ui-sref`
+
+A directive that binds a link (`<a>` tag) to a state. If the state has an associated URL, the directive will automatically generate & update the href attribute.
+
+Usage:
+
+`ui-sref='stateName'` - Navigate to state, no params. 'stateName' can be any valid absolute or relative state, following the same syntax rules as $state.go()
+`ui-sref='stateName({param: value, param: value})'` - Navigate to state, with params.
+
+e.g.
+```html
+<a ui-sref="home">Home</a> | <a ui-sref="about">About</a>
+
+<ul>
+    <li ng-repeat="contact in contacts">
+        <a ui-sref="contacts.detail({ id: contact.id })">{{ contact.name }}</a>
+    </li>
+</ul>
+```
+### $stateParams service
