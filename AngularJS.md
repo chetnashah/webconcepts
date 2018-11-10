@@ -590,4 +590,10 @@ e.g.
     </li>
 </ul>
 ```
+
+The parameters in url are available to component
+using `$stateParams`.
+
 ### $stateParams service
+
+Used to access params present in url/state.

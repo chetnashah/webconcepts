@@ -1,4 +1,22 @@
 
+### Script/Resource loading paths
+
+Absolute path (has a `/` in front) for a resource makes http request at hostname i.e.
+```html
+<!-- will make request to http://hostname/build/all.js -->
+<script src="/build/all.js"></script>
+```
+
+Without a `/` at front it is treated as a relative
+path and http request is made relative to the 
+url fromw hich the html came.
+e.g. 
+```html
+<!-- Assume html that contains below tag came from
+http://hostname/someroute/abcd/def.html then it will fetch http://hostname/someroute/abcd/text.js -->
+<script src="text.js"></script>
+```
+
 ### HTMLElement vs jQuery objects
 
 I would like to understand relationship between jQuery object and DOM element
