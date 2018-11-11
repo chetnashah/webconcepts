@@ -170,3 +170,15 @@ To create detached forks, use spawn instead.
 
 same as fork, but creates a detached task.
 
+### all
+`all` is an effect combinator.
+`all` takes an array of effects all of which will be executed in parallel.
+And yielded depending on types of effects inside it.
+
+When running Effects in parallel, the middleware suspends the Generator until one of the following occurs:
+
+All the Effects completed with success: resumes the Generator with an array containing the results of all Effects.
+
+One of the Effects was rejected before all the effects complete: throws the rejection error inside the Generator.
+
+
