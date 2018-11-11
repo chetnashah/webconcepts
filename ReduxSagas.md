@@ -5,6 +5,23 @@ https://redux-saga.js.org/
 
 Object shaped description that act like instructions for saga middleware.
 
+An effect is said to be blocking or non-blocking depending on if it suspends the generator/saga or not.
+
+#### Non-blocking Effects
+
+1. put
+2. throttle
+3. fork
+4. select
+5. spawn
+6. cancel
+
+#### Blocking Effects
+
+1. take
+2. call
+
+
 ###Saga
 
 Saga must be a function which returns a Generator Object. The middleware will then iterate over the Generator and execute all yielded Effects.
@@ -89,6 +106,17 @@ Creates an Effect description that instructs the middleware to dispatch an actio
 
 Creates an Effect description that instructs the middleware to wait for a specified action on the Store. The Generator is suspended until an action that matches pattern is dispatched.
 
+##### takeLatest
+
+Run only one saga at a time for given pattern.
+Can be useful for API requests on action dispatch.
+
+##### takeEvery
+
+Spin up a new saga for every pattern observed.
+
+**NOTE** : take is blocking and suspends for a pattern given, do code below it is suspended. Where as `takeEvery` and `takeLatest` have spawning power, so they do are non-blocking.
+
 #### `call(fn, ...args)`
 
 Creates an Effect description that instructs the middleware to call the function fn with args as arguments.
@@ -113,6 +141,10 @@ The middleware remains suspended until fn terminates.
 
 #### `fork(fn, ...args)`
 
+Useful when you want to make an effect without
+caring about its return value (since fork will not wait till return value), like a POST to server
+without any need to interpret result.
+
 fork, like call, can be used to invoke both normal and Generator functions. But, the calls are non-blocking, the middleware doesn't suspend the Generator while waiting for the result of fn. Instead as soon as fn is invoked, the Generator resumes immediately.
 
 fork, alongside race, is a central Effect for managing concurrency between Sagas.
@@ -124,7 +156,17 @@ All forked tasks are attached to their parents. When the parent terminates the e
 Errors from child tasks automatically bubble up to their parents. If any forked task raises an uncaught error, then the parent task will abort with the child Error, and the whole Parent's execution tree (i.e. forked tasks + the main task represented by the parent's body if it's still running) will be cancelled.
 
 Cancellation of a forked Task will automatically cancel all forked tasks that are still executing. It'll also cancel the current Effect where the cancelled task was blocked (if any).
+```js
+const login = yield fork(api, 'https:/abcd/login');
+yield take('CANCEL');
+yield cancel(login);// cancel login task
+```
 
 If a forked task fails synchronously (ie: fails immediately after its execution before performing any async operation), then no Task is returned, instead the parent will be aborted as soon as possible (since both parent and child execute in parallel, the parent will abort as soon as it takes notice of the child failure).
 
 To create detached forks, use spawn instead.
+
+#### spawn
+
+same as fork, but creates a detached task.
+
