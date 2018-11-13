@@ -68,6 +68,15 @@ specify
 
 Either take in a callback and call it when you're done or return a promise or stream that the engine should wait to resolve or end respectively.
 
+**Note**:
+```js
+// task clean clean, build:tpl, build:scripts and build:css start in parellel
+// which is what you do not want.
+gulp.task('build', ['clean', 'build:tpl', 'build:scripts', 'build:css']);
+
+// use run-sequence package to have a definite order.
+```
+
 ### `gulp.watch(glob[, opts], tasks)`
 
 This gulp function gives you power to watch changes to files.
