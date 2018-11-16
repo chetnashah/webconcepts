@@ -220,3 +220,36 @@ history.pushState(stateObj, "page 2", "bar.html");
 var currentState = history.state;
 ```
 
+### HTML and contextual escaping
+
+In React if you use {text} then it'll be automatically escaped and nothing bad can happen. So by default you are protected. If you use dangerouslySetInnerHTML={{__html: text}} then it's your responsibility to sanitize text so nothing bad happens, that's why the name dangerously :)
+
+Angular has a similar approach. It handles any string as possibly having dangerous HTML inside, so it automatically escapes it. $sce is in essence React's dangerouslySetInnerHTML, in that it wraps your text in an object telling Angular that {sceWrappedText} should not be automatically escaped. And, just like in React, it's your responsibility to sanitize it.
+
+$sce does come with some helper sanitizers like parseAsHtml that you can use to sanitize the HTML before outputing it. I think it uses the $sanitize service and removes stuff like ng-click and such.
+
+To clarify: neither $sce nor dangerouslySetInnerHTML should be used thinking they will magically make unsafe (user inputed) strings safe to display as HTML. They exist because by default everything is escaped. You as a developer are responsible to decide what is safe to use:
+
+it comes from the server where it was sanitized;
+you sanitized it using some client-side code (https://github.com/mganss/HtmlSanitizer, https://www.npmjs.com/package/sanitize-html, and many many others)
+it's a piece of HTML you glued together from pieces that are by nature safe (think `'<b>' + parseInt(this.props.numberFromTextInput, 10) + '</b>'`)
+What default means:
+
+Controller:
+```
+$scope.text = '<b>foo</b>';
+```
+Template:
+```
+<div>{{text}}</div>
+```
+Would output `Hello, <b>foo</b>!`
+
+While
+```
+$scope.text = $sce.trustAsHtml('<b>foo</b>');
+```
+would output `Hello, foo!`
+
+Same with React's dangerouslySetInnerHTML where `<div dangerouslySetInnerHTML={{__html: '<b>foo</b>'}} />` would output `Hello, foo!` while `<div>{'<b>foo</b>'}</div>` would be escaped.
+

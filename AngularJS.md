@@ -361,7 +361,13 @@ app.controller('MainCtrl', function () {
 });
 ```
 
+### $q service
 
+#### $q.when
+
+Calling `$q.when` takes a promise or any other type, if it is not a promise then it will wrap it in a promise and call resolve. If you pass a value to it then it is never going to be rejected.
+
+`$q.resolve` is an alias for `$q.when` for consistency with Es6's `Promise.resolve`.
 
 ### AngularJS components
 
@@ -597,3 +603,16 @@ using `$stateParams`.
 ### $stateParams service
 
 Used to access params present in url/state.
+
+### Angularjs Material
+
+Dialogs are managed by something known as interim
+element that deals with promises
+
+https://github.com/angular/material/blob/master/src/core/services/interimElement/interimElement.js
+
+`show` returns a promise that will be resolved/rejected when interim element is hidden/cancelled.
+
+In this terminology hide means returning some data resolving on closing dialog.
+And cancel means rejecting on closing dialog
+
