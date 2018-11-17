@@ -26,3 +26,6 @@ There is a special case of DOM-based XSS in which the malicious string is never 
 
 
 
+### Articles
+
+https://jakearchibald.com/2018/third-party-css-is-not-safe/
