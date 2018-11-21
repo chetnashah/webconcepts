@@ -1,4 +1,15 @@
 
+### Useful Plugins
+
+1. DefinePlugin : https://webpack.js.org/plugins/define-plugin/
+2. HtmlWebpackPlugin : `index.html` management
+
+### Useful Loaders
+
+1. `imports-loader`
+2. `exports-loader`
+3. `expose-loader`
+
 ### Rules
 
 A rule has three parts:

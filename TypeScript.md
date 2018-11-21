@@ -56,6 +56,32 @@ Used pre-2.0 typescript
 
 They start with values/atoms like numbers, strings booleans  etc. and operations like *, + etc. and flow the types into variables in such a way that a constraint satisfaction problem is solved, and the most general type is given to variables that are not directly connected to values.
 
+### Function types
+
+All function types require parameter names instead of just
+types. ie.e.
+```ts
+// let kk: number => number; // syntax Error
+let kk: (a: number) => number = function(x){ return 0 }; // correct
+```
+
+We make it clear which is the return type by using a fat arrow (=>) between the parameters and the return type. As mentioned before, this is a required part of the function type, so if the function doesn’t return a value, you would use void instead of leaving it off.
+
+```ts
+// types with function declaration allow colon
+let myAdd = function(x: number, y: number): number { return  x + y; };
+```
+
+**Interfaces** are also capable of defining function types:
+This is like a function declaration with only the parameter list and return type given. Each parameter in the parameter list requires both name and type.
+```ts
+interface SearchFunc {
+    (source: string, subString: string): boolean;
+}
+// equivalent to
+type SearchFunc = (source: string, subString: string) => boolean;
+```
+
 ### Typescript "declare" keyword
 
 var creates a new variable. declare is used to tell TypeScript that the variable has been created elsewhere. If you use declare, nothing is added to the JavaScript that is generated - it is simply a hint to the compiler.
@@ -87,4 +113,25 @@ interface SquareConfig {
     [propName: string]: any;
 }
 ```
+
+### Type Guards
+
+A type guard is some expression that performs a runtime check that guarantees the type in some scope.
+
+### Interface vs `type`
+
+One difference is that interfaces create a new name that is used everywhere. Type aliases don’t create a new name — for instance, error messages won’t use the alias name. In the code below, hovering over interfaced in an editor will show that it returns an Interface, but will show that aliased returns object literal type.
+
+A second more important difference is that type aliases cannot be extended or implemented from (nor can they extend/implement other types)
+
+### Literal types
+
+Usually enums/disjoint union of values.
+String literal types allow you to specify the exact value a string must have
+
+### Indexed types
+
+### Mapped types
+
+### Conditional types
 
