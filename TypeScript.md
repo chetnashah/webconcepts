@@ -88,6 +88,29 @@ var creates a new variable. declare is used to tell TypeScript that the variable
 
 For example, if you use an external script that defines var externalModule, you would use declare var externalModule to hint to the TypeScript compiler that externalModule has already been set up
 
+### Object type
+
+Some functions in javascript would not expect primitive types,
+but only object of any kind.
+In that cases `object` type should be used.
+There is another type `Object`
+
+### Making properties and objects immutable
+**Note**: all protection is compile time
+
+1. `readonly` keyword
+2. `ReadonlyArray<String>` for Arrays etc.
+It works like this
+```ts
+interface ReadonlyArray<T> {
+    /// bunch of stuff
+    // do not expose methods like push/splice which mutate array
+    readonly length: number;
+    readonly [n: number]: T;
+}
+```
+3. we can make our own immutable objects/classes using technique above
+
 ### Gotchas
 
 * excess property checks with object literals
@@ -114,9 +137,108 @@ interface SquareConfig {
 }
 ```
 
+### Exhaustive checking with `never` type
+
+`never` type represents something which is unreachable.
+E.g. a funciton that always throws or is in an infinite loop
+has a return type of never.
+
+A switch case which covers all possible input also has `never` type 
+in the default case.
+
+```ts
+type size = "L" | "M" |"S";
+
+function neverAssertion(a: never): never{
+    throw new Error(" a should be never but it is " + a);
+}
+
+function checkSizes(s: size) {
+    switch(s) {
+        case "L": return 10;
+        case "M": return 20;
+        // case "S": return 30;
+        default: neverAssertion(s);// type error here until all cases of size are covered
+    }
+}
+```
+
 ### Type Guards
 
-A type guard is some expression that performs a runtime check that guarantees the type in some scope.
+A type guard is some expression that performs a runtime check that guarantees the type in some scope. Like narrowing of types in certain blocks of code, via control flow analysis.
+
+#### User defined type guards
+
+1. `type predicates`: We provide hint to compiler 
+about type of a argument passed into a predicate function.
+
+e.g.
+```ts
+// isFish is a type guard
+// which when satisfied hints compiler that
+// type is Fish inside type guarded block
+function isFish(pet: Fish | Bird): pet is Fish {
+    return (<Fish>pet).swim !== undefined;
+}
+```
+
+2. `typeof` guard: `typeof` operator acts as a guard
+by itself.
+```ts
+function padLeft(value: string, padding: string | number) {
+    if (typeof padding === "number") {
+        // padding is number here
+        return Array(padding + 1).join(" ") + value;
+    }
+    if (typeof padding === "string") {
+        // padding is string here
+        return padding + value;
+    }
+    throw new Error(`Expected string or number, got '${padding}'.`);
+}
+```
+
+3. While typeof takes a string as argument and works on primitive types,
+`instanceof` works with constructor functions(**not type or interfaces**)
+
+```ts
+interface Paddable {
+    getPadding(): string;
+}
+
+class ABCElement implements Paddable {
+    getPadding(){
+        return "10";
+    }
+}
+
+function testSomething(el: Paddable | string) {
+    if (el instanceOf ABCElement) {
+        // el  is ABCElement here
+        console.log(el.getPadding());
+    } else {
+        // do something else
+    }
+}
+```
+
+### Enums
+
+Enums are probably the most useful feature needed
+e.g.
+```ts
+enum MediaType {
+    JSON = 'application/json',
+    HTML = 'text/html'
+}
+
+let mt: MediaType = MediaType.HTML;
+```
+
+`const enum` compiles differently (removes json object altogether and makes value inline in compiled version) than regular `enum`(preserves mapping).
+There is also a compiler option `preserveConstEnums` to control this.
+
+### Function signature overloads
 
 ### Interface vs `type`
 
