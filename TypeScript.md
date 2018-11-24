@@ -1,4 +1,9 @@
 
+### Webpack with typescript
+
+https://webpack.js.org/guides/typescript/#basic-setup
+
+### Basics
 Typescript is an os-level install usually since it is a compiler, so installed by `npm install -g typescript` flag, and does not appear in project dependencies.
 
 **Note** - when using typescript with webpack it is better idea to keep a local copy of typescript, also webpack uses typescript-loader to do the work.
@@ -81,6 +86,7 @@ interface SearchFunc {
 // equivalent to
 type SearchFunc = (source: string, subString: string) => boolean;
 ```
+
 
 ### Typescript "declare" keyword
 
@@ -251,9 +257,87 @@ A second more important difference is that type aliases cannot be extended or im
 Usually enums/disjoint union of values.
 String literal types allow you to specify the exact value a string must have
 
+### Discriminated Union/ Tagged Union types
+
+Need `strictNullChecks` to be true, in order for this to work correctly.
+The discriminant/tag should be a literal type, and it is a common property
+to all the types, so that it is used to distinguish between them.
+
+e.g
+```ts
+type result = 
+    | { success: true, value: number }
+    | { success: false, error: string};
+
+function processResult(res: result) {
+    if (result.success) { // type narrows down on discriminant pattern match
+        console.log(result.value);
+    } else {
+        console.log(result.error);
+    }
+}
+
+// pattern matching is also a neat trick with discriminated unions
+// where each one has a tag, we can switch case by tag
+type shape =
+    // kind is a literal type that is used as discriminating tag
+    | { kind: "Triangle", b: number, h: number }
+    | { kind: "Rectangle", sideA: number, sideB: number }
+    | { kind: "Circle", radius: number }
+
+function calculateArea(s: shape) {
+    switch(s.kind) {
+        case "Triangle": // type narrows down on pattern match
+            return 0.5 * s.b * s.h;
+        case "Rectangle":
+            return s.sideA * s.sideB;
+        case "Circle":
+            return Math.PI * s.radius * s.radius;
+    }
+}
+
+```
+
+### `keyof` and Lookup Types
+
+`keyof SomeType` returns all property names of `SomeType` joined together
+as a union type.
+e.g.
+```ts
+interface Todo {
+    id: number;
+    text: string;
+    completed: boolean;
+}
+
+function isKeyPresent(todo: Todo, key: keyof Todo) { // key: "id" | "text" | "completed"
+    return todo[key];
+}
+
+// a commonly used idiom with generics
+function <T, K keyof T> doSomething(obj: T, key: K) {
+    return obj[key];
+}
+// return type is T[K] also known as Lookup type/ indexed access type
+``` 
+
 ### Indexed types
 
 ### Mapped types
+
+A transformation applied to all properties of a given type, resulting in a new type known as a mapped type.
+Ann e.g. is ReadOnly.
+```ts
+// make all properties of input type
+type ReadOnly<T> = {
+    readonly [P in keyof T] : T[P]
+}
+
+// another exampl
+type Nullable<T> = {
+    [P in keyof T]: T[P] | null
+};
+```
 
 ### Conditional types
 
