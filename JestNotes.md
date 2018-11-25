@@ -1,6 +1,31 @@
 
 
 Jest is all in one testing framework for testing in javascript.
+https://jestjs.io/blog/
+
+### Basics
+
+One special thing we do in Jest is reset the entire module registry after every single test (call to it) to make sure tests don't depend on each other.
+
+Every single test in Jest receives a fresh new copy of all modules, including new versions of all mocked dependencies which take a lot of time to generate for each test. A side effect of this is that we had to call require manually before every test.
+
+#### History
+
+#### Jest 15
+1. automocking is false as default.
+2. Doesn't implicitly reset the module registry after every test. Adds jest.resetModules and a resetModules config option for better control.
+
+#### Jest 22
+1. JSDOM is default env for running tests.
+2. Babel 7 support.
+
+### Configuration
+
+Configuration is the most important part of any test runner.
+Jest config can live in 
+1. `package.json` field named `jest`.
+2. `jest.config.js`
+3. custom json file provided with `--config`.
 
 ### Matchers
 
