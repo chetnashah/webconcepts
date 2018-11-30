@@ -1,4 +1,17 @@
 
+### node package resolution via require
+
+Use `require.resolve(modulename)` in node REPL to quickly see
+how it is resolved
+```js
+$ node
+
+> require.resolve('react')
+'C:\\Users\\abcsh\\Documents\\programming\\formik-app\\node_modules\\react\\index.js'
+
+> require.resolve('react-dom')
+'C:\\Users\\abcsh\\Documents\\programming\\formik-app\\node_modules\\react-dom\\index.js'
+```
 ### http module
 
 1. `http.request(options, callback)` : Represents an inprogress request.
