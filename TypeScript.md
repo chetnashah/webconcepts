@@ -6,6 +6,8 @@ https://webpack.js.org/guides/typescript/#basic-setup
 ### Basics
 Typescript is an os-level install usually since it is a compiler, so installed by `npm install -g typescript` flag, and does not appear in project dependencies.
 
+But it is also a good idea to package with your app as a development dependency with `--save-dev`.
+
 **Note** - when using typescript with webpack it is better idea to keep a local copy of typescript, also webpack uses typescript-loader to do the work.
 
 Use //ts-check
@@ -39,6 +41,14 @@ tsc --outfile bundle.js f1.ts f2.ts f3.ts // order matters
 2. `exclude`: compile everything except what is present in exclude value.
 
 **Note** - when compiling a single file specified at sh/cmd e.g. `tsc app.ts` instead of `tsc`, the tsconfig.json does not come into picture, you have to use command line flags to achieve a similar effect.
+
+### Integration with webpack
+
+1. `at-loader`: also known as Awesome typescript loader (a compile time dep.)
+2. `ts-loader`: Default typescript loader.
+
+`source-map-loader` is also needed.
+
 
 ### What are typescript definition files ?
 

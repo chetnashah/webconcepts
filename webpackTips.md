@@ -4,11 +4,46 @@
 1. DefinePlugin : https://webpack.js.org/plugins/define-plugin/
 2. HtmlWebpackPlugin : `index.html` management
 
+### Using Eslint in a webpack project
+
+`eslint` is a required dev-dependency.
+Like usual, eslint specific config resides in .eslintrc.
+And all the plugins need by .eslintrc are needed as dev-dependencies.
+
+Using `eslint-loader` is necessary.
+Loaders specified are executed in right to left fashion.
+So use along with `babel-loader`, `eslint-loader` in that order.
+or use something like `enforce: "pre"`
+
+**Note**: By specifying loader, Eslint is a part of build process, not just running as a seperate entity, the webpack build will fail if there are any linting errors.
+
 ### Useful Loaders
 
 1. `imports-loader`
 2. `exports-loader`
 3. `expose-loader`
+
+### Using React
+
+Telling webpack that we support importing/requiring of `.js` and `.jsx` files
+as well as they are to be transpiled using `babel-loader`.
+
+```js
+  // require support
+  resolve: {
+    extensions: ['.js', '.jsx']
+  },
+  // how to transform them
+  module: {
+    rules: [
+      {// run linter before babel, by using enforce: "pre"
+        test: /\.(js|jsx)$/, loader: 'eslint-loader', enforce: 'pre', exclude: /node_modules/,
+      },
+      { test: /\.(js|jsx)$/, loader: 'babel-loader' },
+    ],
+  },
+```
+
 
 ### Rules
 
