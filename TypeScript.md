@@ -104,6 +104,82 @@ var creates a new variable. declare is used to tell TypeScript that the variable
 
 For example, if you use an external script that defines var externalModule, you would use declare var externalModule to hint to the TypeScript compiler that externalModule has already been set up
 
+### The double life of `typeof` operator in Typescript
+
+The `typeof` operator always takes in a value,
+but executes differently depending on the expression it is used in.
+
+In case a value expression is required it returns good ol' "object" or "function" or primitive types.
+
+In case a type expression is required it returns a more expressive type.
+
+e.g.
+```ts
+let aval = {
+    a: "hi", b: 2
+};
+console.log(typeof aval); // object
+// typeof behaves differently in a type-expression
+type at = typeof aval;// at = { a: string; b: number }
+
+let bar = {a: 0};
+let TypeofBar = typeof bar; // the value "object"
+type TypeofBar = typeof bar; // the type {a: number}
+
+function Tutu() { return 1; }
+let yy = typeof Tutu;// function
+console.log(yy); //function
+type tt =  typeof Tutu;// tt = () => number
+```
+
+### The double life of `class` keyword in Typescript
+
+When declaring a class, we introduce a constructor in the value namespace, so that it would be used with `new`.
+
+But it is also declared as a type in the type namespace that can be used as type of all the instances of the class.
+
+Using `typeof` on a `class`:
+
+“give me the type of the symbol called Greeter” which is the type of the constructor function. This type will contain all of the static members(prototype functions etc also) of Greeter along with the constructor that creates instances of the Greeter class.
+```ts
+class Greeter {
+    static standardGreeting = "Hello, there";
+    greeting: string;
+    greet() {
+        if (this.greeting) {
+            return "Hello, " + this.greeting;
+        }
+        else {
+            return Greeter.standardGreeting;
+        }
+    }
+}
+
+let greeter1: Greeter;// type of instance is class name
+greeter1 = new Greeter();
+console.log(greeter1.greet());
+
+let greeterMaker: typeof Greeter = Greeter;
+greeterMaker.standardGreeting = "Hey there!";
+
+let greeter2: Greeter = new greeterMaker();
+console.log(greeter2.greet());
+```
+
+**Note**: Class(constructor function) are structurally typed in Typescript:
+```ts
+class MyClass {
+  method(val: number) { /* ... */ }
+}
+
+class YourClass {
+  method(val: number) { /* ... */ }
+}
+
+let test1: typeof MyClass = YourClass; // Works!
+let test2: typeof MyClass = MyClass;   // Works!
+```
+
 ### Object type
 
 Some functions in javascript would not expect primitive types,
