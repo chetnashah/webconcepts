@@ -49,12 +49,45 @@ tsc --outfile bundle.js f1.ts f2.ts f3.ts // order matters
 
 `source-map-loader` is also needed.
 
+### In what ways can a type be introduced?
 
-### What are typescript definition files ?
+If you’re reading this guide, you probably already roughly know what a type in TypeScript is. To be more explicit, though, a type is introduced with:
+
+1. A type alias declaration (`type sn = number | string;`)
+2. An interface declaration (`interface I { x: number[]; }`)
+3. A class declaration (`class C { }`)
+4. An enum declaration (`enum E { A, B, C }`)
+5. An `import` declaration which refers to a type
+
+### In what ways are values introduced ?
+
+Again, being explicit, the following things create values:
+
+1. let, const, and var declarations
+2. A namespace or module declaration which contains a value
+3. An enum declaration
+4. A class declaration
+5. An import declaration which refers to a value
+6. A function declaration
+
+### one name multiple meanings!
+
+One name, multiple meanings
+Given a name A, we might find up to three different meanings for A: a type, a value or a namespace. How the name is interpreted depends on the context in which it is used. For example, in the declaration 
+```ts
+let m: A.A = A;
+```
+A is used first as a namespace, then as a type name, then as a value. These meanings might end up referring to entirely different declarations
+
+### What are typescript definition files `*.d.ts` ?
+
+They allow you to provide type information for JavaScript code that is by itself (by its very nature) not statically typed. The file extension for such a file is .d.ts, where d stands for definition. Type definition files make it possible to enjoy the benefits of type checking, autocompletion, and member documentation
 
 Typescript definition files i.e. `filename.d.ts` are typically a translation layer between simple Javsascript library/projects without types to an interface that provides types to the user of the library.
  Helps IDEs and language services with autocompletion and type checking.
  The repository DefinitelyTyped on github contains typescript definition files for all well known projects.
+
+ When a TypeScript script gets compiled there is an option to generate a declaration file (with the extension .d.ts) that functions as an interface to the components in the compiled JavaScript. In the process the compiler strips away all function and method bodies and preserves only the signatures of the types that are exported. The resulting declaration file can then be used to describe the exported virtual TypeScript types of a JavaScript library or module when a third-party developer consumes it from TypeScript.
 
  Find everything at https://www.typescriptlang.org/docs/handbook/declaration-files/introduction.html
 

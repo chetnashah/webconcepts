@@ -18,6 +18,15 @@ $ node
  The callback will be added as one time listener for `response` event. This method returns an instance of `http.ClientRequest` class. The `ClientRequest` instance is a writeablestream. It represents an inprogress request from node itself.
 The `response` event on `http.ClientRequest` instance, contains a single argument which is an instance of `http.IncomingMessage`.
 
+### fs
+
+#### An idiom to clear files quickly
+
+```js
+fs.closeSync(fs.openSync(FILE_PATH, 'w'));// w truncates files
+```
+while the processes have the files still opened, you shouldn't expect to get the space back. It's not freed, it's being actively used. This is also one of the reasons that applications should really close the files when they finish using them. In normal usage, you shouldn't think of that space as free, and this also shouldn't be very common at all - with the exception of temporary files that are unlinked on purpose, there shouldn't really be any files that you would consider being unused, but still open. 
+
 ### Buffer
 
 Prior to the introduction of TypedArray in ECMAScript 2015 (ES6), the JavaScript language had no mechanism for reading or manipulating streams of binary data. The Buffer class was introduced as part of the Node.js API to make it possible to interact with octet streams in the context of things like TCP streams and file system operations.
