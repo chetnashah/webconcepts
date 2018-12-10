@@ -6,7 +6,7 @@ Beware that using `angular.module('myModule', [])` will create the module myModu
 ## AngularJS history
 
 1. AngularJS 1.2 - `controllerAs` + `this` introduced.
-2. AngularJS 1.3 - `bindToController` boolean introduced to bind scope & controller for directives.
+2. AngularJS 1.3 - `bindToController` boolean introduced to bind scope & controller for directives. `$validators` and `$asyncValidators` introduced.
 3. AngularJS 1.4 - `bindToController` now is an object of shape of isolate scope field in ddo.
 4. AngularJS 1.5 - `Component` introduced, `component` definitions are simpler
 than directive and make transition to Angular 2 easier.

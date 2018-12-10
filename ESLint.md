@@ -48,3 +48,19 @@ Apart from popular config, we need to specify parserOptions like following:
     }
 }
 ```
+
+
+### Delegating module resolution to webpack
+
+With advanced config like usage of typescript etc.
+Regular module resolution breaks down and eslint
+starts giving error in import of ts files.
+We can delegate module resolution to a literate tool like webpack using following:
+
+1. Install `eslint-import-resolver-webpack`
+2. Update `.eslintrc` to contain following:
+```js
+"settings": {
+  "import/resolver": "webpack"
+}
+```
