@@ -1,0 +1,30 @@
+
+body {
+    background: darksalmon;
+}
+
+.fill {
+    background: lightyellow;
+    width: 150px;
+    height: 150px;
+}
+
+.empty {
+    background: white;
+    width: 150px;
+    height: 150px;
+    display: inline-block;
+}
+
+.hold {
+    border: solid #ccc 4px;
+}
+
+.hovered {
+    background: #f4f4f4;
+    border-style: dashed;
+}
+
+.invisible {
+    display: none;
+}

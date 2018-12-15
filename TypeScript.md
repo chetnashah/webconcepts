@@ -130,6 +130,13 @@ interface SearchFunc {
 type SearchFunc = (source: string, subString: string) => boolean;
 ```
 
+### Typescript `as` keyword and prefix casting
+
+```ts
+var x = <any> foo;
+// is equivalent to:
+var x = foo as any;// useful in .tsx files
+```
 
 ### Typescript "declare" keyword
 

@@ -76,6 +76,22 @@ and `document.head` and many other direct properties, like a facade for the webp
 Although, the root Element is `document.documentElement` which represents
 `<html></html>`.
 
+### Changing class values of elements in JS
+
+`className` gets and sets the value of the `class` attribute of the specified element.
+
+```js
+let el = document.getElementById('item');
+
+if (el.className === 'active'){
+  el.className = 'inactive';
+} else {
+  el.className = 'active';
+}
+
+
+```
+
 ## Events
 
 ### Key events
@@ -346,4 +362,20 @@ The `window.requestIdleCallback()` method queues a function to be called during 
 You can call requestIdleCallback() within an idle callback function to schedule another callback to take place no sooner than the next pass through the event loop.
 
 Ideally don't do dom mutations in idlecallbacks. Use it for stuff that has less priority. Your idle callback should avoid doing anything that could take an unpredictable amount of time
+
+### HTML events
+
+#### e.target vs e.currentTarget
+
+`e.target` is what triggers the event dispatcher to trigger and `e.currentTarget` is what you assigned your listener to.
+
+### Drag-drop
+
+All event names are fully lower case (no camel casing).
+E.g. `dragenter` instead of `dragEnter` etc.
+
+Allowing drop:
+Calling the preventDefault method during both a `dragenter` and `dragover` event will indicate that a drop is allowed at that location.
+
+You must cancel the default action for `ondragenter` and `ondragover` in order for ondrop to fire. In the case of a div, the default action is not to drop. This can be contrasted with the case of an input type=text element, where the default action is to drop. In order to allow a drag-and-drop action on a div, you must cancel the default action
 
