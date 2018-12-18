@@ -125,6 +125,60 @@ app.listen = function() {
 };
 ```
 
+### Event loop
+
+**Role of kernel in event loop**:
+The event loop is what allows Node.js to perform non-blocking I/O operations — despite the fact that JavaScript is single-threaded — by offloading operations to the system kernel whenever possible. (Think `epoll`, `select`, `kqueue`)
+
+Since most modern kernels are multi-threaded, they can handle multiple operations executing in the background. When one of these operations completes, the kernel tells Node.js so that the appropriate callback may be added to the poll queue to eventually be executed.
+
+In essence, kernel events related to I/O result in events in `poll queue` to fire corresponding callbacks.
+
+A lot of this is abstracted by `libuv`. find at http://docs.libuv.org/en/v1.x/design.html#the-i-o-loop
+
+Event loop phases in particular order:
+1. timers - executing timer callbacks
+2. pending callbacks
+3. idle/prepare
+4. poll - retrieve new I/O events; execute I/O related callbacks. all part of `poll queue`.
+5. check
+6. close callbacks
+
+We have a `poll queue` that poll phase operates on.
+
+### timers
+
+### What are pending callbacks, how are they different from I/O callbacks?
+
+All I/O callbacks are called right after polling for I/O, for the most part. There are cases, however, in which calling such a callback is deferred for the next loop iteration. If the previous iteration deferred any I/O callback.
+
+This phase executes callbacks for some system operations such as types of TCP errors. For example if a TCP socket receives `ECONNREFUSED` when attempting to connect, some *nix systems want to wait to report the error. This will be queued to execute in the pending callbacks phase.
+
+### `process.nextTick`
+
+Function/code scheduled using `process.nextTick` cannot be cancelled.
+Will be run as soon as current block runs to completion.
+Then the control is passed to event-loop.
+
+In essence, the names should be swapped. `process.nextTick()` fires more immediately than `setImmediate()`, but this is an artifact of the past which is unlikely to change
+
+#### setImmediate
+
+Functions scheduled by `setImmediate` are invoked in `check` phase.
+
+In essence, the names should be swapped. `process.nextTick()` fires more immediately than `setImmediate()`, but this is an artifact of the past which is unlikely to change
+
+### `setImmediate` vs `setTimeout`
+
+`setTimeout`: Although registered in timers phase, poll phase checks if time threshold has beeen crossed for any timers, and wraps around `timers` phase to call the timer callbacks.
+
+`setImmediate()` is designed to execute a script once the current poll phase completes.
+`setTimeout()` schedules a script to be run after a minimum threshold in ms has elapsed.
+
+
+The order in which the timers are executed will vary depending on the context in which they are called.
+
+The main advantage to using `setImmediate()` over `setTimeout()` is setImmediate() will always be executed before any timers if scheduled within an I/O cycle, independently of how many timers are present
 
 ### Node source
 
