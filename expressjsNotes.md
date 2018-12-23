@@ -1,4 +1,22 @@
 
+### `body-parser`
+
+Parse incoming request bodies in a middleware before your handlers, available under the `req.body` property.
+
+This modules provides following parsers:
+1. JSON body parser.
+2. Raw body parser.
+3. Text body parser.
+4. URL-encoded form body parser.
+
+For multi-part bodies use other libraries like:
+1. `busyboy`
+2. `multiparty`
+3. `formidable`
+4. `multer`
+
+These days `body-parser` is a dependency of express and parsers can be found in `express.json` and `express.urlencoded`.
+
 ### Starting traditional node apps
 
 ```js
@@ -139,6 +157,10 @@ app.use('/static', express.static('public'))
 // http://localhost:3000/static/images/kitten.jpg
 // http://localhost:3000/static/css/style.css
 ```
+
+### Using `next()` vs `return next()`
+
+To make sure nothing gets executed after the following middleware, it is usally best practice to use `return next()` unless you have some explicit necessity.
 
 ### Error handling in Express
 
@@ -317,4 +339,52 @@ app.get('/', function (req, res, next) {
 app.listen(3000)
 ```
 
+### How express generates `etag`?
 
+Using `md5` or `crc32` on supplied buffer.
+
+### `querystring` library vs `qs` library for query string parsing
+
+The main advantage of `qs` is that it uses very powerful serialization/deserialization algorithm, capable of serializing any json-like data structure.
+
+qs library allows you to create a **nested object** from your query string.
+```js
+var qs = require("qs")
+var result = qs.parse("person[name]=bobby&person[age]=3")
+console.log(result) // { person: { name: 'bobby', age: '3' } }
+```
+
+`querystring` library provides basic serialization/deserialization algorithm, the one used by all web-browsers to serialize form data. This basic algorithm is significantly simpler than extended one, but limited to flat data structures.
+
+query-string library **does not** support creating a nested object from your query string.
+```js
+var queryString = require("query-string")
+var result = queryString.parse("person[name]=bobby&person[age]=3")
+console.log(result) // { 'person[age]': '3', 'person[name]': 'bobby' }
+```
+
+### Internals
+
+#### Route
+
+```ts
+interface Route {
+  path: string;
+  stack: Array<Layer>;
+}
+
+interface Layer {
+  handle: fn;
+  name: string;
+  regexp: Regex;
+  path: string;
+  params: object;
+  route: undefined | Route;
+  match: (path: string) => boolean;
+  decode_param: (val: string) => string;
+  handle_request: (req: Request, res: Response, next: fn) => any;
+}
+
+var layer = new Layer(path, opts, handle);
+var l1 = new Layer('/', {}, fn);// usually at the heart of all "use" functions
+```

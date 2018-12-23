@@ -1,4 +1,31 @@
 
+### the `base` tag
+
+The `<base>` tag specifies the base URL/target 
+for all relative URLs in a document.
+e.g.
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <base href="https://www.w3schools.com/images/" target="_blank">
+</head>
+<body>
+
+<p><img src="stickman.gif" width="24" height="39" alt="Stickman"> - Notice that we have only specified a relative address for the image. Since we have specified a base URL in the head section, the browser will look for the image at "https://www.w3schools.com/images/stickman.gif".</p>
+
+<p><a href="https://www.w3schools.com">W3Schools</a> - Notice that the link opens in a new window, even if it has no target="_blank" attribute. This is because the target attribute of the base element is set to "_blank".</p>
+
+</body>
+</html>
+```
+
+### The fragment identifier `url#abc` and server routing
+
+When an agent (such as a Web browser) requests a resource from a Web server, the agent sends the URI to the server, **but does not send the fragment**. Instead, the agent waits for the server to send the resource, and then the agent processes the resource according to the document type and fragment value.
+
+So e.g. your express server will never receive fragment parts of the url.
+
 ### Script/Resource loading paths
 
 Absolute path (has a `/` in front) for a resource makes http request at hostname i.e.
