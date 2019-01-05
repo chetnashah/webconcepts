@@ -120,6 +120,10 @@ module.controller('CounterController', ['$scope' ,function($scope){
 
 The watchExpression is called on every call to `$digest()` and should return the value that will be watched. (watchExpression should not change its value when executed multiple times with the same input because it may be executed multiple times by `$digest()`. That is, watchExpression should be idempotent.)
 
+The return value of `$watch` is a removal function.
+A watch might remove itself in its own watch or listener fn i.e digest runs.
+All watchers in a scope will effectively get removed once the scope is destroyed
+
 
 #### $parse vs $compile
 
