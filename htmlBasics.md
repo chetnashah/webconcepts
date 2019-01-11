@@ -379,3 +379,43 @@ Calling the preventDefault method during both a `dragenter` and `dragover` event
 
 You must cancel the default action for `ondragenter` and `ondragover` in order for ondrop to fire. In the case of a div, the default action is not to drop. This can be contrasted with the case of an input type=text element, where the default action is to drop. In order to allow a drag-and-drop action on a div, you must cancel the default action
 
+#### Requirements for a drop
+
+To accept a drop, the drop target has to listen to the following events:
+
+1. The `dragenter` event handler reports whether or not the drop target is potentially willing to accept the drop, by canceling the event.
+
+2. The `dragover` event handler specifies what feedback will be shown to the user, by setting the dropEffect attribute of the DataTransfer associated with the event. This event also needs to be canceled.
+
+3. The `drop` event handler has a final chance to accept or reject the drop. If the drop is accepted, the event handler must perform the drop operation on the target. This event needs to be canceled, so that the dropEffect attribute's value can be used by the source. Otherwise, the drop operation is rejected.
+
+#### dropEffect
+
+Provide visual feedback
+Controlled by `ev.dataTransfer.effectAllowed`
+
+possible values for `ev.dataTransfer.dropEffect`
+are `move` | `copy` | `link` | `none`
+
+#### Transferring data via drag
+
+Primarily revolves around `ev.dataTransfer.setData` and `ev.dataTransfer.getData`.
+
+1. setup data transfer in `dragstart` event listener.
+```js
+function dragStartHandler(ev){
+    console.log('drag start!');
+    ev.dataTransfer.setData('text/plain', ev.target.innerText);
+}
+```
+Returning `false` from dragstart handler means the element is not interested in being dragged.
+
+2. retrieve data in the `drop` event handler by preventing default `ev.preventDefault` along with using `ev.dataTransfer.getData(type)`
+```js
+function dragDropHandler(ev){
+    ev.preventDefault();
+    var data = ev.dataTransfer.getData("text");
+    console.log('drop, got data = ', data);
+    ev.target.innerText = data;
+}
+```

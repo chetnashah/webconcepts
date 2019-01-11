@@ -32,16 +32,22 @@ function dragLeave(){
     this.className = 'empty';
 }
 
-function dragDrop(){
-    console.log('objectdragdrop :');    
+function dragDrop(ev){
+    console.log('objectdragdrop : ev = ', ev);
+    ev.preventDefault();
+
+     var data = ev.dataTransfer.getData("text");
+     console.log('drop, got data = ', data);
+     ev.target.innerText = data;
 }
 function dragStart(ev){
     console.log('fill drag start!');
+    ev.dataTransfer.setData('text/plain', ev.target.innerText);
     this.className += ' hold';
     setTimeout(
         () => {this.className = 'invisible'},
-     0)
-}
+     0);
+ }
 
 function dragEnd(ev){
     console.log('fill drag end');
