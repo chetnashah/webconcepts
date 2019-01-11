@@ -419,3 +419,14 @@ function dragDropHandler(ev){
     ev.target.innerText = data;
 }
 ```
+
+### drag end handling
+
+Within the `drop` and `dragend` events, you can check the dropEffect property to determine which effect was ultimately chosen. 
+
+If the chosen effect were "move", then the original data should be removed from the source of the drag within the dragend event.
+
+**Note** The target for `dragstart`, `drag` and `dragend` events is source node.
+The target for `dragover` and `drop` events is current node.
+
+This data can be useful for swapping src and drop-target at end of a drag.
