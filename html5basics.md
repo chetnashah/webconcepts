@@ -225,6 +225,31 @@ and many more!
 
 for which you can use Modernizr https://github.com/Modernizr/Modernizr/wiki/HTML5-Cross-Browser-Polyfills
 
+### getting hold of iframe window and document
+
+use `iframe || iframe.contentWindow` to access its window, and `iframe.contentDocument || iframe.contentWindow.document` to access its document.
+
+
+### document.open and window.open
+
+Also, an automatic `document.open()` call happens when `document.write()` is called after the page has loaded, but that's not defined in the W3C specification.
+
+Do not confuse this method with `window.open()`. `document.open` allows you to overwrite the current document or append to it, while `window.open` provides a way to open a new window, leaving the current document intact. 
+
+Since window is the global object, just calling `open(...)` does the same as `window.open(...)`. You can close the opened document using `document.close()`.
+
+### HTML printing
+
+The print css controls everything that you see in the print preview.
+
+`<link href="/path/to/print.css" media="print" rel="stylesheet" />`
+
+```
+//print.css
+      @media print {
+         p.bodyText {font-family:georgia, times, serif;}
+      }
+```
 
 ### pushState vs replaceState
 

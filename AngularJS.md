@@ -160,6 +160,10 @@ Preferred over `$timeout`, since `$timeout` relinquishes control to browser.
 It is advisable to use `$applyAsync` to execute such
 code.
 
+#### bindToController
+
+A directive property (`true/false`).
+Should have actually been named: bind isolate scope properties to controller.
 
 
 #### $scope.$digest

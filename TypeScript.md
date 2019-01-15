@@ -26,13 +26,15 @@ tsc --outfile bundle.js f1.ts f2.ts f3.ts // order matters
 
 ### Useful tsconfig options
 
-* strictNullChecks - Usually keep this true to keep all types seperate, If you want a variable to hold null value, you will have to explicitly specify it in type.
+* `strictNullChecks` - Usually keep this true to keep all types seperate, If you want a variable to hold null value, you will have to explicitly specify it in type.
 
-* noEmitOnError - If typescript error is found, i.e. compiler reports an error, code is not compiled. i.e. js files are not created.
+* `strictPropertyInitialization` - 2.7 onwards available, warns for uninitialized variables.
 
-* sourceMap - setting this to true creates .js.map files along with .js, helping us in debugging ts code as well.
+* `noEmitOnError` - If typescript error is found, i.e. compiler reports an error, code is not compiled. i.e. js files are not created.
 
-* noImplicityAny - If set to true, will set type of unininitialized variables implicitly to "any".
+* `sourceMap` - setting this to true creates .js.map files along with .js, helping us in debugging ts code as well.
+
+* `noImplicityAny` - If set to true, will set type of unininitialized variables implicitly to "any".
 
 ### What to compile ?
 
@@ -310,7 +312,7 @@ e.g.
 // which when satisfied hints compiler that
 // type is Fish inside type guarded block
 function isFish(pet: Fish | Bird): pet is Fish {
-    return (<Fish>pet).swim !== undefined;
+    return (<Fish>pet).swim !== undefined;// some cast + compare property against undefined is required
 }
 ```
 
@@ -371,6 +373,28 @@ let mt: MediaType = MediaType.HTML;
 There is also a compiler option `preserveConstEnums` to control this.
 
 ### Function signature overloads
+
+### TS "in" operator since 2.7
+
+Using the JavaScript “in” operator, we can test for the presence of different properties on the argument object, and TypeScript will automatically infer the exact type of our object in that block.
+
+```ts
+interface Admin{
+    id: number;
+    role: string;
+}
+interface User{
+    email: string;
+}
+
+function doSomething(a: Admin | user) {
+    if ("role" in a) { // a: Admin in this type guard
+        console.log(a.id);
+    } else {
+        console.log(a.email); // a: User in this context
+    }
+}
+```
 
 ### Interface vs `type`
 
