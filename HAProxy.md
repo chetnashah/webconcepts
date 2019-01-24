@@ -1,4 +1,15 @@
 
+### Config
+
+Config file: 
+1. `/etc/default/haproxy` to enable it
+2. `/etc/haproxy/haproxy.cfg` to control how it works.
+
+Starting/stopping haproxy:
+`sudo service haproxy {start|stop|reload|restart|status}`
+
+### Concepts
+
 HAProxy supports 4 connection modes :
   - keep alive    : all requests and responses are processed (default)
   - tunnel        : only the first request and response are processed,
@@ -83,3 +94,18 @@ The maximum time a server has to accept a TCP connection
 
 **timeout check**
 When performing a healthcheck, the server has timeout connect to accept the connection then timeout check to give the response
+
+### ACL
+
+The use of Access Control Lists (ACL) provides a flexible solution to perform
+content switching and generally to take decisions based on content extracted
+from the request, the response or any environmental status. The principle is
+simple :
+
+  - extract a data sample from a stream, table or the environment
+  - optionally apply some format conversion to the extracted sample
+  - apply one or multiple pattern matching methods on this sample
+  - perform actions only when a pattern matches the sample
+
+Syntax:
+`acl <aclname> <criterion> [flags] [operator] [<value>] ...`

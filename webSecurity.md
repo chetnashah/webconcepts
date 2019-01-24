@@ -1,4 +1,36 @@
 
+### SSL Certificates
+
+Needed for `https`.
+Find certificate issuance info on `crt.sh`.
+
+Procedure for deployment:
+1. Pay money to CA.
+2. Prove identity.
+3. Certificate Signing Request.
+4. Configure network server
+
+Types of SSL certificates:
+1. DV Certificates: Domain Validation.
+2. OV Certificates: Organization validated.
+3. EV Certificates: Extended validation.
+
+#### Let's Encrypt and the ACME protocol(Automatic Certificate Management Environment)
+
+**Let’s Encrypt is a CA**.
+Let's Encrypt will only issue DV since it is automated.
+
+In order to get a certificate for your website’s domain from Let’s Encrypt, you have to demonstrate control over the domain. 
+
+90 days cert lifetime.
+
+Clients request certificates from Let's Encrypt via ACME
+
+3 categories of ACME clients:
+1. Simple: drop cert in current dir.
+2. Full featured: configure the server for you.
+3. Built in: web server just does it.
+
 ### Password management and bcrypt
 
 http://dustwell.com/how-to-handle-passwords-bcrypt.html

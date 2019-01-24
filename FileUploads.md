@@ -1,4 +1,18 @@
 
+### Checklist
+
+Security considerations:
+
+1. max size should be restricted.
+2. file type/content type should be restricted.
+
+Performance considerations:
+
+1. remove file from disk to another persistent location like s3
+2. communicate file urls in messages of HTTP, not entire files.
+3. File uploads can break on a server with high load. So dedicated servers for upload or directly to S3.
+
+
 
 ### client side
 

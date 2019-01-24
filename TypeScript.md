@@ -135,7 +135,7 @@ type SearchFunc = (source: string, subString: string) => boolean;
 ### Typescript `as` keyword and prefix casting
 
 ```ts
-var x = <any> foo;
+var x = <any> foo;// the cast is a prefix
 // is equivalent to:
 var x = foo as any;// useful in .tsx files
 ```
@@ -301,6 +301,8 @@ function checkSizes(s: size) {
 
 A type guard is some expression that performs a runtime check that guarantees the type in some scope. Like narrowing of types in certain blocks of code, via control flow analysis.
 
+narrowing of types using type guards is useful for handling multiple cases in union type.
+
 #### User defined type guards
 
 1. `type predicates`: We provide hint to compiler 
@@ -335,6 +337,10 @@ function padLeft(value: string, padding: string | number) {
 3. While typeof takes a string as argument and works on primitive types,
 `instanceof` works with constructor functions(**not type or interfaces**)
 
+`instanceof` tests whether prototype property of a constructor 
+appears somewhere in the prototype chain of an object.
+
+
 ```ts
 interface Paddable {
     getPadding(): string;
@@ -355,6 +361,24 @@ function testSomething(el: Paddable | string) {
     }
 }
 ```
+
+### Postfix exclamation operator (`identifier!`)
+
+removes `null` and `undefined` from the type of identifier.
+* Telling/Forcing the compiler that the I as a programmer know better.
+e.g.
+```js
+function fixed(name: string | null): string {
+  function postfix(epithet: string) {
+    return name!.charAt(0) + '.  the ' + epithet; // ok
+  }
+  name = name || "Bob";
+  return postfix("great");
+}
+```
+Useful in cases of nested function where calls could not be tracked.
+
+
 
 ### Enums
 
@@ -398,9 +422,35 @@ function doSomething(a: Admin | user) {
 
 ### Interface vs `type`
 
-One difference is that interfaces create a new name that is used everywhere. Type aliases don’t create a new name — for instance, error messages won’t use the alias name. In the code below, hovering over interfaced in an editor will show that it returns an Interface, but will show that aliased returns object literal type.
+One difference is that interfaces create a new name that is used everywhere. Type aliases don’t create a new name — for instance, **error messages/hovering won’t use the alias name**. In the code below, hovering over interface in an editor will show that it returns an Interface, but will show that aliased returns object literal type.
 
 A second more important difference is that type aliases cannot be extended or implemented from (nor can they extend/implement other types)
+
+`type` alias can name a primitive type, `interface` type cannot.
+e.g.
+```ts
+type Name = string;
+type NameResolver = () => string;
+type NameOrResolver = Name | NameResolver;
+```
+
+Just like interfaces, type aliases can also be generic - we can just add type parameters and use them on the right side of the alias declaration:
+```ts
+type Container<T> = { value: T };
+```
+
+**Note: Type aliases and circular references**
+ a type alias can refer to itself in a property, but not anywhere else on the right side of the declaration.
+ ```ts
+ type Foo = { x: Foo }// works
+ type Bar<A> = { x: string }
+ type Foo = Bar<Foo>; // Error! circular references
+ ```
+
+One can mimic intersection types made by `type` keyword using
+`extends` in interfaces,
+But it is not possible to make union interface by unioning two interfaces. One must use `type` keyword for unioning.
+
 
 ### Literal types
 
@@ -413,8 +463,14 @@ Need `strictNullChecks` to be true, in order for this to work correctly.
 The discriminant/tag should be a literal type, and it is a common property
 to all the types, so that it is used to distinguish between them.
 
+Three ingridients:
+1. discrimintant : same/common property name, but different value in each of the types. (`kind` is good example of an artificial tag/discriminant that can be inserted into each type).
+2. union: a union type of all the types
+3. type guards on common property (discriminant)
+
 e.g
 ```ts
+// success is discriminant, result type is the union
 type result = 
     | { success: true, value: number }
     | { success: false, error: string};
@@ -428,7 +484,8 @@ function processResult(res: result) {
 }
 
 // pattern matching is also a neat trick with discriminated unions
-// where each one has a tag, we can switch case by tag
+// where each one has a tag/discriminant, we can switch case by tag
+// kind is the discriminant, shape is the union
 type shape =
     // kind is a literal type that is used as discriminating tag
     | { kind: "Triangle", b: number, h: number }
@@ -436,6 +493,7 @@ type shape =
     | { kind: "Circle", radius: number }
 
 function calculateArea(s: shape) {
+    //switch(unionInstance.discriminant)
     switch(s.kind) {
         case "Triangle": // type narrows down on pattern match
             return 0.5 * s.b * s.h;
@@ -445,13 +503,11 @@ function calculateArea(s: shape) {
             return Math.PI * s.radius * s.radius;
     }
 }
-
 ```
 
 ### `keyof` and Lookup Types
 
-`keyof SomeType` returns all property names of `SomeType` joined together
-as a union type.
+`keyof SomeType` returns all property names of `SomeType` joined together as a union type.
 e.g.
 ```ts
 interface Todo {
@@ -490,4 +546,6 @@ type Nullable<T> = {
 ```
 
 ### Conditional types
+
+### `infer` keyword
 

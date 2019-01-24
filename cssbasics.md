@@ -238,3 +238,14 @@ Without a convention, there's no real rhyme or reason to the above. With the rul
 2. Have a secondary button style available to use
 3. Can add icons into the button with button__icon
 
+
+### Complex cases
+
+`div.form-square > div` consists of 1 class selector + 2 type selectors (plus a child combinator).
+
+`.seven-col` consists of 1 class selector.
+
+The number of class selectors is equal, so the comparison is done in type selectors. The first selector has more type selectors so it is more specific.
+
+Specificity is based on the number of each kind of selector in the entire thing, not for the part on the right hand side of the rightmost combinator.
+
