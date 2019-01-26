@@ -126,7 +126,7 @@ let myAdd = function(x: number, y: number): number { return  x + y; };
 This is like a function declaration with only the parameter list and return type given. Each parameter in the parameter list requires both name and type.
 ```ts
 interface SearchFunc {
-    (source: string, subString: string): boolean;
+    (source: string, subString: string): boolean;// notice no name given to fn signature, so interface is fn type
 }
 // equivalent to
 type SearchFunc = (source: string, subString: string) => boolean;
@@ -398,7 +398,7 @@ There is also a compiler option `preserveConstEnums` to control this.
 
 ### Function signature overloads
 
-### TS "in" operator since 2.7
+### TS "in" operator type guard since 2.7
 
 Using the JavaScript “in” operator, we can test for the presence of different properties on the argument object, and TypeScript will automatically infer the exact type of our object in that block.
 
@@ -451,6 +451,19 @@ One can mimic intersection types made by `type` keyword using
 `extends` in interfaces,
 But it is not possible to make union interface by unioning two interfaces. One must use `type` keyword for unioning.
 
+* An interface can extend a type as well as an interface (but an interface cannot extend a union type, compile time shape lockdown is necessary)
+
+* **Declaration merging** - If two interfaces have same name, their properties will be merged together
+```ts
+interface Foo{
+    a: string;
+}
+interface Foo{
+    b: string;
+}
+// now Foo = {a: string; b: string; }
+```
+Publically extensible types in libraries should be interfaces.
 
 ### Literal types
 
@@ -464,7 +477,7 @@ The discriminant/tag should be a literal type, and it is a common property
 to all the types, so that it is used to distinguish between them.
 
 Three ingridients:
-1. discrimintant : same/common property name, but different value in each of the types. (`kind` is good example of an artificial tag/discriminant that can be inserted into each type).
+1. discrimintant : same/common property name, but different value in each of the types. (`kind` is good example of an artificial tag/discriminant that can be inserted into each type, but the value of kind has to be a literal type).
 2. union: a union type of all the types
 3. type guards on common property (discriminant)
 
@@ -485,7 +498,7 @@ function processResult(res: result) {
 
 // pattern matching is also a neat trick with discriminated unions
 // where each one has a tag/discriminant, we can switch case by tag
-// kind is the discriminant, shape is the union
+// kind is the discriminant(has to beliteral), shape is the union
 type shape =
     // kind is a literal type that is used as discriminating tag
     | { kind: "Triangle", b: number, h: number }
@@ -530,6 +543,8 @@ function <T, K keyof T> doSomething(obj: T, key: K) {
 ### Indexed types
 
 ### Mapped types
+
+Basically `[P in keyof T]` result in iteration of all properties `P` of interface/type/object `T`.
 
 A transformation applied to all properties of a given type, resulting in a new type known as a mapped type.
 Ann e.g. is ReadOnly.
