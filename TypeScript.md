@@ -542,9 +542,34 @@ function <T, K keyof T> doSomething(obj: T, key: K) {
 
 ### Indexed types
 
+`keyof` is known as index type query operator.
+
+For any type `T`, `keyof T` is the union of known, public property names of `T`.
+
+e.g.
+```ts
+let personProps: keyof Person; // 'name' | 'age'
+```
+
+The second operator is `T[K]`, the **indexed access operator**. Here, the type syntax reflects the expression syntax. That means that `person['name']` has the type `Person['name']` — which in our example is just `string`. However, just like index type queries, you can use `T[K]` in a generic context, which is where its real power comes to life. You just have to make sure that the type variable `K extends keyof T`.
+
+#### Index types and string index signatures
+
+```ts
+interface Map<T> {
+    [key: string]: T;// string index signature
+}
+
+var k : keyof Map<number>; // k: string
+var j : Map<number>['foo']; // j: number
+```
+
 ### Mapped types
 
 Basically `[P in keyof T]` result in iteration of all properties `P` of interface/type/object `T`.
+
+In essence, mapped types make use of `index type query operator` and
+`index type access operator` to morph over all properties by iteration.
 
 A transformation applied to all properties of a given type, resulting in a new type known as a mapped type.
 Ann e.g. is ReadOnly.
@@ -559,6 +584,47 @@ type Nullable<T> = {
     [P in keyof T]: T[P] | null
 };
 ```
+
+**Partial** is a useful mapped type. Allow subset of properties
+```ts
+type Partial<T> = { [P in keyof T]?: T[P] }
+type Person = { name: string; age: number; id: number; }
+let k : Partial<Person> = { id: 223, name: 'chet' };
+```
+**But beware** Partial will not worn you over undefined access 
+e.g. `k.age.toFixed(2)` will throw error above, but typescript will not warn.
+So better use typeguards after introducing Partial.
+
+### `Record` and `Pick` mapped types
+
+Pick lets you pick `K` properties out of `T`.
+
+```ts
+type Pick<T, K extends keyof T> = {
+    [P in K]: T[P];
+}
+
+let j: Pick<Person, 'name'| 'age'> = { name: 'dud', age: 4 };
+```
+
+**Record Type**
+A `Record<K, T>` is an object type whose property keys are `K` and whose property values are `T`.
+```ts
+
+type Record<K extends string, T> = {
+    [P in K]: T;
+}
+
+//NOte: K extends string can be satisfied by "A" | "B" | "C"
+
+type ThreeStringProps = Record<'prop1' | 'prop2' | 'prop3', string>
+Is it exactly the same as this?:
+
+//equivalent
+type ThreeStringProps2 = {prop1: string, prop2: string, prop3: string}
+
+``` 
+
 
 ### Conditional types
 
