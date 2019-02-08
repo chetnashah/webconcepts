@@ -16,18 +16,40 @@ than directive and make transition to Angular 2 easier.
 Services & Factories under the hood are created by providers. Even when we call angular.module(“somemodule”).service(), under the hood a provider is created which encapsulates the service code.
 
 Two kinds
-1. `Instance Injector`: Commonly used, what we perceive as $injector.
+1. `Instance Injector`: Commonly used, what we perceive as `$injector`.
  This is the injector which is exposed and comes into play when controllers need access to a service. This is the thing which makes Dependency Injection possible. Caches instances
 
 2. `Provider Injector`: Internally used injector. Caches Providers
 
+### Getting the injector
+
+Below we get the instance injector:
+```js
+var $injector = angular.injector();
+```
+
 ### Useful methods on injector
 
-1. `get(name, [caller])`
-2. `invoke(fn, [self], [locals])`
-3. `has(name)`
-4. `annotate(fn, [strictdi])`
-5. `instantiate(Type, [locals])`
+1. `get: (name: string, [caller]) => any`
+2. `invoke: (fn: function, [self], [locals]) => any`
+3. `has: (name: string) => boolean`
+4. `annotate: (fn: function, [strictdi]) => Array<string>`
+5. `instantiate: (Type: function, [locals]) => Object`: Creates new instance of Type, i.e takes a constructor function, invokes new operator, and supplies all of args to constructor function
+
+### The `$inject` property
+
+If a function has a`$inject` property and it's value is an array
+of strings,
+then the strings represents names of services to be injected into
+the function
+
+```js
+var MyController = function(obfScope, obfRoute){
+
+}
+MyController.$inject = ['$scope', '$route'];
+expect(injector.annotate(MyController)).toEqual(['$scope', '$route'])
+```
 
 ### angular.element
 
