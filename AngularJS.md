@@ -11,6 +11,31 @@ Beware that using `angular.module('myModule', [])` will create the module myModu
 4. AngularJS 1.5 - `Component` introduced, `component` definitions are simpler
 than directive and make transition to Angular 2 easier.
 
+### Bootstrapping
+
+AngularJS app is detected via attribute `ng-app`.
+one can also optionally specify an angular module that
+corresponds to the ng-app i.e. `<body ng-app="MyApp">...</body>`
+
+### AngularJS module
+
+An AngularJS module logically groups functionality as a single module.
+
+In order to load an angular module for the first time, you need to  use `angular.module` as well as specify dependencies array.
+e.g.
+```js
+// a.js
+angular.module('MyApp', []);
+
+// subsequent modifications to module, you should not specify
+// dependencies
+// b.js
+angular.module('MyApp')
+.controller('MyController', function(){
+  // MyController code
+});
+```
+
 ### Injectors in AngularJS
 
 Services & Factories under the hood are created by providers. Even when we call angular.module(“somemodule”).service(), under the hood a provider is created which encapsulates the service code.
@@ -49,6 +74,23 @@ var MyController = function(obfScope, obfRoute){
 }
 MyController.$inject = ['$scope', '$route'];
 expect(injector.annotate(MyController)).toEqual(['$scope', '$route'])
+```
+
+### AngularJS filters
+
+#### Execution
+
+If filter input is primitive, filter executed only when input has changed.
+If filter input is object/s, filters are executed each `$digest`.
+
+Also, filters that are marked as `$stateful`, are also executed on each digest.
+
+The Filter filter is used for search.
+e.g. searching for books
+```js
+
+<li ng-repeat="category in categories | filter: 'books'">
+</li>
 ```
 
 ### angular.element
