@@ -35,3 +35,9 @@ After exposing ports, `docker ps` will show the exposing using `->` e.g.
 
 **NOTE**
 By default, the port on the host is mapped to 0.0.0.0, which means all IP addresses. You can specify a particular IP address when you define the port mapping, for example, -p 127.0.0.1:6379:6379
+
+### Running command in a docker container using `docker exec`
+
+```
+docker exec -it CONTAINER COMMAND
+```
