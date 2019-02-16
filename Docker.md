@@ -41,3 +41,18 @@ By default, the port on the host is mapped to 0.0.0.0, which means all IP addres
 ```
 docker exec -it CONTAINER COMMAND
 ```
+
+
+### Managing docker networks
+
+
+Create network
+```
+docker network create abc-net
+```
+
+List networks
+
+```
+docker network ls
+```
