@@ -19,6 +19,8 @@ Takes in a list of Routes and renders only the first one that matches url.
 
 Takes a `to` prop telling the url bar to switch to new url, This component simply changes url via history. **It does not** trigger a request to server or anything like that. It is completely upon the developer to make api requests when Component corresponding to the route is mounted.
 
+**Note** - React router will not intercept setting of `window.location` or `<a>` tag, so those routes will definitely make requests to the sever
+
 ### Switch Component
 
 Takes a list of routes, and only renders the first one that matches.

@@ -28,6 +28,13 @@ curl -i -X POST --url http://localhost:8001/services/ -d 'name=example-service' 
 `Route`: Specify how and if requests are sent to their services after they reach kong.
 A single service can have many routes.
 
+Route entities define rules to match client requests. Each Route is associated with a Service, and a Service may have multiple Routes associated to it. Every request matching a given Route will be proxied to its associated Service.
+
+`hosts`: A list of domain names that match this Route. 
+`paths`: A list of paths that match this Route
+
+Route object may contain service Id that it is a part of.
+
 Listing all routes:
 `GET /routes`
 
@@ -62,3 +69,11 @@ curl -i -X POST \
   --url http://localhost:8001/services/example-service/plugins/ \
   --data 'name=key-auth'
 ```
+
+
+### Kong cluster
+
+A Kong cluster allows you to scale the system horizontally by adding more machines to handle more incoming requests. They will all share the same configuration since they point to the same database. Kong nodes pointing to the same datastore will be part of the same Kong cluster.
+
+Having a Kong cluster does not mean that your clients traffic will be load-balanced across your Kong nodes out of the box. **You still need a load-balancer in front of your Kong nodes to distribute your traffic. Instead, a Kong cluster means that those nodes will share the same configuration.**
+

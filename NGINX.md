@@ -5,6 +5,8 @@ Config file at:
 
 `/etc/nginx/nginx.conf`
 
+Avoid using `sites-available` and `sites-enabled` at all costs.
+
 ### Over all structure
 
 Directives are divided into simple directives and block directives. 
