@@ -222,6 +222,26 @@ let test1: typeof MyClass = YourClass; // Works!
 let test2: typeof MyClass = MyClass;   // Works!
 ```
 
+#### Parameter properties and intialization with declaration
+
+Parameter property with `name` property,
+will help us omit the line `this.name = 8` in constructor
+```ts
+class Octopus {
+    readonly numberOfLegs: number = 8;
+    constructor(readonly name: string) {
+    }
+}
+
+class Person {
+    // no need to write this.name = name
+    constructor(public name: string) {}
+}
+
+var p = new Person("wow");
+console.log(p.name);// wow
+```
+
 ### Object type
 
 Some functions in javascript would not expect primitive types,

@@ -19,6 +19,10 @@ The module annotation can have
 2. controllers
 3. Providers
 
+### Providers
+
+A Provider is a simple class annotated with `@Injectable`.
+
 ### Controllers
 
 Controllers job is to take a request and return a response.
@@ -93,3 +97,24 @@ e.g. `@Get(':id')` with `dosomething(@Params() params)` and access it as `params
 
 ### Async and RX
 
+As we know async functions return promises,
+Then Nest will wait on promises and return that result.
+
+In case of Observable returned from a controller method, Nest will automatically subscribe to it and return the first value observed in subscription.
+
+### Throwing errors for http requests
+
+Throw expected errors using `HttpException`.
+```js
+    throw new HttpException('Invalid input', HttpStatus.BAD_REQUEST);
+```
+
+You can create custom exceptions that extend 
+`HTTPException`.
+```js
+export class ForbiddenException extends HttpException {
+  constructor() {
+    super('Forbidden', HttpStatus.FORBIDDEN);
+  }
+}
+```
