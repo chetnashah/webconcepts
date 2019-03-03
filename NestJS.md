@@ -10,14 +10,18 @@ var app = await NestFactory.create(rootModuleRef);
 await app.listen(3000);
 ```
 
-### Root module
+### Modules
 
 Module is specified as a part of nest factory.
 Create a module by annotating a class with `@Module`.
 The module annotation can have
-1. imports
-2. controllers
-3. Providers
+1. `imports` (modules): the list of imported modules that export the providers which are required in this module
+
+2. `exports` (providers): the subset of `providers` that are provided by this module and should be available in the other modules
+
+2. `controllers`: the set of controllers which have to be created
+
+3. `Providers`: the providers that will be instantiated by the Nest injector and may be shared at least across this module.
 
 ### Providers
 

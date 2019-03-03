@@ -14,8 +14,8 @@ so formik can keep track of it.
 
 ### Important props in Formik Component
 
-1. `initialValues` :
-2. `onSubmit` :
+1. `initialValues` : object with signature `any`.
+2. `onSubmit` : method with signature `(values: any, props: any) => any`
 3. `validationSchema`: can be used with `yup` library
 4. `validate`: regular validation function
 
@@ -88,7 +88,23 @@ There are also imperative helper methods provided to you via Formik's render/inj
 Use `handlesubmit` provided,
 
 It will execute:
-1. Pre-submit:
-2. Validation:
-3. Submission:
+1. Pre-submit: Touch all fields. `isSubmitting` is set to true. `submitCount` is incremented by 1.
 
+2. Validation: 
+    * `isValidating` is set to `true`.
+    * Field and form level validations are run and results deeply merged.
+    * Are there any errors?
+        * Yes -> `isValidating` is set to `false`. `isSubmitting` is set to `false`.
+        * No -> `isValidating` is set to `false`. Move to step 3. Submission 
+
+3. Submission:
+* Proceed with calling submission handler `onSubmit`.
+* Programmer should call `setSubmitting(false)` to finish the cycle.
+
+### Checking form is validating
+
+1. `isValidating` is `true`, and `isSubmitting` is `true`.
+
+### Checking if form submission handler is executing
+
+* `isValidating` is `false`, and `isSubmitting` is `true`

@@ -17,6 +17,21 @@ or use something like `enforce: "pre"`
 
 **Note**: By specifying loader, Eslint is a part of build process, not just running as a seperate entity, the webpack build will fail if there are any linting errors.
 
+### Externals
+
+The `externals` configuration option provides a way of excluding dependencies from the output bundles. Instead, the created bundle relies on that dependency to be present in the consumer's environment.
+
+Usage:
+```js
+const nodeExternals = require('webpack-node-externals');
+//
+const server = {
+  //..
+  externals: [nodeExternals()],
+  //..
+}
+```
+
 ### Useful Loaders
 
 1. `imports-loader`
