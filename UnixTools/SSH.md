@@ -1,4 +1,7 @@
 
+If login is not connected by keys,
+ssh login will resort to username and password on the host.
+ 
 OpenSSH consists of following tools:
 
 1. commands: Remote operations are done using `ssh`, `scp`, and `sftp`.
@@ -29,6 +32,15 @@ Server side daemon config:
 `ssh-keygen`: Key generation tool.
 
 `ssh-keyscan`: Utility for gathering public host keys from a number of hosts
+
+### SSH login with keys in cli
+
+Providing ssh Identity-key as a cli arg
+Which is followed by passphrase to unlock it.
+```sh
+ssh -i ~/.ssh/id_rsa user@our_host_ip
+```
+Alternate option to above is using ssh-agent.
 
 ### Host keys
 
@@ -87,6 +99,22 @@ Start-Service ssh-agent
 ### ssh-copy-id
 
 Copy public keys to remote servers.
+
+### Daemon (sshd) security hardening
+
+```sh
+# This is sshd_config
+# only key based login, no password based login
+PubkeyAuthentication yes
+PasswordAuthentication no
+
+# only use normal user login with sudo instead of root
+PermitRootLogin no
+PermitEmptyPasswords no
+
+X11Forwarding no
+```
+
 
 ### OpenSSH vs Openssl
 
