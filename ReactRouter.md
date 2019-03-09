@@ -1,5 +1,10 @@
 
 
+### Some restrictions
+
+1. `Router` can have only a single child. So use `div` or `Switch`.
+2. You cannot render `Link` outside `Router`.
+
 ### How it works
 
 Listens to changes in url and asks Routes to render depending on url contents.

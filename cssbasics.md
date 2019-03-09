@@ -24,7 +24,34 @@ Here the width, height and padding are respected, but the two copies of the elem
 2. respect top & bottom margins and padding
 3. respect height and width
 
+### Formatting context
 
+Elements that establish a formatting context are
+1. table container
+2. flex container
+3. grid container
+4. block container
+
+### Positioning
+
+Default value for `position` is `static`.
+
+1. `static`: This is the default value, the `top`, `left`, `right`, `bottom`, `z-index` do not have any effect.
+
+2. `relative`: The element is positioned according to normal flow of document. Then it is offset from it's decided position using `top`, `left`, `right`, `bottom`.
+
+3. `absolute`: Element is first  removed from normal document flow.
+It is positioned relative to it's closest non-static positioned ancestor.
+
+4. `sticky`: Lookup on MDN.
+
+#### Identifying the containing block
+
+1. `position` is `static` or `relative`: containing block is formed by edge of content box of nearest ancestor element that is block container(`block`, `inline-block` element) or which establishes a formatting context(`table`, `flex container`, `grid container`)
+
+2. `position` is `absolute`: containing block is formed by edge of padding box of nearest ancestor that has **position value other than** `static`.
+
+3. `position` is `fixed`: containing block is viewport.
 
 
 #### Selectors syntax
