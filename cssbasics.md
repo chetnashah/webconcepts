@@ -276,3 +276,19 @@ The number of class selectors is equal, so the comparison is done in type select
 
 Specificity is based on the number of each kind of selector in the entire thing, not for the part on the right hand side of the rightmost combinator.
 
+### Generic flex based overlay
+
+Positioned absolutely with left top to 50%, and translate adjust for its own size, and z-index applied.
+
+```css
+.overlay-box {
+    position: absolute; /* parent container needs to have position: relative */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    background: #ccc;
+    opacity: 0.7;
+    z-index: 1000;
+}
+```

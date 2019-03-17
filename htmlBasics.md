@@ -338,6 +338,16 @@ Sometimes `document.documentElement.scrollTop` always returns 0, i.e. does not r
 
 Find more at: https://dev.opera.com/articles/fixing-the-scrolltop-bug/
 
+### Using anchor tag for clicks
+
+Adding `#` to the `href` attribute jumps to top of the page so not recommended.
+
+Instead do `href="javascript:void(0)"`.
+e.g.
+```html
+<a href="javascript:void(0);">LinkText</a>
+```
+
 ### What is quirks mode?
 
 Modern browsers generally try to render HTML content according to the W3C recommendations. However, to provide compatibility with older web pages, and to provide additional "intuitive" functionality, all browsers support an alternative "quirks mode".
