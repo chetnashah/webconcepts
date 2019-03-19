@@ -1,5 +1,12 @@
 redux notes:
 
+### API interface
+
+#### Store
+
+1. `getState(): () => any`
+2. `dispatch`
+
 ### A standard action (also known as FSA - flux standard action)
 A standard action
 1. must be an object
