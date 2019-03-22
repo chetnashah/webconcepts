@@ -5,6 +5,25 @@
 1. `Router` can have only a single child. So use `div` or `Switch`.
 2. You cannot render `Link` outside `Router`.
 
+
+
+### StaticRouter
+
+A `router` that never changes it's `location`.
+This can be useful in server-side rendering scenarios when the user isn't actually clicking around, so the location never actually changes.
+e.g.
+```jsx
+        <StaticRouter context={ context } location={ req.url }>
+            <Layout />
+        </StaticRouter>
+```
+
+
+### BrowserRouter
+
+### Server Rendering
+Rendering on the server is a bit different since it's all stateless. The basic idea is that we wrap the app in a stateless `<StaticRouter>` instead of a `<BrowserRouter>`. We pass in the requested url from the server so the routes can match and a context prop we'll discuss next.
+
 ### How it works
 
 Listens to changes in url and asks Routes to render depending on url contents.
