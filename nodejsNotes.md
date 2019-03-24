@@ -95,6 +95,18 @@ Response by a node server.
 8. `upgrade`
 9. 
 
+### Implementing Custom Writable streaam
+
+The `stream.Writable` class is extended to implement a Writable stream.
+
+Custom Writable streams must call the `new stream.Writable([options])` constructor and implement the `writable._write()` method.
+
+### Implementing Custom Readable stream
+
+The `stream.Readable` class is extended to implement a Readable stream.
+
+Custom `Readable` streams must call the `new stream.Readable([options])` constructor and implement the `readable._read()` method
+
 ### Process
 
 The process object is a global that provides information about, and control over, the current Node.js process. As a global, it is always available to Node.js applications without using require().
