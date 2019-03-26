@@ -21,6 +21,31 @@ HTTP long polling:
 
 With long-polling, the browser sends a request to the server and the server keeps the request open for a set period. If a notification is received within that period, a response containing the message is sent to the client. If a notification is not received within the set time period, the server sends a response to terminate the open request. It is important to understand, however, that when you have a high message volume, long-polling does not provide any substantial performance improvements over traditional polling.
 
+### HTTP Head Of Line Blocking
+
+Means requests that are waiting in queue inside a connection. Since server can only handle so many connections. Meaning previous request on a same connection has to complete before client can make a new request.
+
+HTTP/1.1 introduced a feature called `Pipelining` which allowed a client sending several HTTP requests over the same TCP connection. However HTTP/1.1 still required the responses to arrive in order so it didn't really solved the HOL issue and as of today it is not widely adopted.
+
+HTTP/2 (h2) solves the HOL issue by means of multiplexing requests over the same TCP connection, so a client can make multiple requests to a server without having to wait for the previous ones to complete as the responses can arrive in any order.
+
+Put simply, multiplexing allows your Browser to fire off multiple requests at once on the same connection and receive the requests back in any order.
+
+browsers usually open multiple connections to the web server (typically 6).
+
+Example :
+
+To put it as a real world example: assume you have to order 10 items from a shop for home delivery:
+
+HTTP/1.1 with one connection means you have to order them one at a time and you cannot order the next item until the last arrives. You can understand it would take weeks to get through everything.
+
+HTTP/1.1 with multiple connections means you can have a (limited) number of independent orders on the go at the same time.
+
+HTTP/1.1 with pipelining means you can ask for all 10 items one after the other without waiting, but then they all arrive in the specific order you asked for them. And if one item is out of stock then you have to wait for that before you get the items you ordered after that - even if those later items are actually in stock! This is a bit better but is still subject to delays, and let's say most shops don't support this way of ordering anyway.
+
+HTTP/2 means you can order your items in any particular order - without any delays (similar to above). The shop will dispatch them as they are ready, so they may arrive in a different order than you asked for them, and they may even split items so some parts of that order arrive first (so better than above). Ultimately this should mean you 1) get everything quicker overall and 2) can start working on each item as it arrives ("oh that's not as nice as I thought it would be, so I might want to order something else as well or instead").
+
+
 ### chunked transfer encoding
 
 Each chunk is preceded by its size in bytes. The transmission ends when a zero-length chunk is received. The chunked keyword in the Transfer-Encoding header is used to indicate chunked transfer.
