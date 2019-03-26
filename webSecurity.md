@@ -1,5 +1,12 @@
 
+### Sites to check
+
+`httpsecurityreport.com`
+
 ### SSL Certificates
+
+check ssl readyness of your site on : ssllabs 
+`https://www.ssllabs.com/ssltest/`
 
 Needed for `https`.
 Find certificate issuance info on `crt.sh`.
@@ -14,6 +21,16 @@ Types of SSL certificates:
 1. DV Certificates: Domain Validation.
 2. OV Certificates: Organization validated.
 3. EV Certificates: Extended validation.
+
+### Setting up SSL with your load balancer
+
+In below site, select your lb, select browser level, and you get config.
+https://mozilla.github.io/server-side-tls/ssl-config-generator/
+
+### CSP directive (content security policy)
+
+https://developers.google.com/web/fundamentals/security/csp/
+
 
 #### Let's Encrypt and the ACME protocol(Automatic Certificate Management Environment)
 

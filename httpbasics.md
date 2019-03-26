@@ -8,6 +8,35 @@ Also other charachters that have special meaning e.g. `&`, `#` etc need to be es
 before becoming part of the url components.
 Also note that url encoding is NOT idempotent.
 
+### Mixed-content blocking
+
+Most modern browsers block HTTP requests on secure HTTPS pages. Blocked content can include images, JavaScript, CSS, or other content that affects how the page looks or behaves.
+
+
+#### Mixed active content
+
+content that has access to all or parts of the Document Object Model of the HTTPS page.
+This section lists some types of HTTP requests which are considered active content:
+
+1. `<script>` (src attribute)
+2. `<link>` (href attribute) (this includes CSS stylesheets)
+3. `<iframe>` (src attribute)
+4. `XMLHttpRequest` requests
+5. `fetch()` requests
+6. All cases in CSS where a `<url>` value is used (`@font-face`, `cursor`, `background-image`, and so forth).
+7. `<object>` (data attribute)
+
+
+#### Mixed passive content
+
+This section lists all types of HTTP requests which are considered passive content:
+
+1. `<img>` (src attribute)
+2. `<audio>` (src attribute)
+3. `<video>` (src attribute)
+4. `<object>` subresources (when an `<object>` performs HTTP requests)
+
+
 ### Http keep-alive/persistent connection
 
 HTTP persistent connection, also called HTTP keep-alive, or HTTP connection reuse, is the idea of using a single TCP connection to send and receive multiple HTTP requests/responses, as opposed to opening a new connection for every single request/response pair. The newer HTTP/2 protocol uses the same idea and takes it further to allow multiple concurrent requests/responses to be multiplexed over a single connection.
