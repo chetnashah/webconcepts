@@ -152,6 +152,22 @@ MobX reacts to any existing observable property that is read during the executio
 
 Mobx tracks only synchronized accessed data.
 
+### Mobx-React (mobx bindings for react)
+
+#### Provider
+
+Provider is a component that can pass stores (or other stuff) using React's context mechanism to child components.
+
+#### inject
+
+`inject` can be used to pick up those stores. It is a higher order component that takes a list of strings and makes those stores available to the wrapped component. You specify the name of the store to inject as argument. 
+e.g. `@inject('birdStore')`
+
+When using both `@inject` and `@observer`, make sure to apply them in the correct order: observer should be the inner decorator, inject the outer. There might be additional decorators in between.
+
+#### observer
+
+`@observer` does not take any arguments.
 
 ## Mobx-state-tree
 

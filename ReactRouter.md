@@ -6,6 +6,57 @@
 2. You cannot render `Link` outside `Router`.
 
 
+### Important props given to a Route driven Component `match` and `location`
+
+```json
+{
+    "match": {
+        "path": "/",
+        "url": "/",
+        "params": {},
+        "isExact": false
+    },
+    "location": {
+        "pathname": "/bogo",
+        "search": "?q=edadf",
+        "hash": "#abcdef=123"
+    },
+    "history": {
+        "length": 4,
+        "action": "POP",
+        "location": {
+            "pathname": "/bogo",
+            "search": "?q=edadf",
+            "hash": "#abcdef=123"
+        }
+    }
+}
+```
+
+### The route that always matches
+
+Route matching is done by comparing a `<Route>`'s `path` prop to the current `location’s pathname`. When a `<Route>` matches it will render its content and when it does not match, it will render null. A `<Route>` with no path will always match. See e.g.
+```jsx
+        <Route component={NoMatch} />
+```
+A good idea is to make the `NoMatch` component which explicitly calls out 404, and renders path for which 404 is shown. Or you can specify where to go via `<Redirect>`
+
+### Ways to use `<Route>`
+
+1. `component` prop : When you use component (instead of `render` or `children`, below) the router uses `React.createElement` to create a new React element from the given component. That means if you provide an inline function to the component prop, you would create a new component every render.
+
+2. `render` prop : This allows for convenient inline rendering and wrapping without the undesired remounting explained above.
+
+3. `children` prop : Sometimes you need to render whether the path matches the location or not. In these cases, you can use the function children prop. It works exactly like render except that it gets called whether there is a match or not.
+
+
+
+All three render methods will be passed the same three route props
+
+1. `match`
+2. `location`
+3. `history`
+
 
 ### StaticRouter
 
@@ -74,3 +125,10 @@ https://tylermcginnis.com/react-router-programmatically-navigate/
 1. Use `this.props.history.push(path)`
 2. Use `Redirect` component.
 
+### Static routing vs dynamic routing
+
+If you’ve used Rails, Express, Ember, Angular etc. you’ve used static routing. In these frameworks, you declare your routes as part of your app’s initialization before any rendering takes place. React Router pre-v4 was also static (mostly).
+
+When we say dynamic routing, we mean routing that takes place as your app is rendering, not in a configuration or convention outside of a running app. That means almost everything is a component in React Router
+
+A good use case for dynamic routing is responsive design. e.g. `/invoices` would be a valid screen route for mobile phones. where as on desktop you would always show it via `/invoices/i1` etc.

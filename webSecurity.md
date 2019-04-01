@@ -73,8 +73,6 @@ Types of XSS:
 
 There is a special case of DOM-based XSS in which the malicious string is never sent to the website's server to begin with: when the malicious string is contained in a URL's fragment identifier (anything after the # character). Browsers do not send this part of the URL to servers, so the website has no way of accessing it using server-side code. The client-side code, however, has access to it and can thus cause XSS vulnerabilities by handling it unsafely. (Keeping state in history, URL, LocalStorage) - all of which can contain malicious strings.
 
-
-
 ### Articles
 
 https://jakearchibald.com/2018/third-party-css-is-not-safe/
