@@ -128,3 +128,14 @@ followingaddress allows one to set up a TCP listening socket and fork a child pr
 ```
 socat TCP-LISTEN:5555,fork
 ```
+
+### streaming logs over network
+Listening end:
+```sh
+ socat -vv TCP-LISTEN:1234,crlf,reuseaddr,fork SYSTEM:"sudo tail -f /var/log/messages"
+```
+
+Requesting end:
+```sh
+socat TCP:serverip:1234 -
+```

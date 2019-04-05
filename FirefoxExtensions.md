@@ -47,3 +47,20 @@ Background scripts run in the context of a special page called a background page
 However, they can load content scripts into web pages and can communicate with these content scripts using a message-passing API.
 
 Content scripts can only access a small subset of the WebExtension APIs, but they can communicate with background scripts using a messaging system, and thereby indirectly access the WebExtension APIs.
+
+### Content Scripts
+
+content script won't have access to any JavaScript libraries loaded by the page. So for example, if the page includes jQuery, the content script won't be able to see it.
+
+If a content script does want to use a JavaScript library, then the library itself should be injected as a content script alongside the content script that wants to use it:
+e.g.
+```json
+"content_scripts": [
+  {
+    "matches": ["*://*.mozilla.org/*"],
+    "js": ["jquery.js", "content-script.js"]
+  }
+]
+```
+
+#### Communicating with background scripts
