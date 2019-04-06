@@ -5,17 +5,56 @@ Config file:
 1. `/etc/default/haproxy` to enable it
 2. `/etc/haproxy/haproxy.cfg` to control how it works.
 
+Running haproxy on cmd line (useful in seeing errors):
+`haproxy -f /etc/haproxy/haproxy.cfg -c`
+
 Starting/stopping haproxy:
 `sudo service haproxy {start|stop|reload|restart|status}`
+
+### Admin API and dynamic configuraiton
+
+Useful for automated deployments.
+
+https://www.haproxy.com/blog/dynamic-configuration-haproxy-runtime-api/
+
+Below config is necessary for dynamic config:
+```cfg
+# This is haproxy.cfg
+global
+    stats socket ipv4@127.0.0.1:9999 level admin
+    stats socket /var/run/haproxy/haproxy.sock mode 666 level admin
+```
+
+Community haproxy does not provide UI to modify server states(READY,MAINT) from `stats` page,
+instead we need to issue commands via socat to the stats related socket e.g.
+```sh
+# move a node to maint
+echo "set server backendnodes/node1 state maint" | socat stdio tcp4-connect:127.0.0.1:9999
+
+# move the node back to
+echo "set server backendnodes/node1 state ready" | socat stdio tcp4-connect:127.0.0.1:9999
+```
+
+### Important sections
+
+https://www.haproxy.com/blog/the-four-essential-sections-of-an-haproxy-configuration/
+
+#### defaults
+
+#### listen
+
+#### Frontend
+
+#### Backend
 
 ### Concepts
 
 HAProxy supports 4 connection modes :
-  - keep alive    : all requests and responses are processed (default)
-  - tunnel        : only the first request and response are processed,
+  - `keep alive`    : all requests and responses are processed (default)
+  - `tunnel`        : only the first request and response are processed,
                     everything else is forwarded with no analysis.
-  - server close  : the server-facing connection is closed after the response.
-  - close         : the connection is actively closed after end of response.
+  - `server close`  : the server-facing connection is closed after the response.
+  - `close`         : the connection is actively closed after end of response.
 
 HAProxy's configuration process involves 3 major sources of parameters :
 
