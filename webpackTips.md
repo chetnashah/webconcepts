@@ -19,7 +19,11 @@ or use something like `enforce: "pre"`
 
 ### Externals
 
+We use the `externals` option to define dependencies that should be resolved in the target environment.
+
 The `externals` configuration option provides a way of excluding dependencies from the output bundles. Instead, the created bundle relies on that dependency to be present in the consumer's environment.
+
+Use case: When bundling with Webpack for the backend - you usually don't want to bundle its node_modules dependencies.
 
 Usage:
 ```js

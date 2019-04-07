@@ -212,3 +212,91 @@ Major kinds of events/messages on the uv loop:
 
 Most fs functions and some of the crypto functions, use the uv thread pool (which has a default size of 4)
 
+### child_process
+
+Note: There are also methods like `fork` in the `cluster` module. So do not get confused with behavior of different `fork` functions.
+
+Useful methods:
+1. `spawn` : spawns the child process asynchronously, without blocking the Node.js event loop.
+2. `spawnSync`: provides equivalent functionality in a synchronous manner that blocks the event loop until the spawned process either exits or is terminated.
+2. `fork`: spawns a new Node.js process and invokes a specified module with an IPC communication channel established that allows sending messages between parent and child.
+**NOTE: Unlike the `fork(2)` POSIX system call, `child_process.fork()` does not clone the current process**
+The `child_process.fork()` method is a special case of `child_process.spawn()` used specifically to spawn new Node.js processes. Like `child_process.spawn()`, a `ChildProcess` object is returned. The returned `ChildProcess` will have an additional communication channel built-in that allows messages to be passed back and forth between the parent and child. See `subprocess.send()` for details.
+e.g.
+```js
+// main.js
+const cp = require('child_process');
+const n = cp.fork(`${__dirname}/sub.js`);
+
+n.on('message', (m) => {
+  console.log('PARENT got message:', m);
+});
+
+// Causes the child to print: CHILD got message: { hello: 'world' }
+n.send({ hello: 'world' });
+```
+```js
+//sub.js
+process.on('message', (m) => {
+  console.log('CHILD got message:', m);
+});
+
+// Causes the parent to print: PARENT got message: { foo: 'bar', baz: null }
+process.send({ foo: 'bar', baz: NaN });
+```
+
+3. `execFile`: similar to child_process.exec() except that it spawns the command directly without first spawning a shell by default.
+Since a shell is not spawned, behaviors such as I/O redirection and file globbing are not supported.
+ `execFileSync`:
+4. `exec`: spawns a shell and runs a command within that shell, passing the stdout and stderr to a callback function when complete. Never pass unsanitized user input to this function. Any input containing shell metacharacters may be used to trigger arbitrary command execution.
+**Difference from POSIX**: Unlike the `exec(3)` POSIX system call, `child_process.exec()` does not replace the existing process and uses a shell to execute the command
+e.g.
+```js
+const { exec } = require('child_process');
+exec('cat *.js missing_file | wc -l', (error, stdout, stderr) => {
+  if (error) {
+    console.error(`exec error: ${error}`);
+    return;
+  }
+  console.log(`stdout: ${stdout}`);
+  console.log(`stderr: ${stderr}`);
+});
+```
+5. `execSync`:
+
+All of the above methods returns an instance of `ChildProcess`
+
+Useful events on `ChildProcess` eventemitter (Also known as `subprocess` in docs):
+1. close
+2. error
+3. disconnect
+4. exit
+5. message :triggered when a child process uses `process.send()` to send messages
+
+Useful methods on `ChildProcess` i.e. `subprocess`:
+1. `kill([signal])`
+2. `ref()`
+3. `unref()`
+4. `send(message[, sendHandle[,options, callback]])`: If Node.js is spawned with an IPC channel, the `process.send()` method can be used to send messages to the parent process. Messages will be received as a `message` event on the parent program's `ChildProcess` object.
+
+If Node.js was not spawned with an IPC channel, process.send() will be undefined.
+
+
+
+Useful properties on `ChildProcess` i.e. `subprocess`:
+1. `killed`
+2. `pid`
+3. `stdin`
+4. `stdio`: used to configure the pipes that are established between the parent and child process. By default, the child's stdin, stdout, and stderr are redirected to corresponding `subprocess.stdin`, `subprocess.stdout`, and `subprocess.stderr` streams on the ChildProcess object. This is equivalent to setting the `options.stdio` equal to `['pipe', 'pipe', 'pipe']`.
+5. `stdout`
+6. `stderr`
+
+It is worth noting that when an IPC channel is established between the parent and child processes, and the child is a Node.js process, the child is launched with the IPC channel unreferenced (using unref()) until the child registers an event handler for the 'disconnect' event or the 'message' event. This allows the child to exit normally without the process being held open by the open IPC channel.
+
+
+
+### Process
+
+`SIGKILL` cannot have a listener installed, it will unconditionally terminate Node.js on all platforms.
+`SIGSTOP` cannot have a listener installed.
+
