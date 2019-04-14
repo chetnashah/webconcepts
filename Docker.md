@@ -45,6 +45,14 @@ docker exec -it CONTAINER COMMAND
 
 ### Managing docker networks
 
+The type of network a container uses, whether it is a bridge, an overlay, a macvlan network, or a custom network plugin, is transparent from within the container. From the container’s point of view, it has a network interface with an IP address, a gateway, a routing table, DNS services, and other networking details.
+
+
+`docker -p` : `-p` stands for `--publish`, which publishes a rule to map docker host port to docker container port.
+`docker -p 8080:80`
+
+By default, the container is assigned an IP address for every Docker network it connects to. The IP address is assigned from the pool assigned to the network, so the Docker daemon effectively acts as a DHCP server for each container. Each network also has a default subnet mask and gateway.
+
 
 Create network
 ```

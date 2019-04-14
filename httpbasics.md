@@ -92,6 +92,38 @@ When you change a URI on your server, you can never completely tell who will hav
 
 When someone follows a link and it breaks, they generally lose confidence in the owner of the server.
 
+### CORS
+
+#### Access-Control-Request-Method
+The `Access-Control-Request-Method` request header is used when issuing a preflight request to let the server know which HTTP method will be used when the actual request is made. This header is necessary as the preflight request is always an OPTIONS and doesn't use the same method as the actual request.
+
+#### Access-Control-Request-Headers
+The `Access-Control-Request-Headers` request header is used when issuing a preflight (OPTIONS) request to let the server know which HTTP headers the client might send when the actual request is made.
+
+### Access-Control-Allow-Headers
+The `Access-Control-Allow-Headers` response header is used in response to a preflight request which includes the Access-Control-Request-Headers to indicate which HTTP headers can be used during the actual request.
+This header is required if the request has an `Access-Control-Request-Headers` header.
+
+An e.g. CORS pre flight request-response
+```
+OPTIONS /resource/foo
+Access-Control-Request-Method: DELETE
+Access-Control-Request-Headers: origin, x-requested-with
+Origin: https://foo.bar.org
+```
+
+Response:
+If the server allows CORS requests to use the DELETE method, it responds with an Access-Control-Allow-Methods response header, which lists DELETE along with the other methods it supports:
+```
+HTTP/1.1 200 OK
+Content-Length: 0
+Connection: keep-alive
+Access-Control-Allow-Origin: https://foo.bar.org
+Access-Control-Allow-Methods: POST, GET, OPTIONS, DELETE
+Access-Control-Allow-Headers: origin, x-requested-with
+Access-Control-Max-Age: 86400
+```
+
 
 ### Websocket basics on the browser
 

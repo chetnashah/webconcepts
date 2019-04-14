@@ -114,6 +114,15 @@ Pre requisite: Bucket must have correct permissions for cloudfront to access it.
 
 CThis is normal: creation of and changes to CloudFront distributions often take 15-20 minutes or upto 3 hrs to "settle". I presume that during this time AWS is replicating your distribution's data out to all of the edge locations so that the changes take effect everywhere at the same time.
 
+#### 307 redirects from CDN to S3
+It seems CloudFront cached my first requests to files when distribution wasn't fully ready (but it was in deployed state at that time, so beware!). I requested invalidation to all files which were in cache, it took some minutes, but after invalidation was done, all files were curled with http 200 using CloudFront url.
+
+The problem became clear after the comment from Michael-sqlbot:
+
+All buckets have at least two REST endpoint hostnames. In eu-west-1, they are example-bucket.s3-eu-west-1.amazonaws.com and example-bucket.s3.amazonaws.com. The first one will be immediately valid when the bucket is created. The second one -- sometimes referred to as the "global endpoint" -- which is the one CloudFront uses -- will not, unless the bucket is in us-east-1. Over a period of seconds to minutes, variable by location and other factors, it becomes globally accessible as well. Before that, the 307 redirect is returned. Hence, the bucket was not ready.
+
+
+
 ### RDS
 
 Amazon RDS doesn't allow direct host access to a DB instance by using Telnet or Secure Shell (SSH).
