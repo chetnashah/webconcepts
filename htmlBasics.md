@@ -51,6 +51,23 @@ id is used to identify the HTML element through the Document Object Model (via J
 
 name corresponds to the form element and identifies what is posted back to the server, e.g. in a form.
 
+### `<template>` element
+
+https://www.html5rocks.com/en/tutorials/webcomponents/template/
+
+The HTML Content Template (`<template>`) element is a mechanism for holding html that is not to be rendered immediately when a page is loaded but may be instantiated subsequently during runtime using JavaScript.
+
+Think of a template as a content fragment that is being stored for subsequent use in the document. While the parser does process the contents of the `<template>` element while loading the page, it does so only to ensure that those contents are valid; the element's contents are not rendered, however.
+
+Any content within a template won't have side effects. Script doesn't run, images don't load, audio doesn't play,...until the template is used.
+
+e.g.
+```html
+<template id="mytemplate">
+  <img src="" alt="great image">
+  <div class="comment"></div>
+</template>
+```
 
 
 ### What is a Dom Element ?

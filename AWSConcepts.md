@@ -128,3 +128,19 @@ All buckets have at least two REST endpoint hostnames. In eu-west-1, they are ex
 Amazon RDS doesn't allow direct host access to a DB instance by using Telnet or Secure Shell (SSH).
 
 VPC security groups provide access to DB instances in a VPC. They act as a firewall for the associated DB instance, controlling both inbound and outbound traffic at the instance level. DB instances are created by default with a firewall and a default security group that protect the DB instance.
+
+### AWS CLI
+
+#### S3
+
+* List objects in bucket
+
+```sh
+aws s3api list-objects-v2 --bucket formik-app-test
+```
+
+* Get object with metadata:
+```sh
+aws s3api head-object --bucket my-bucket --key index.html
+```
+
