@@ -61,8 +61,12 @@ programmatic access for an IAM user.
 
 **IAM policy/permissions resolution** - Given you are attached with multiple policies/permissions, "deny" will always take precedence over allow, i.e. the principle of most restrictive permissions.
 
+The `Principal` element is unnecessary in an IAM policy, because the principal is by default the entity that the IAM policy is attached to.
+
 
 ### S3
+
+Whenever an AWS principal issues a request to S3, the authorization decision depends on the union of all the IAM policies, S3 bucket policies, and S3 ACLs that apply.
 
 #### S3 ACL
 S3 ACLs is a legacy access control mechanism that predates IAM.
