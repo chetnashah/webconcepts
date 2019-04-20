@@ -125,7 +125,9 @@ The problem became clear after the comment from Michael-sqlbot:
 
 All buckets have at least two REST endpoint hostnames. In eu-west-1, they are example-bucket.s3-eu-west-1.amazonaws.com and example-bucket.s3.amazonaws.com. The first one will be immediately valid when the bucket is created. The second one -- sometimes referred to as the "global endpoint" -- which is the one CloudFront uses -- will not, unless the bucket is in us-east-1. Over a period of seconds to minutes, variable by location and other factors, it becomes globally accessible as well. Before that, the 307 redirect is returned. Hence, the bucket was not ready.
 
+### S3 multipart uploads
 
+https://www.youtube.com/watch?v=14goBiDF4z0
 
 ### RDS
 
