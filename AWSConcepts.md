@@ -129,6 +129,8 @@ All buckets have at least two REST endpoint hostnames. In eu-west-1, they are ex
 
 https://www.youtube.com/watch?v=14goBiDF4z0
 
+https://aws.amazon.com/blogs/developer/announcing-the-amazon-s3-managed-uploader-in-the-aws-sdk-for-javascript/
+
 ### RDS
 
 Amazon RDS doesn't allow direct host access to a DB instance by using Telnet or Secure Shell (SSH).
