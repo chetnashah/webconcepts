@@ -43,7 +43,7 @@ All readable and writable streams are event-emitters in nodejs.
 ### Readable stream events
 
 1. `close`
-2. `data`
+2. `data` - The `data` event is emitted whenever the stream is relinquishing ownership of a chunk of data to a consumer.
 3. `end`
 4. `error`
 5. `readable`
@@ -106,6 +106,114 @@ Custom Writable streams must call the `new stream.Writable([options])` construct
 The `stream.Readable` class is extended to implement a Readable stream.
 
 Custom `Readable` streams must call the `new stream.Readable([options])` constructor and implement the `readable._read()` method
+
+**NOte** - Readable will not generate data until a mechanism for either consuming or ignoring that data is provided.
+
+*Note* - Usually streams only allow to pass `string` and `Buffer` to be passed
+as chunks, but to allow objects, one has to pass `objectMode: true` in options, in order to allow objects.
+
+e.g. of `Readable` streams:
+
+1. HTTP responses, on the client
+2. HTTP requests, on the server
+3. fs read streams
+4. zlib streams
+5. crypto streams
+6. TCP sockets
+7. child process stdout and stderr
+8. process.stdin
+
+#### Readable stream modes:
+
+1. flowing mode: can be entered using
+  a. `stream.pipe()`
+  b. `stream.resume()`
+  c. Adding a `data` event handler.
+2. paused mode:
+  a. If there are no `pipe` destinations, then calling `stream.pause()`
+  b. If there are `pipe` destinations, removing by calling `stream.unpipe()`.
+
+#### Three states of Readable
+
+Specifically, at any given point in time, every Readable is in one of three possible states:
+
+`readable.readableFlowing === null`
+`readable.readableFlowing === false`
+`readable.readableFlowing === true`
+When `readable.readableFlowing` is null, no mechanism for consuming the stream's data is provided. Therefore, the stream will not generate data. 
+
+While in this state, attaching a listener for the `data` event, calling the `readable.pipe()` method, or calling the `readable.resume()` method will switch `readable.readableFlowing` to `true`, causing the Readable to begin actively emitting events as data is generated.
+
+Calling `readable.pause()`, `readable.unpipe()`, or receiving backpressure will cause the `readable.readableFlowing` to be set as `false`, temporarily halting the flowing of events but not halting the generation of data. While in this state, attaching a listener for the `data` event `will not switch readable.readableFlowing to true`.
+
+
+
+### Using Transform stream in stream pipelines.
+
+`Transform` stream is `Duplex` stream, that is used to convert/transform data in transit from a readable stream to writable stream via a pipe.
+
+e.g.
+```js
+// returns a transform stream that adds index to each object chunk
+function xformer () {
+  let count = 0
+
+  return new Transform({
+    objectMode: true,
+    transform: (data, encoding, done) => {
+      done(null, { ...data, index: count++ })
+    }
+  })
+}
+
+let t = xformer();
+let r = fs.createReadStream('abc.txt');
+let w = fs.createWriteStream('xyz.txt');
+r.pipe(t).pipe(w);
+```
+
+### All Stream types used together
+
+```js
+// data pushed into ReadableStream using stream.push
+function clock () {
+  const stream = new Readable({
+    objectMode: true,
+    read() {}
+  })
+
+  setInterval(() => {
+    stream.push({ time: new Date() })
+  }, 1000)
+
+  return stream
+}
+// index added by transformer stream
+function xformer () {
+  let count = 0
+
+  return new Transform({
+    objectMode: true,
+    transform: (data, _, done) => {
+      done(null, { ...data, index: count++ })
+    }
+  })
+}
+// data finally consumed by writable stream
+function renderer () {
+  return new Writable({
+    objectMode: true,
+    write: (data, _, done) => {
+      console.log('<-', data)
+      done()
+    }
+  })
+}
+// All used together
+clock()              // Readable stream
+  .pipe(xformer())   // Transform stream
+  .pipe(renderer())  // Writable stream
+```
 
 ### Process
 
