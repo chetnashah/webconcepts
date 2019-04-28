@@ -334,11 +334,13 @@ myModule.directive('directiveName', function factory(injectables) {
     restrict: 'A',
     templateNamespace: 'html',
     scope: false,
+    // SEAT
     controller: function($scope, $element, $attrs, $transclude, otherInjectables) { ... },
     controllerAs: 'stringAlias',
     require: 'siblingDirectiveName', // or // ['^parentDirectiveName', '?optionalDirectiveName', '?^optionalParent'],
     compile: function compile(tElement, tAttrs, transclude) {
       return {
+        // SEAC
         pre: function preLink(scope, iElement, iAttrs, controller) { ... },
         post: function postLink(scope, iElement, iAttrs, controller) { ... }
       }
