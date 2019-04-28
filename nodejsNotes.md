@@ -107,6 +107,26 @@ The `stream.Readable` class is extended to implement a Readable stream.
 
 Custom `Readable` streams must call the `new stream.Readable([options])` constructor and implement the `readable._read()` method
 
+```js
+class CounterReadable extends Readable {
+  constructor(options) {
+    super(options);
+  }
+  _read() {
+    for (let i = 0; i < 1000; i += 2) {
+      // push will queue it in internal buffer
+      // and will take care of emitting 'data' event
+      // in cases where listener is attached.
+      this.push(i.toString() + '\n');
+    }
+    this.push(null);
+  }
+}
+
+const ctrReadable = new CounterReadable();
+ctrReadable.pipe(process.stdout);
+```
+
 **NOte** - Readable will not generate data until a mechanism for either consuming or ignoring that data is provided.
 
 *Note* - Usually streams only allow to pass `string` and `Buffer` to be passed
@@ -214,6 +234,33 @@ clock()              // Readable stream
   .pipe(xformer())   // Transform stream
   .pipe(renderer())  // Writable stream
 ```
+
+#### Stream `pipeline`
+
+This is a module method to pipe between streams forwarding errors and properly cleaning up and provide a callback when the pipeline is complete.
+```js
+const { pipeline } = require('stream');
+const fs = require('fs');
+const zlib = require('zlib');
+
+// Use the pipeline API to easily pipe a series of streams
+// together and get notified when the pipeline is fully done.
+// A pipeline to gzip a potentially huge video file efficiently:
+
+pipeline(
+  fs.createReadStream('The.Matrix.1080p.mkv'),
+  zlib.createGzip(),
+  fs.createWriteStream('The.Matrix.1080p.mkv.gz'),
+  (err) => {
+    if (err) {
+      console.error('Pipeline failed', err);
+    } else {
+      console.log('Pipeline succeeded');
+    }
+  }
+);
+```
+
 
 ### Process
 
