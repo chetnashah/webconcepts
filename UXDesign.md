@@ -24,6 +24,16 @@ Talk to the users to get more ideas about the persona as well as use cases.
 
 ### Use cases drive features
 
+Based on use cases, come up with states/screens.
+some e.g. 
+1. not-signed-in
+2. Listing
+3. Checkout
+4. Help
+5. Homepage/dashboard
+Make state machine of UI, where states would correspond to 
+screens and transtions would correspond to actions like button clicks.
+
 ### Form factors add to persona's behavior
 Form factors like mobile will add following attributes:
 - limited data and battery
@@ -31,6 +41,17 @@ Form factors like mobile will add following attributes:
 - smaller size of screen
 - divided attention
 - handedness and action/CTA placement (simple big and center)
+
+### Some use cases will span all personas as they tend to business
+- User authentication and personalization  (Sign In)
+- Payment methods
+- Getting Help
+
+### User context
+- What is your user doing? walking/running/sleeping/sitting.
+- Where is your user? Where do you want him to be? At home/in transit/outside
+- Who or what are they near? Landmarks/people
+- Who is your user? Child/adult/ other attributes?
 
 
 Write down flows, scenarios and use cases, and talk to users about them.
