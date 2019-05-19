@@ -118,6 +118,10 @@ Pre requisite: Bucket must have correct permissions for cloudfront to access it.
 
 CThis is normal: creation of and changes to CloudFront distributions often take 15-20 minutes or upto 3 hrs to "settle". I presume that during this time AWS is replicating your distribution's data out to all of the edge locations so that the changes take effect everywhere at the same time.
 
+**Note** - from Apr 2019, In order to provide CNAME for a Cloudfront distribution, one must provide an SSL certificate which is valid for that CNAME. Also two steps are necessary:
+1. Create cloudfront distribution specifying CNAME in options.
+2. Route 53 alias record with alias value same as CNAME specified./*
+
 #### 307 redirects from CDN to S3
 It seems CloudFront cached my first requests to files when distribution wasn't fully ready (but it was in deployed state at that time, so beware!). I requested invalidation to all files which were in cache, it took some minutes, but after invalidation was done, all files were curled with http 200 using CloudFront url.
 
