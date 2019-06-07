@@ -140,6 +140,16 @@ var x = <any> foo;// the cast is a prefix
 var x = foo as any;// useful in .tsx files
 ```
 
+### `extends` keyword in generics
+
+Use `extends` and `subtype of` interchangably.
+i.e. `<T extends U>` indicates T is a subtype of U,
+Or A variable of Type `T` is `assiabnable to` a variable of type `U`.
+i.e. 
+`<T extends Animal>` stands for a variable of type `T` is assignable to a variable of type `Animal`. e.g. A variable of type `Cat` is assignable to a variable of type `Animal` so `<T extends Animal>` is satisfied by `T = Cat`.
+
+Or in other words `Cat < Animal` i.e. Cat is subtype of Animal and fits `T extends Animal`.
+
 ### Typescript "declare" keyword
 
 var creates a new variable. declare is used to tell TypeScript that the variable has been created elsewhere. If you use declare, nothing is added to the JavaScript that is generated - it is simply a hint to the compiler.

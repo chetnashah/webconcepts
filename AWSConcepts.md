@@ -141,6 +141,63 @@ Amazon RDS doesn't allow direct host access to a DB instance by using Telnet or 
 
 VPC security groups provide access to DB instances in a VPC. They act as a firewall for the associated DB instance, controlling both inbound and outbound traffic at the instance level. DB instances are created by default with a firewall and a default security group that protect the DB instance.
 
+### AWS API Gateway
+
+* `API`: A collection of HTTP resources defined below.
+* `Resource`: An `HTTP Resource` which is usually an endpoint.
+* `stage`: A `stage` is a deployed version of API.
+
+`Exporting API`: Select a stage, and go to Export: along with API Gateway info.
+
+### Lambda Integration vs Lambda Proxy Integration
+
+1. `Lambda Integration`: The request can be modified by API Gateway before it is sent to the lambda, and response can be modified after it has arrived from the lambda. This `req/res transformation jobs` are done using `mapping templates`.
+API Gateway uses `Velocity Template Language (VTL)` engine to process
+body mapping templates for integration request and integration response.
+
+e.g. lambda
+```js
+module.exports.hello = (event, context, callback) => {
+
+  const response = {
+    message: "Success!! You invoked a sleeping Lambda"
+  };
+
+  callback(null, response);
+};
+```
+
+2. `Lambda Proxy Integration`: No modification to the request (query params, body, variables) and response(statuscode, message) are done by API Gateway.
+
+eg. lambda
+```js
+module.exports.hello = (event, context, callback) => {
+  const response = {
+    statusCode: 200,
+    headers: {
+      "x-custom-header" : "my custom header value"
+    },
+    body: JSON.stringify({
+      message: 'Go Serverless v1.0! Your function executed successfully!',
+      input: event, // this ist the whole req obj in case of proxy integration
+    }),
+  };
+
+  // success response
+  callback(null, response);
+};
+```
+
+### AWS Lambda
+
+`AWS Lambda Execution Role`: A lambda function's execution role grants it permission to access AWS services and resources. Lambda assumes this role when invoked.
+
+Lambda ARN Format: 
+`arn:aws:lambda:REGION_ID:ACCOUNT_ID:function:hello-lambda`
+e.g.
+`arn:aws:lambda:ap-south-1:577284977576:function:hello-lambda`
+
+
 ### AWS CLI
 
 #### S3
