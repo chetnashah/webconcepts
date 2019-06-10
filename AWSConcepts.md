@@ -149,6 +149,85 @@ VPC security groups provide access to DB instances in a VPC. They act as a firew
 
 `Exporting API`: Select a stage, and go to Export: along with API Gateway info.
 
+Use `CloudWatch` to see input/output around API Gateway.
+
+#### API Gateway Body Mapping Templates
+
+Used to override/transform bodies in integration request/response
+using a AVL language.
+
+Commonly used variable is `$input`.
+
+#### API Gateway Models
+
+A `model` defines the data structure of a payload and it is define using
+`JSON Schema`. The `model` can also be used to validate incoming request data at the integration request layer.
+
+Using `model` in your API gateway is optional.
+
+e.g. payload:
+```json
+{
+  "department": "produce",
+  "categories": [
+    "fruit",
+    "vegetables"
+  ],
+  "bins": [
+    {
+      "category": "fruit",
+      "type": "apples",
+      "price": 1.99,
+      "unit": "pound",
+      "quantity": 232
+    },
+    {
+      "category": "fruit",
+      "type": "bananas",
+      "price": 0.19,
+      "unit": "each",
+      "quantity": 112
+    },
+    {
+      "category": "vegetables",
+      "type": "carrots",
+      "price": 1.29,
+      "unit": "bag",
+      "quantity": 57
+    }
+  ]
+}
+```
+
+and corresponding JSON schema:
+```json
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "GroceryStoreInputModel",
+  "type": "object",
+  "properties": {
+    "department": { "type": "string" },
+    "categories": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "bins": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "category": { "type": "string" },
+          "type": { "type": "string" },
+          "price": { "type": "number" },
+          "unit": { "type": "string" },
+          "quantity": { "type": "integer" }
+        }
+      }
+    }
+  }
+}
+```
+
 ### Lambda Integration vs Lambda Proxy Integration
 
 1. `Lambda Integration`: The request can be modified by API Gateway before it is sent to the lambda, and response can be modified after it has arrived from the lambda. This `req/res transformation jobs` are done using `mapping templates`.
