@@ -131,6 +131,10 @@ interface Transition {
     Animator createAnimator(ViewGroup sceneRoot, TransitionValues startValues, TransitionValues endValues);
     void add/removeTarget(View target);
 
+    // internal methods
+    createAnimators(); // creates all animators
+    runAnimators();
+    playTransition();// calls createAnimators followed by runAnimators.
 }
 ```
 
