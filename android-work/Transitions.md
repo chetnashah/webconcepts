@@ -134,7 +134,7 @@ interface Transition {
     // internal methods
     createAnimators(); // creates all animators
     runAnimators();
-    playTransition();// calls createAnimators followed by runAnimators.
+    playTransition();// calls createAnimators followed by runAnimators. 
 }
 ```
 
