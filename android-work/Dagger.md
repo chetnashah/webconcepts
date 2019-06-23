@@ -30,3 +30,15 @@ public interface AppComponent {
 ```
 
 A good place to do `AppComponent` initialization is int the android `Application` class.
+
+### injecting in fragments
+
+The correct place to do injection in fragments is `onAttach`
+
+```java
+@Override
+public void onAttach(Context context) {
+    ((AppController) context.getApplicationContext()).getNetComponent().inject(this);
+    super.onAttach(context);
+}
+```

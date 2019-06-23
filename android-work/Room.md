@@ -75,6 +75,15 @@ Contains Methods for accessing the databse.
 `@Dao` annotated class must be an `Interface` mostly, or an `abstract class`.
 
 Example DAO
+
+The methods can be named anything you like, only annotations
+are looked at.
+
+1. `@Innsert`: needs a void return type.
+2. `@Query`: Give a SQL query as an argument to the `@Query` annotation.
+Return type is what you would need in your UI etc.
+
+
 ```java
 @Dao
 public interface UserDao {
