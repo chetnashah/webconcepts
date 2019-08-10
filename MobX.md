@@ -14,6 +14,52 @@ observable(value)
 
 **If value is an object with a prototype, a JavaScript primitive or function, observable will throw.** Use Boxed Observable observables instead if you want to create a stand-alone observable reference to such a value. MobX will not make objects with a prototype automatically observable; as that is considered the responsibility of its constructor function. Use extendObservable in the constructor, or @observable / decorate in its class definition instead.
 
+### Mobx object tracking
+
+observable applies itself recursively by default.
+all fields in this example are observable:
+```js
+let message = observable({
+    title: "Foo",
+    author: {
+        name: "Michel"
+    },
+    likes: [
+        "John", "Sara"
+    ]
+})
+```
+
+### Mobx array tracking
+
+All observable array functions that do not mutate the array are tracked automatically.
+All array index assignments are detected, but only if `index <= length`.
+
+### Mobx Observable
+
+An object  that has a set of observers and also has functions that do something on becoming observed and becoming unobserved. Also has registered listeners for onBecomeUnobservedListeners, onBecomeObservedListeners
+
+### Mobx Atom
+
+A Mobx Atom is a mobx observable that can `reportChanged` and `reportobserved`.
+
+Atoms can be used to signal MobX that some observable data source has been observed or changed. And MobX will signal the atom whenever it is used or no longer in use.
+
+`reportObserved`: `reportObserved` will return true if the atom is currently being observed by some reaction. `reportObserved` will also trigger the `onBecomeObserved` event handler (startTicking) if needed.
+
+Example atom creation
+```js
+        this.atom = createAtom(
+            // first param: a name for this atom, for debugging purposes
+            "Clock",
+            // second (optional) parameter: callback for when this atom transitions from unobserved to observed.
+            () => this.startTicking(),
+            // third (optional) parameter: callback for when this atom transitions from observed to unobserved
+            // note that the same atom transitions multiple times between these two states
+            () => this.stopTicking()
+        );
+```
+
 ### Observer
 
 It is a part of `mobx-react` (not mobx itself). a link that connects mobx observables to react components like redux-react's `connect` method.
@@ -21,6 +67,34 @@ It is a part of `mobx-react` (not mobx itself). a link that connects mobx observ
 Used for annotating code that must be run on changes happening on observable.
 
 observer turns React (function) components into derivations of the data they render.
+
+### getDependencyTree
+
+`getDependencyTree(observable)` or `getDependencyTree(disposer)`: returns
+all the recursive dependencies of the argument.
+You will need to `$mobx` on disposers to get dep tree:
+```js
+    const c = m.autorun(() => b.get())
+    const cName = "Autorun@4"
+    expect(dtree(c[$mobx])).toEqual({
+        name: cName,
+        dependencies: [
+            {
+                name: bName,
+                dependencies: [
+                    {
+                        name: aName
+                    }
+                ]
+            }
+        ]
+    });
+```
+
+### getObserverTree
+
+Contrary to `getDependencyTree` this list the observers of a given observable.
+
 
 ### Computed values
 

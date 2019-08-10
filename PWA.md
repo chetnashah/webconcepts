@@ -66,7 +66,22 @@ Most of the work is done via `self.addEventListener`.
 
 - You will see install event listener firing but activate event listener not firing, Because to activate, one has to close all tabs first. so solution is to reopen tab.
 
+#### sw activation
 
+New service workers don't activate before all tabs/ windows with your app running in it are closed
+
+#### Multiple sw on page
+
+Yes, but only with different scopes. You can use a service worker for the `/help` "subdirectory" and one for the rest of your app. The more specific service worker (=> `/help`) overwrites the other one for its scope.
+
+#### Unregistering service workers
+
+```js
+    navigator.serviceWorker.getRegistrations().then(function(registrations) {
+     for(let registration of registrations) {
+      registration.unregister()
+    } })
+```
 
 
 #### Default scope on service worker
