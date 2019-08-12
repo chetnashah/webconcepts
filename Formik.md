@@ -12,6 +12,17 @@ Formik can be used in one of three ways
 When rendering `input`, etc. it is necessary to add a `name` or `id` attribute,
 so formik can keep track of it.
 
+### How to use Formik
+
+Wrap the following render prop function inside the Formik Tag
+```jsx
+({ values, errors, touched, handleChange, handleBlur, handleSubmit, isSubmitting}) => (
+    <form>
+        <input type="email" name="email" onChange={handleChange} value={values.email} />
+    </form>
+)
+```
+
 ### Important props in Formik Component
 
 1. `initialValues` : object with signature `any`.
@@ -19,14 +30,14 @@ so formik can keep track of it.
 3. `validationSchema`: can be used with `yup` library
 4. `validate`: regular validation function
 
-### Useful props available inside form
+### Useful props available inside render-prop function
 
 Whether we use `children`, `render` prop or `component` style, we deal 
 with below props to get stuff done:
 
-1. `values`: object that contains all values captured in form.
-2. `errors`: object that contains all errors captured in form
-3. `touched`: object that contains all touched/untouched captured in form.
+1. `values`: object that contains all values captured in form. The keys are the name of the fields used in the form.
+2. `errors`: object that contains all errors captured in form. The keys are the name of the fields used in the form.
+3. `touched`: object that contains all touched/untouched captured in form. The keys are the name of the fields used in the form.
 4. `handleChange`: call this for any `onChange` you observe in form `input`s.
 5. `handleBlur`: call this for any `onBlur` u observe in form `input`s.
 6. `handleSubmit`: call this in `form`'s `onSubmit`.

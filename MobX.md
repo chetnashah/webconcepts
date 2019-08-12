@@ -60,6 +60,9 @@ Example atom creation
         );
 ```
 
+For mobx native observables, whenever we say a reference got tracked inside
+a special function like autorun etc. it is same as being observed.
+
 ### Observer
 
 It is a part of `mobx-react` (not mobx itself). a link that connects mobx observables to react components like redux-react's `connect` method.
@@ -67,6 +70,70 @@ It is a part of `mobx-react` (not mobx itself). a link that connects mobx observ
 Used for annotating code that must be run on changes happening on observable.
 
 observer turns React (function) components into derivations of the data they render.
+
+### onBecomeObserved and onBecomeUnObserved APIs
+
+These are apis available on mobx top level export and are useful to get
+callbacks when parts or complete observable got observed/unobserved.
+Set up given listener on given atom/mobservable, optionally with property.
+e.g.
+```js
+    const d1 = mobx.onBecomeObserved(mobsevableObject, "akey", () => {
+        events.push("a observed")
+    })
+    d1();// disposes listener
+```
+
+```js
+    const x = mobx.observable({
+        a: 3,
+        get b() {
+            return this.a * 2
+        }
+    })
+    const events = []
+
+    // arguments are observable, property, listener
+    const d1 = mobx.onBecomeObserved(x, "a", () => {
+        events.push("a observed")
+    })
+    const d2 = mobx.onBecomeUnobserved(x, "a", () => {
+        events.push("a unobserved")
+    })
+    const d3 = mobx.onBecomeObserved(x, "b", () => {
+        events.push("b observed")
+    })
+    const d4 = mobx.onBecomeUnobserved(x, "b", () => {
+        events.push("b unobserved")
+    });
+
+        x.b
+    x.a = 4
+
+    expect(events.length).toBe(0) // nothing happened yet
+
+    const d5 = mobx.reaction(() => x.b, () => {})// tracking/observing starts
+    expect(events.length).toBe(2)
+    expect(events).toEqual(["b observed", "a observed"])
+
+    const d6 = mobx.reaction(() => x.b, () => {})
+    expect(events.length).toBe(2)
+
+    d5()
+    expect(events.length).toBe(2)// even though d5 disposed, d6 still present
+    d6()// d6 disposal results in unobserving of a and b
+    expect(events.length).toBe(4)
+    expect(events).toEqual(["b observed", "a observed", "b unobserved", "a unobserved"])
+
+    d1()
+    d2()
+    d3()
+    d4()
+    events.splice(0)
+    const d7 = mobx.reaction(() => x.b, () => {})
+    d7()
+    expect(events.length).toBe(0)
+```
 
 ### getDependencyTree
 
