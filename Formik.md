@@ -26,7 +26,7 @@ Wrap the following render prop function inside the Formik Tag
 ### Important props in Formik Component
 
 1. `initialValues` : object with signature `any`.
-2. `onSubmit` : method with signature `(values: any, props: any) => any`
+2. `onSubmit` : method with signature `(values: any, { setSubmitting, resetForm }) => any`
 3. `validationSchema`: can be used with `yup` library
 4. `validate`: regular validation function
 
@@ -40,7 +40,7 @@ with below props to get stuff done:
 3. `touched`: object that contains all touched/untouched captured in form. The keys are the name of the fields used in the form.
 4. `handleChange`: call this for any `onChange` you observe in form `input`s.
 5. `handleBlur`: call this for any `onBlur` u observe in form `input`s.
-6. `handleSubmit`: call this in `form`'s `onSubmit`.
+6. `handleSubmit`: call this in `form`'s `onSubmit`. Basically do `<form onSubmit={handleSubmit}>` so formik is in control of form submission. The `onSubmit` prop of `Formik` component is now the controller of the submission flow
 7. `isSubmitting`: To know the form is in submission state, can be reset by calling `setSubmitting(false)`, usually in `onSubmit` of Formik component, after our work is done.
 
 ### Components exposed
