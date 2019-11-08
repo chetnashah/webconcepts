@@ -20,6 +20,23 @@ e.g.
 </html>
 ```
 
+### The `embed` tag
+c
+The HTML `<embed>` element embeds external content at the specified point in the document. This content is provided by an external application or other source of interactive content such as a browser plug-in.
+e.g.
+```html
+<embed type="video/webm"
+       src="/media/examples/flower.mp4"
+       width="250"
+       height="200">
+```
+
+### The `object` tag
+
+The `<object>` element can represent an external resource, which, depending on the type of the resource, will either be treated as an image, as a nested browsing context, or as an external resource to be processed by a plugin
+There is often a confusion about `iframe` vs `embed` vs `object` tag.
+
+
 ### The fragment identifier `url#abc` and server routing
 
 When an agent (such as a Web browser) requests a resource from a Web server, the agent sends the URI to the server, **but does not send the fragment**. Instead, the agent waits for the server to send the resource, and then the agent processes the resource according to the document type and fragment value.

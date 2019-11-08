@@ -9,6 +9,63 @@ Javascript has 5 primitive types:
 | string       |  string   |
 | boolean      |  boolean  |
 
+
+### typeof works in type expressions as well as in value expressions
+
+When used in JS, i.e. in value expressions, `typeof` behaves as
+typical js `typeof` behaves i.e. returning one of the 6 primitive types
+```js
+let k = typeof 2;
+k == "number"
+let j = typeof { a: 1};
+j == "object"
+let u = typeof (() => {})
+u == "function"
+```
+
+But when used in type expressions, it supplies the inferred type of the value under consideration.
+
+```js
+let obj1 = { foo: 1, bar: true, baz: 'three'};
+let obj2: typeof obj1 = { foo: 22, bar: false, baz: 'one'};
+```
+
+When using `typeof` with a class you need to remember that classes are nominally
+typed so two classes with same shape are not considered same.
+```js
+class MyClass {
+    method(){}
+}
+class YourClass{
+    method(){}
+}
+
+// below line of code throws error
+// let test1: typeof MyClass = YourClass;
+```
+
+### Function subtyping in Flow
+
+If `P <: Q` and `T <: U`, then `Q -> T <: P -> U`.
+It is allowed to have more general inputs and more specific outputs for a function to be a subtype of existing function. 
+
+### Classes cannot have optional properties
+
+e.g.
+```js
+class AB {
+    y ?: string; // unexpected error
+}
+```
+
+Object types allow optional properties
+e.g.
+```js
+type k = {
+    y ?: string;
+}
+```
+
 ### Maybe types
 Mabye types: They can be a given type or null or void indicated by ```?type``` e.g. ```?string```
 
