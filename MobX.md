@@ -14,6 +14,227 @@ observable(value)
 
 **If value is an object with a prototype, a JavaScript primitive or function, observable will throw.** Use Boxed Observable observables instead if you want to create a stand-alone observable reference to such a value. MobX will not make objects with a prototype automatically observable; as that is considered the responsibility of its constructor function. Use extendObservable in the constructor, or @observable / decorate in its class definition instead.
 
+### Core types
+
+```ts
+export class Atom implements IAtom {
+    isPendingUnobservation = false // for effective unobserving. BaseAtom has true, for extra optimization, so its onBecomeUnobserved never gets called, because it's not needed
+    isBeingObserved = false
+    observers = new Set()
+
+    diffValue = 0
+    lastAccessedBy = 0
+    lowestObserverState = IDerivationState.NOT_TRACKING
+}
+
+declare export class Reaction {
+    name: string;
+    isDisposed: boolean;
+    constructor(name: string, onInvalidate: () => void): this;
+    schedule(): void;
+    isScheduled(): boolean;
+    track(fn: () => void): void;
+    dispose(): void;
+    getDisposer(): Lambda & {
+        $mosbservable: Reaction
+    };
+    toString(): string;
+    trace(enterBreakPoint?: boolean): void;
+}
+
+declare export function createAtom(
+    name: string,
+    onBecomeObservedHandler?: () => void,
+    onBecomeUnobservedHandler?: () => void
+): IAtom
+
+declare export function autorun(
+    nameOrFunction: string | ((r: IReactionPublic) => any),
+    options?: IAutorunOptions
+): any
+
+declare export function computed<T>(
+    target: any,
+    key?: string,
+    baseDescriptor?: PropertyDescriptor<*>
+): any
+
+declare export function intercept(
+    object: Object,
+    property: string,
+    handler: IInterceptor<any>
+): Lambda
+
+// observe api start
+declare export function observe<T>(
+    value: IObservableValue<T> | IComputedValue<T>,
+    listener: (change: IValueDidChange<T>) => void,
+    fireImmediately?: boolean
+): Lambda
+declare export function observe<T>(
+    observableArray: IObservableArray<T>,
+    listener: (change: IArrayChange<T> | IArraySplice<T>) => void,
+    fireImmediately?: boolean
+): Lambda
+declare export function observe<K, T>(
+    observableMap: ObservableMap<K, T>,
+    listener: (change: IMapChange<K, T>) => void,
+    fireImmediately?: boolean
+): Lambda
+declare export function observe<K, T>(
+    observableMap: ObservableMap<K, T>,
+    property: string,
+    listener: (change: IValueDidChange<K, T>) => void,
+    fireImmediately?: boolean
+): Lambda
+declare export function observe(
+    object: any,
+    listener: (change: IObjectChange) => void,
+    fireImmediately?: boolean
+): Lambda
+declare export function observe(
+    object: any,
+    property: string,
+    listener: (change: IValueDidChange<any>) => void,
+    fireImmediately?: boolean
+): Lambda
+// observe api end
+
+declare export function reaction<T>(
+    expression: (r: IReactionPublic) => T,
+    effect: (arg: T, r: IReactionPublic) => void,
+    opts?: IReactionOptions
+): () => void
+
+
+export class ObservableValue<T> extends Atom
+    implements IObservableValue<T>, IInterceptable<IValueWillChange<T>>, IListenable {
+}
+
+export interface IObservableValue<T> {
+    get(): T
+    set(value: T): void
+    intercept(handler: IInterceptor<IValueWillChange<T>>): Lambda
+    observe(listener: (change: IValueDidChange<T>) => void, fireImmediately?: boolean): Lambda
+}
+
+export interface IAtom extends IObservable {
+    reportObserved()
+    reportChanged()
+}
+
+
+export interface IDependencyTree {
+    name: string;
+    dependencies?: IDependencyTree[];
+}
+
+export interface IObserverTree {
+    name: string;
+    observers?: IObserverTree[];
+}
+
+
+export interface IComputedValue<T> {
+    get(): T;
+    set(value: T): void;
+    observe(listener: (newValue: T, oldValue: T) => void, fireImmediately?: boolean): Lambda;
+}
+
+export interface IObservable {}
+
+export interface IDepTreeNode {
+    name: string;
+    observing?: IObservable[];
+}
+
+
+export interface IDerivation {
+    name: string;
+}
+
+export interface IReactionPublic {
+    dispose: () => void;
+    trace: (enterBreakPoint?: boolean) => void;
+}
+
+declare export class IListenable {
+    observe(handler: (change: any, oldValue?: any) => void, fireImmediately?: boolean): Lambda;
+}
+
+export interface IComputedValue<T> {
+    get(): T;
+    set(value: T): void;
+    observe(listener: (newValue: T, oldValue: T) => void, fireImmediately?: boolean): Lambda;
+}
+
+export interface IEnhancer<T> {
+    (newValue: T, oldValue: T | void, name: string): T;
+}
+
+
+export interface IComputed {
+    <T>(func: () => T, setter?: (value: T) => void): IComputedValue<T>;
+    <T>(func: () => T, options: IComputedValueOptions<T>): IComputedValue<T>;
+    (target: Object, key: string, baseDescriptor?: PropertyDescriptor<*>): void;
+    struct(target: Object, key: string, baseDescriptor?: PropertyDescriptor<*>): void;
+}
+
+export interface IObjectChange {
+    name: string;
+    object: any;
+    type: "update" | "add" | "remove";
+    oldValue?: any;
+    newValue: any;
+}
+
+
+export interface IArrayChange<T> {
+    type: "update";
+    object: IObservableArray<T>;
+    index: number;
+    newValue: T;
+    oldValue: T;
+}
+
+export interface IArraySplice<T> {
+    type: "splice";
+    object: IObservableArray<T>;
+    index: number;
+    added: T[];
+    addedCount: number;
+    removed: T[];
+    removedCount: number;
+}
+
+
+
+
+
+declare export class ObservableMap<K, V> {
+    constructor(initialData?: IMapEntries<K, V> | KeyValueMap<V>, valueModeFunc?: Function): this;
+    has(key: K): boolean;
+    set(key: K, value: V): void;
+    delete(key: K): boolean;
+    get(key: K): V;
+    keys(): Iterator<K>;
+    values(): Iterator<V>;
+    entries(): IMapEntries<K, V> & Iterator<IMapEntry<K, V>>;
+    forEach(callback: (value: V, key: K, object: KeyValueMap<K, V>) => void, thisArg?: any): void;
+    merge(other: ObservableMap<K, V> | KeyValueMap<K, V>): ObservableMap<K, V>;
+    clear(): void;
+    replace(other: ObservableMap<K, V> | KeyValueMap<K, V>): ObservableMap<K, V>;
+    size: number;
+    toJS(): Map<K, V>;
+    toPOJO(): KeyValueMap<V>;
+    toJSON(): KeyValueMap<V>;
+    toString(): string;
+    observe(listener: (changes: IMapChange<K, V>) => void, fireImmediately?: boolean): Lambda;
+    intercept(handler: IInterceptor<IMapWillChange<K, V>>): Lambda;
+}
+
+```
+
 ### Mobx object tracking
 
 observable applies itself recursively by default.
