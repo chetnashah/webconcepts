@@ -1,4 +1,15 @@
 
+### Derivation stack
+
+When a recomputation is triggered the function is pushed onto the derivation stack; a function stack of currently running derivations.
+
+As long as a computation is running, every observable that is accessed will register itself as a dependency of the topmost function of the derivation stack.
+
+e.g. a reaction depends on computed, and computed depends on observable.
+Top of the stack is computed value calculation,
+followed by reaction that observes the computed.
+
+When a computation completes, it will have obtained a list of observables that were accessed during execution. In the profileView for example, this list will either just contain the nickName property, or the nickName and fullName properties. This list is diffed against the previous list of observables. Any removed items will be unobserved (computed values might go back from reactive to lazy mode at this point) and any added observables will be observed until the next computation. When the value of for example firstname is changed in the future, it knows that fullName needs to be recomputed. Which in turn will cause profile view to recomputed
 
 ### Observable state
 
