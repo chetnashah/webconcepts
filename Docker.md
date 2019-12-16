@@ -14,6 +14,12 @@ Use `docker logs` to get logs for given container
 docker logs container-id
 ```
 
+### Seeing all processes being run by docker
+
+```sh
+pstree -c -p -A $(pgrep dockerd)
+```
+
 ### Exposing port
 
 If a service needs to be accessible by a process not running in a container, then port needs to be exposed via the Host.
@@ -38,9 +44,18 @@ By default, the port on the host is mapped to 0.0.0.0, which means all IP addres
 
 ### Running command in a docker container using `docker exec`
 
-```
+```sh
 docker exec -it CONTAINER COMMAND
+# e.g.
+docker exec -it mycontainer env
+
+# PATH=/user/local/bin:/usr/sbin:/bin
+# TERM=xterm
 ```
+
+
+#### docker exec interactive
+
 
 
 ### Managing docker networks
@@ -64,3 +79,111 @@ List networks
 ```
 docker network ls
 ```
+
+### types of namespaces
+
+The available namespaces are:
+
+Mount (mnt)
+Process ID (pid)
+Network (net)
+Interprocess Communication (ipc)
+UTS (hostnames)
+User ID (user)
+Control group (cgroup)
+
+### unshared tool
+
+Run a program with some namespaces unshared from parent
+
+By unsharing the Pid namespace from the host, it looks like the bash prompt is the only process running on the machine.
+```sh
+sudo unshare --fork --pid --mount-proc bash
+ps aux
+exit
+```
+
+### nsenter tool
+
+NSEnter is used to attach processes to existing Namespaces. Useful for debugging purposes.
+
+### chroot
+
+An important part of a container process is the ability to have different files that are independent of the host. This is how we can have different Docker Images based on different operating systems running on our system.
+
+Chroot provides the ability for a process to start with a different root directory to the parent OS. This allows different files to appear in the root.
+
+### cgroups
+
+`CGroups` limit the amount of resources a process can consume. These cgroups are values defined in particular files within the `/proc` directory.
+
+Seeing cgroup mappings of a pid:
+`cat /proc/$PID/cgroup`
+
+### Container image
+
+A container image is a tar file containing tar files. Each of the tar file is a layer. Once all tar files have been extract into the same location then you have the container's filesystem.
+
+Other important files are `repositories` and `manifest.json` that are present in the image.
+
+e.g.
+```sh
+docker pull redis:3.2.11-alpine # brings down image
+docker save redis:3.2.11-alpine > redis.tar # save the image as tar file
+tar -xvg redis.tar # extract the tar file
+#output is below
+46a2fed8167f5d523f9a9c07f17a7cd151412fed437272b517ee4e46587e5557/
+46a2fed8167f5d523f9a9c07f17a7cd151412fed437272b517ee4e46587e5557/VERSION
+46a2fed8167f5d523f9a9c07f17a7cd151412fed437272b517ee4e46587e5557/json
+46a2fed8167f5d523f9a9c07f17a7cd151412fed437272b517ee4e46587e5557/layer.tar
+498654318d0999ce36c7b90901ed8bd8cb63d86837cb101ea1ec9bb092f44e59/
+498654318d0999ce36c7b90901ed8bd8cb63d86837cb101ea1ec9bb092f44e59/VERSION
+498654318d0999ce36c7b90901ed8bd8cb63d86837cb101ea1ec9bb092f44e59/json
+498654318d0999ce36c7b90901ed8bd8cb63d86837cb101ea1ec9bb092f44e59/layer.tar
+ad01e7adb4e23f63a0a1a1d258c165d852768fb2e4cc2d9d5e71698e9672093c/
+ad01e7adb4e23f63a0a1a1d258c165d852768fb2e4cc2d9d5e71698e9672093c/VERSION
+ad01e7adb4e23f63a0a1a1d258c165d852768fb2e4cc2d9d5e71698e9672093c/json
+ad01e7adb4e23f63a0a1a1d258c165d852768fb2e4cc2d9d5e71698e9672093c/layer.tar
+ca0b6709748d024a67c502558ea88dc8a1f8a858d380f5ddafa1504126a3b018.json
+da2a73e79c2ccb87834d7ce3e43d274a750177fe6527ea3f8492d08d3bb0123c/
+da2a73e79c2ccb87834d7ce3e43d274a750177fe6527ea3f8492d08d3bb0123c/VERSION
+da2a73e79c2ccb87834d7ce3e43d274a750177fe6527ea3f8492d08d3bb0123c/json
+da2a73e79c2ccb87834d7ce3e43d274a750177fe6527ea3f8492d08d3bb0123c/layer.tar
+db1a23fc1daa8135a1c6c695f7b416a0ac0eb1d8ca873928385a3edaba6ac9a3/
+db1a23fc1daa8135a1c6c695f7b416a0ac0eb1d8ca873928385a3edaba6ac9a3/VERSION
+db1a23fc1daa8135a1c6c695f7b416a0ac0eb1d8ca873928385a3edaba6ac9a3/json
+db1a23fc1daa8135a1c6c695f7b416a0ac0eb1d8ca873928385a3edaba6ac9a3/layer.tar
+f07352aa34c241692cae1ce60ade187857d0bffa3a31390867038d46b1e7739c/
+f07352aa34c241692cae1ce60ade187857d0bffa3a31390867038d46b1e7739c/VERSION
+f07352aa34c241692cae1ce60ade187857d0bffa3a31390867038d46b1e7739c/json
+f07352aa34c241692cae1ce60ade187857d0bffa3a31390867038d46b1e7739c/layer.tar
+manifest.json
+repositories
+
+## meta data files are repositories and manifest.json
+$ cat repositories
+{"redis":{"3.2.11-alpine":"46a2fed8167f5d523f9a9c07f17a7cd151412fed437272b517ee4e46587e5557"}}
+$ cat manifest.json
+[{"Config":"ca0b6709748d024a67c502558ea88dc8a1f8a858d380f5ddafa1504126a3b018.json","RepoTags":["redis:3.2.11-alpine"],"Layers":["498654318d0999ce36c7b90901ed8bd8cb63d86837cb101ea1ec9bb092f44e59/layer.tar","ad01e7adb4e23f63a0a1a1d258c165d852768fb2e4cc2d9d5e71698e9672093c/layer.tar","da2a73e79c2ccb87834d7ce3e43d274a750177fe6527ea3f8492d08d3bb0123c/layer.tar","db1a23fc1daa8135a1c6c695f7b416a0ac0eb1d8ca873928385a3edaba6ac9a3/layer.tar","f07352aa34c241692cae1ce60ade187857d0bffa3a31390867038d46b1e7739c/layer.tar","46a2fed8167f5d523f9a9c07f17a7cd151412fed437272b517ee4e46587e5557/layer.tar"]}]
+
+## extracting a layer shows the files inside
+$ tar -xvf da2a73e79c2ccb87834d7ce3e43d274a750177fe6527ea3f8492d08d3bb0123c/layer.tar
+etc/
+etc/apk/
+etc/apk/world
+lib/
+lib/apk/
+lib/apk/db/
+lib/apk/db/installed
+lib/apk/db/lock
+lib/apk/db/scripts.tar
+lib/apk/db/triggers
+sbin/
+sbin/su-exec
+var/
+var/cache/
+var/cache/misc/
+```
+
+### Creating image without dockerfile
+
