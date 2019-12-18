@@ -3,6 +3,9 @@ Docker images are compiled version of a filesystem.
 
 Docker containers are live/process version of a docker image.
 
+Best practices: https://runnable.com/blog/9-common-dockerfile-mistakes
+
+Using docker on windows: use docker toolbox. (it wraps a linux vm inside it)
 
 Use docker inspect to get more info on a container
 ```sh
@@ -19,6 +22,41 @@ docker logs container-id
 ```sh
 pstree -c -p -A $(pgrep dockerd)
 ```
+
+### Volumes vs bind mounts
+
+Bind mounts have been around since the early days of Docker. Bind mounts have limited functionality compared to volumes. 
+
+When you use a bind mount, a file or directory on the host machine is mounted into a container. The file or directory is referenced by its full or relative path on the host machine. 
+
+By contrast, when you use a volume, a new directory is created within Docker’s storage directory on the host machine, and Docker manages that directory’s contents.
+
+#### Why volumes
+
+* Volumes are easier to back up or migrate than bind mounts.
+* You can manage volumes using Docker CLI commands or the Docker API.
+* Volumes work on both Linux and Windows containers.
+* Volumes can be more safely shared among multiple containers.
+* Volume drivers let you store volumes on remote hosts or cloud providers, to encrypt the contents of volumes, or to add other functionality.
+* New volumes can have their content pre-populated by a container.
+
+`-v` or `--volume`: Consists of three fields, separated by colon characters (:). The fields must be in the correct order, and the meaning of each field is not immediately obvious.
+
+e.g.
+```sh
+docker run -d \
+  --name devtest \
+  -v myvol2:/app \
+  nginx:latest
+```
+
+* In the case of named volumes, the first field is the name of the volume, and is unique on a given host machine. For anonymous volumes, the first field is omitted.
+* The second field is the path where the file or directory are mounted in the container.
+* The third field is optional, and is a comma-separated list of options, such as ro. These options are discussed below.
+
+### tmpfs mounts
+
+A tmpfs mount is not persisted on disk, either on the Docker host or within a container. It can be used by a container during the lifetime of the container, to store non-persistent state or sensitive information
 
 ### Exposing port
 
