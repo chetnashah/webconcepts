@@ -3,9 +3,9 @@
 
 **tip**: DO not confuse `transition` with `transform`. 
 
-`transition` specifies animation via taking in a property and a timing.
+`transition` specifies animation via taking in a property (basically sets up listener on property for changes and runs timers on change) and a timing. (thus being declarative in nature i.e. no explicit "start" etc required).
 
-`transform` tells the browser to rotate, scale or translate a view.
+`transform` tells the browser to rotate, scale or translate a view (does not animate on its own, needs `transition` to work)
 
 To create a transition effect, you must specify two things:
 

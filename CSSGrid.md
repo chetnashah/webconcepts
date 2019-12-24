@@ -1,4 +1,113 @@
 
+Declaring `display: grid` gives you a one column grid, 
+so your items will continue to display one below the other 
+as they do in normal flow.
+
+### fr unit
+
+This unit represents one fraction of the available space in the grid container.
+
+In this case the space is equally given to all the columns saying `1fr`
+```css
+.container {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+}
+```
+
+### Showing gap between columns/rows
+
+`grid-column-gap` and `grid-row-gap` and `grid-gap` should be used together with template-colums like mentioned above.
+
+
+### grid-template-*
+
+This rule is applied in the container css
+`grid-template-*` declarations take `track size` in the arguments
+
+```css
+.container {
+  /* this makes a 3 rows x 5 column grid with given track sizes */
+  grid-template-columns: 40px 50px auto 50px 40px;
+  grid-template-rows: 25% 100px auto;
+}
+```
+
+A shorthand `grid-template` stands for both rows and columns combined separated by a `/`: 
+e.g.
+```css
+.container {
+  grid-template: 40px 50px 1fr / 30px 30px;
+}
+
+grid-template: "a a a"
+               "b b b";
+grid-template: "a a a" 20%
+               "b b b" auto;
+```
+
+### grid-row-* and grid-column-*
+
+These rules are applied in the grid-item css
+These rules take `start and end lines` or `start line with span` as arguments
+These rules will override whatever is specified in `grid-template-*` mentioned above
+
+```css
+.item-a {
+  grid-column-start: 2;
+  grid-column-end: five;
+  grid-row-start: 1;
+  grid-row-end: 3;
+}
+
+.item-b {
+  grid-column: 2 / 5; /* column occupation of this item goes from line-2 to line-5 */
+  grid-row: 1 / span 2 /* row occupation of this item goes from line-1 to line-3 */
+}
+```
+
+### grid-area and grid-template-areas
+
+The `grid-area` CSS property is a shorthand property for `grid-row-start`, `grid-column-start`, `grid-row-end` and `grid-column-end`, specifying a grid item’s size and location.
+Other way is it should to refer to a predefined name present in `grid-template-areas` which has already a layout.
+
+The `grid-template-areas` CSS property specifies named grid areas.
+https://developer.mozilla.org/en-US/docs/Web/CSS/grid-template-areas
+```css
+#page {
+  display: grid;
+  width: 100%;
+  height: 250px;
+  grid-template-areas: "head head"
+                       "nav  main"
+                       "nav  foot";
+                       /* seeing below makes a 3row x 2col layout  */
+                       /* which will be alloted to 4 names mentioned above */
+  grid-template-rows: 50px 1fr 30px;
+  grid-template-columns: 150px 1fr;
+}
+
+#page > header {
+  grid-area: head;
+  background-color: #8ca0ff;
+}
+
+#page > nav {
+  grid-area: nav;
+  background-color: #ffa08c;
+}
+
+#page > main {
+  grid-area: main;
+  background-color: #ffff64;
+}
+
+#page > footer {
+  grid-area: foot;
+  background-color: #8cffa0;
+}
+```
+
 ### Properties of grid container
 
 * display
