@@ -14,3 +14,17 @@ The only specially named directory is the `pages` directory.
 
 
 Filenames in `pages` become the routes.
+
+### next cli
+
+Has its own commands like
+1. `next` - an alias for dev
+2. `next build` - build the bundle
+3. `next start` - start next app for testing
+
+### Deployment
+
+If one uses `now`, then nothing needs to be done for deployment
+`now` will take care of building and deploying given above scripts are
+added in package.json.
+
