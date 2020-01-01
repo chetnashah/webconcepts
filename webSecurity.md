@@ -3,6 +3,15 @@
 
 `httpsecurityreport.com`
 
+#### Generating RSA keys online
+
+http://travistidwell.com/jsencrypt/demo/
+https://www.csfieldguide.org.nz/en/interactives/rsa-key-generator/
+
+Easily get ssl cert setup
+https://zerossl.com
+
+
 ### SSL Certificates
 
 check ssl readyness of your site on : ssllabs 
