@@ -15,6 +15,10 @@ The only specially named directory is the `pages` directory.
 
 Filenames in `pages` become the routes.
 
+### special directories in the project
+
+The only special directories are `/pages` and `/public`.
+
 ### next cli
 
 Has its own commands like
@@ -27,6 +31,34 @@ Has its own commands like
 If one uses `now`, then nothing needs to be done for deployment
 `now` will take care of building and deploying given above scripts are
 added in package.json.
+
+### Next routing
+
+Unlike react routing, the base routes are automatically declared when you start making files in `/pages` directory.
+
+But in order to get information for the current route/query params etc. one can import `useRouter` from `next/router`
+e.g.
+```js
+import { useRouter } from 'next/router';
+
+const Page = () => {
+    const router = useRouter();
+
+    return (
+        <div>
+            <h1>{router.query.title}</h1>
+            <p>This is a blog post content regarding {router.query.title}</p>
+        </div>
+    )
+}
+
+export default Page;
+```
+
+Path params: path params which are made using file names like `[id].js` are also populated within the 
+`router.query` object.
+
+Currently, you can not make part of a page name dynamic, only the full name. For example, `/pages/p/[id].js` is supported but `/pages/p/post-[id].js` is not currently
 
 ### getInitialProps and SSR
 

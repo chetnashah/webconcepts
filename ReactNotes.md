@@ -1,3 +1,102 @@
+
+### React Refs
+it can be inconvenient for highly reusable “leaf” components like FancyButton or MyTextInput. These components tend to be used throughout the application in a similar manner as a regular DOM button and input, and accessing their DOM nodes may be unavoidable for managing focus, selection, or animations
+
+Refs provides a way to access DOM nodes or react elements created in render method
+
+Cannot use ref attribute on function components bcoz they don't have instances.
+
+Two part process: 
+1. creation via `createRef`, usually in constructor. e.g. `this.myRef = React.createRef()`.
+2. attaching via `ref` attribute in a react element in render method e.g. 
+`ref={this.myRef}`, where `this.myRef` is the ref created via `1.`
+
+
+Shape of ref variable `{ current: any }`, e.g. `const node = this.myRef.current`.
+
+What is attached to ref.current?
+
+In case of ref being used on html element, current points to dom node.
+In case of ref being used on a custom class component, current points to mounted instance of the component.
+
+ref updates happen before componentDidMount or componentDidUpdate lifecycle methods
+
+#### callback refs
+
+Provide a callack where argument is access to the node directly, no `current` involvement.
+
+```js
+// Use the `ref` callback to store a reference to the text input DOM
+        <input
+          type="text"
+          ref={this.setMyInputNode}
+        />
+
+// ...
+  function setMyInputNode = (el) => {
+    this.myInputNode = el;
+  }
+```
+
+React will call the ref callback with the DOM element when the component mounts, and call it with null when it unmounts. Refs are guaranteed to be up-to-date before componentDidMount or componentDidUpdate fires.
+
+If the ref callback is defined as an inline function, it will get called twice during updates, first with null and then again with the DOM element. This is because a new instance of the function is created with each render, so React needs to clear the old ref and set up the new one. You can avoid this by defining the ref callback as a bound method on the class, but note that it shouldn’t matter in most cases.
+
+
+
+#### Ref forwarding pre 16.3
+
+https://gist.github.com/gaearon/1a018a023347fe1c2476073330cc5509
+
+#### Ref forwarding post 16.3
+
+https://reactjs.org/docs/forwarding-refs.html
+Ref forwarding is a technique for automatically passing a ref through a component to one of its children.
+
+`React.forwardRef` accepts a render function that receives props and ref parameters and returns a React node. Basically make your function component accept one more parameter named ref and set it up where it really goes, button in this case.
+
+e.g.
+```js
+const FancyButton = React.forwardRef((props, ref) => (
+  <button ref={ref} className="FancyButton">
+    {props.children}
+  </button>
+));
+
+// You can now get a ref directly to the DOM button:
+const ref = React.createRef();
+<FancyButton ref={ref}>Click me!</FancyButton>;// ref.current directly refers to button instead of FancyButton instance due to forwarding
+```
+
+If you add a ref to a HOC, the ref will refer to the outermost container component, not the wrapped component.
+This means that refs intended for our FancyButton component will actually be attached to the LogProps component (an HOC).
+
+To fix it use following:
+```js
+function logProps(Component) {
+  class LogProps extends React.Component {
+    componentDidUpdate(prevProps) {
+      console.log('old props:', prevProps);
+      console.log('new props:', this.props);
+    }
+
+    render() {
+      const {forwardedRef, ...rest} = this.props;
+
+      // Assign the custom prop "forwardedRef" as a ref
+      return <Component ref={forwardedRef} {...rest} />;
+    }
+  }
+
+  // Note the second param "ref" provided by React.forwardRef.
+  // We can pass it along to LogProps as a regular prop, e.g. "forwardedRef"
+  // And it can then be attached to the Component.
+  return React.forwardRef((props, ref) => {
+    return <LogProps {...props} forwardedRef={ref} />;
+  });
+}
+```
+
 #### React setState signatures
 
 Think of setState as a request rather than a mutation.
