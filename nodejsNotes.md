@@ -12,13 +12,67 @@ $ node
 > require.resolve('react-dom')
 'C:\\Users\\abcsh\\Documents\\programming\\formik-app\\node_modules\\react-dom\\index.js'
 ```
+### main module
+
+The module that gets loaded first via the cli is the main module.
+
+#### console logging the module
+
+Just do `console.log(module)` in any file and you will get info about that module.
+This is the same object to which we set our `exports` property to export values.
+e.g. `module.exports = {/* ... */}`
+
+Also the value returned while doing `require` of a file/module is exactly the 
+same as the `exports` object of the require'd module.
+
+Also when file is required for the first time it is said to be loading/executing.
+The reuslt of this require is cached for subsequent requires.
+
+#### Where does the module scope come from?
+Essentially all files when required are wrapped within an IIFE, which introduces
+a scope, thus allowing modularity and isolation.
+e..g
+```js
+function(exports, require, module, __filename, __dirname){
+  /* Your module code is here */
+}(exports,require,module,filename,dirname);
+```
+This function could be called a `module wrapper function`.
+
 ### http module
 
 1. `http.request(options, callback)` : Represents an inprogress request.
  The callback will be added as one time listener for `response` event. This method returns an instance of `http.ClientRequest` class. The `ClientRequest` instance is a writeablestream. It represents an inprogress request from node itself.
 The `response` event on `http.ClientRequest` instance, contains a single argument which is an instance of `http.IncomingMessage`.
 
+### path module
+
+Useful method is `path.parse(pathString)`.
+Returns an object with full parsing of the path like so:
+```js
+path.parse('/home/user/dir/file.txt');
+// Returns:
+// { root: '/',
+//   dir: '/home/user/dir',
+//   base: 'file.txt',
+//   ext: '.txt',
+//   name: 'file' }
+
+/*
+┌─────────────────────┬────────────┐
+│          dir        │    base    │
+├──────┬              ├──────┬─────┤
+│ root │              │ name │ ext │
+"  /    home/user/dir / file  .txt "
+└──────┴──────────────┴──────┴─────┘
+(all spaces in the "" line should be ignored — they are purely for formatting)
+*/
+```
+
 ### fs
+
+All calls have either sync or async API. mostly inspired from posix standard.
+
 
 #### An idiom to clear files quickly
 
