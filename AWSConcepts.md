@@ -17,6 +17,21 @@ Also need to specify Resources that this policy applies to.
 A `policy` is an alias for permission.
 
 
+### CloudTrail vs CloudWatch
+
+Both do Logging.
+
+#### CludTrail
+
+Concerned with - who did what on AWS (people doing actions in AWS account level).
+e.g. somebody shut down an EC2. (User/time/ip adress logged who did this)
+
+#### CloudWatch
+
+Metrics of what is happening to your AWS resources.
+CloudWatch logs would be application logs etc.
+
+
 ### User
 
 A User might represent a person/application/API.
@@ -93,7 +108,31 @@ Stopping and starting an EBS boot instance is very similar to simply rebooting t
 
 The instance is assigned a new internal IP address.
 The instance is assigned a new public IP address.
-All data on ephemeral storage (often under /mnt) is lost
+All data on ephemeral storage (often under /mnt) is lost.
+Underlying host may change.
+
+Things you need to launch an EC2:
+1. VPC, Subnet
+2. SEcurity group
+3. key pair(loggin in)
+4. storage (usually EBS)
+
+#### EC2 storage
+1. Instance store (ephemeral): Hard disk on host machine, lose this data if EC2 shut down.
+2. EBS storage: Elastic block storage. It is network storage volume that is independent and re-usable.
+
+#### EC2 pricing model
+
+1. On Demand instances: You start them and then you are charged per second/hour.
+2. Reserved instances: Pay upfront for 1-3 years and save a lot.
+3. spot instances: 
+
+#### Accessing AWS resources from EC2
+
+Instead of hard coding credentials in your app. (Maybe put them in a config/env?)
+One can instead, attach roles with proper permissions to EC2.
+This way it can access S3, dynamoDB from EC2. You can have only one role associated with an EC2 at a time.
+
 
 
 #### Elastic IP address (Remappable reserved IP addresses)
