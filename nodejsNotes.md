@@ -118,7 +118,7 @@ server.on('request', (req: IncomingMessage,res: ServerResponse) => {
 // do curl localhost:3000/ and you should get hello world and req url logged
 
 // Another shortcut for this above is directly doing following:
-const server = require('http').createServer((req, res) => {
+const server = require('http').createServer((req: IncomingMessage, res: ServerResponse) => {
     console.log('a req event:');
     console.log(req.url);
     res.end('hello world');
@@ -138,8 +138,8 @@ const options = {
     port: 80,
     path: '/get'
   };
-const clientRequest = http.get(options);
-clientRequest.on('response', (res) =>{
+const clientRequest: ClientRequest = http.get(options);
+clientRequest.on('response', (res: IncomingMessage) =>{
     console.log('httpbin returned: ', res.statusCode);
     const chunks = [];
     res.on('data', (data) => {
@@ -147,7 +147,7 @@ clientRequest.on('response', (res) =>{
         console.log(chunks.toString());
     });
     console.log(chunks);
-})
+});
 ```
 
 ### path module
