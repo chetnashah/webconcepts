@@ -201,6 +201,9 @@ All listners bound to  event emitter with same name are called synchronously whe
 event is emitted with a given name.
 The values returned by listeners are **ignored**
 
+Getting list of event names: `emitter.eventNames()`
+Returns an array listing the events for which the emitter has registered listeners
+
 ```js
 const EventEmitter = require('events');
 
@@ -213,6 +216,15 @@ myEmitter.on('myevent1', () => {
 myEmitter.emit('myevent1');
 ```
 
+Adding an event listener:
+```
+emitter.on(eventName, listener)
+eventName <string> | <symbol> The name of the event.
+listener <Function> The callback function
+Returns: <EventEmitter>
+```
+Adds the listener function to the end of the listeners array for the event named eventName. No checks are made to see if the listener has already been added. Multiple calls passing the same combination of eventName and listener will result in the listener being added, and called, multiple times.
+
 `on` is a synonym for `addListener`.
 Has methods .on(eventName, listener) -> to register listeners,
 and .emit(eventName) -> synchronously calls all registered listeners.
@@ -223,6 +235,10 @@ If you pass `function abc()` with `addListener/on` methods, then `this` inside t
 But if you pass an arrow function with `addListener/on`, then `this` is lexically bound.
 
 * calling order for listeners - Listeners are called in the order in which they were registered.
+
+The EventEmitter instance will emit its own `newListener` event before a listener is added to its internal array of listeners.
+The 'removeListener' event is emitted after the listener is removed.
+
 
 All readable and writable streams are event-emitters in nodejs.
 
