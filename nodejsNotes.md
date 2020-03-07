@@ -16,6 +16,65 @@ $ node
 
 The module that gets loaded first via the cli is the main module.
 
+### error handling
+
+Default behavior:
+The `uncaughtException` event is emitted in the `process` eventEmitter when an uncaught JavaScript exception bubbles all the way back to the event loop. By default, Node.js handles such exceptions by printing the stack trace to stderr and exiting with code 1, overriding any previously set process.exitCode.
+
+**Note**: The correct use of 'uncaughtException' is to perform synchronous cleanup of allocated resources (e.g. file descriptors, handles, etc) before shutting down the process. It is not safe to resume normal operation after 'uncaughtException'.
+
+To restart a crashed application in a more reliable way, whether 'uncaughtException' is emitted or not, an external monitor should be employed in a separate process to detect application failures and recover or restart as needed.
+
+#### unhandled rejection
+
+"Rejection" is the canonical term for a promise reporting an error.
+```
+const { MongoClient } = require('mongodb');
+MongoClient.connect('mongodb://notadomain');
+
+/* Output:
+$ node test.js
+(node:9563) UnhandledPromiseRejectionWarning: Unhandled promise rejection (rejection id: 1): MongoError: failed to connect to server [notadomain:27017] on first connect [MongoError: getaddrinfo ENOTFOUND notadomain notadomain:27017]
+(node:9563) DeprecationWarning: Unhandled promise rejections are deprecated. In the future, promise rejections that are not handled will terminate the Node.js process with a non-zero exit code. */
+```
+
+```
+new Promise((resolve, reject) => {
+  setTimeout(() => reject('woops'), 500);
+});
+
+/* Output:
+$ node test.js
+(node:8128) UnhandledPromiseRejectionWarning: Unhandled promise rejection (rejection id: 1): woops
+(node:8128) DeprecationWarning: Unhandled promise rejections are deprecated. In the future, promise rejections that are not handled will terminate the Node.js process with a non-zero exit code. */
+```
+
+```
+new Promise(() => { throw new Error('exception!'); });
+
+/* Output
+$ node test.js
+(node:8383) UnhandledPromiseRejectionWarning: Unhandled promise rejection (rejection id: 1): Error: exception!
+(node:8383) DeprecationWarning: Unhandled promise rejections are deprecated. In the future, promise rejections that are not handled will terminate the Node.js process with a non-zero exit code. */
+```
+
+What will following code do?
+```js
+new Promise((_, reject) => reject(new Error('woops'))).
+  catch(error => { console.log('caught', err.message); });
+//   $ node test.js
+// (node:9825) UnhandledPromiseRejectionWarning: Unhandled promise rejection (rejection id: 2): ReferenceError: err is not defined
+// (node:9825) DeprecationWarning: Unhandled promise rejections are deprecated. In the future, promise rejections that are not handled will terminate the Node.js process with a non-zero exit code.
+```
+
+It will throw an unhandledRejection because `err` in the catch block is not defined.
+`unhandledRejection` will get the argument you passed to `reject()`.
+
+
+if you attach a listener to 'unhandledRejection', the default warning to the console (the UnhandledPromiseRejectionWarning from previous examples) will not print to the console. That message only gets printed if you don't have a handler for 'unhandledRejection'.
+
+
+
 #### console logging the module
 
 Just do `console.log(module)` in any file and you will get info about that module.
@@ -41,9 +100,55 @@ This function could be called a `module wrapper function`.
 
 ### http module
 
-1. `http.request(options, callback)` : Represents an inprogress request.
+1. `http.request(options, callback)` : Represents an inprogress request outgoing from node.
  The callback will be added as one time listener for `response` event. This method returns an instance of `http.ClientRequest` class. The `ClientRequest` instance is a writeablestream. It represents an inprogress request from node itself.
 The `response` event on `http.ClientRequest` instance, contains a single argument which is an instance of `http.IncomingMessage`.
+
+2. `http.createServer()` returns a server instance which is an eventemitter.
+Main event is `request` on the `Server` instance. Main function to start accepting requests
+is `server.listen(portNo)`.
+```js
+const server = require('http').createServer();
+server.listen(3000);
+server.on('request', (req: IncomingMessage,res: ServerResponse) => {
+    console.log('a req event:');
+    console.log(req.url);
+    res.end('hello world');
+});
+// do curl localhost:3000/ and you should get hello world and req url logged
+
+// Another shortcut for this above is directly doing following:
+const server = require('http').createServer((req, res) => {
+    console.log('a req event:');
+    console.log(req.url);
+    res.end('hello world');
+});
+```
+
+3. An `http.IncomingMessage` object is created by:
+
+`http.Server` when listening to the request event
+`http.ClientRequest` when listening to the response event
+
+```js
+// This is an outgoing request from node
+const url = 'https://httpbin.org/get';
+const options = {
+    host: 'httpbin.org',
+    port: 80,
+    path: '/get'
+  };
+const clientRequest = http.get(options);
+clientRequest.on('response', (res) =>{
+    console.log('httpbin returned: ', res.statusCode);
+    const chunks = [];
+    res.on('data', (data) => {
+        chunks.push(data);
+        console.log(chunks.toString());
+    });
+    console.log(chunks);
+})
+```
 
 ### path module
 
@@ -89,10 +194,42 @@ Now that TypedArray has been added in ES6, the Buffer class implements the Uint8
 
 ### EventEmitter
 
-Has methods .on(listener) -> to register listeners,
+The relevant module name is `events`;
+
+Events are "named".
+All listners bound to  event emitter with same name are called synchronously when an
+event is emitted with a given name.
+The values returned by listeners are **ignored**
+
+```js
+const EventEmitter = require('events');
+
+class MyEmitter extends EventEmitter {}
+
+const myEmitter = new MyEmitter();
+myEmitter.on('myevent1', () => {
+  console.log('an event occurred!');
+});
+myEmitter.emit('myevent1');
+```
+
+`on` is a synonym for `addListener`.
+Has methods .on(eventName, listener) -> to register listeners,
 and .emit(eventName) -> synchronously calls all registered listeners.
 
+#### Event emitter listeners
+If you pass `function abc()` with `addListener/on` methods, then `this` inside the
+`abc()` will be the EventEmitter instance that emitted the event.
+But if you pass an arrow function with `addListener/on`, then `this` is lexically bound.
+
+* calling order for listeners - Listeners are called in the order in which they were registered.
+
 All readable and writable streams are event-emitters in nodejs.
+
+#### Error handling in event emitters
+
+CLients should add a named event `error` listener.
+If such a listener is present nodejs will call this instead of crashing node/process.
 
 ### Readable stream events
 

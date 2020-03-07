@@ -5,6 +5,50 @@
 1. `Router` can have only a single child. So use `div` or `Switch`.
 2. You cannot render `Link` outside `Router`.
 
+### Location object shape
+
+```js
+{
+  key: 'ac3df4', // not with HashHistory!
+  pathname: '/somewhere',
+  search: '?some=search-string',
+  hash: '#howdy',
+  state: {
+    [userDefined]: true
+  }
+}
+```
+https://developer.mozilla.org/en-US/docs/Web/API/Location
+
+### Location object usage
+
+You can provide locations instead of strings to the various places that navigate:
+
+*  Web Link to
+* Native Link to
+* Redirect to
+* history.push
+* history.replace
+
+e..g
+```js
+// usually all you need
+<Link to="/somewhere"/>
+
+// but you can use a location instead
+const location = {
+  pathname: '/somewhere',
+  state: { fromDashboard: true }
+}
+
+<Link to={location}/>
+<Redirect to={location}/>
+history.push(location)
+history.replace(location)
+```
+### History library
+
+Central part of routing control.
 
 ### Important props given to a Route driven Component `match` and `location`
 
