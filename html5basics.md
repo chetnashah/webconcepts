@@ -158,6 +158,12 @@ submit form manually, e.g. on a click listener.
     };
 ```
 
+#### form feilds
+
+The `id` is used to uniquely identify an element in JavaScript or CSS.
+
+The `name` is used in form submission. When you submit a form only the fields with a `name` will be submitted.
+
 #### Listening to form submit events
 
 The submit event triggers when the form is submitted, it is usually used to validate the form before sending it to the server or to abort the submission and process it in JavaScript

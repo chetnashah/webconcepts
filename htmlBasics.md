@@ -95,19 +95,24 @@ Although, the root Element is `document.documentElement` which represents
 
 ### Changing class values of elements in JS
 
-`className` gets and sets the value of the `class` attribute of the specified element.
+`className` property in JS gets and sets the value of the `class` attribute of the specified element in html.
 
 ```js
 let el = document.getElementById('item');
-
+// we are replacing class of html element
 if (el.className === 'active'){
   el.className = 'inactive';
 } else {
   el.className = 'active';
 }
 
-
+// appending instead of replacing classes
 ```
+
+### htmlElement.innertext
+
+`HTMLElement.innerText`: A `DOMString` representing the rendered text content of an element. If the element itself is not being rendered (e.g detached from the document or is hidden from view), the returned value is the same as the `Node.textContent` property.
+
 
 ## Events
 
@@ -243,6 +248,32 @@ When the event handler/listener is invoked, the `this` keyword inside the handle
 When discussing the various methods of listening to events,
 event listener refers to a function or object registered via EventTarget.addEventListener(),
 whereas event handler refers to a function registered via on... attributes or properties. e.g. onclick
+
+
+### Event listeners and this
+
+Eventlisteners get a function parameter `evt` which indicates the event raised,
+and has useful methods like `stopPropogation` and `preventDefault`.
+
+Adding a normal function in dom based event listeners using `addEventListener`,
+The `this` within the listener function is set to the target that received the event.
+```js
+const button = document.getElementById('myButton');
+button.addEventListener('click', function() {
+  console.log(this === button); // => true
+  this.innerHTML = 'Clicked button';
+});
+```
+
+In case of using arrow function for a dom based event listener using `addEventListener`,
+The `this` is the lexically bound this.
+```js
+const button = document.getElementById('myButton');
+button.addEventListener('click', () => {
+  console.log(this === window); // => true
+  this.innerHTML = 'Clicked button';
+});
+```
 
 
 ### Some of browser default actions for given events

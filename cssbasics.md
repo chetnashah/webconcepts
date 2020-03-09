@@ -1,4 +1,41 @@
 
+#### What are block and inline elements?
+
+Block elements take up full space of parent, examples of block elements are
+* div,
+* p,
+* h1, h2, h3, h4, h5, h6,
+* ol,
+* ul,
+* li,
+* section,
+* table,
+* canvas,
+* form,
+* footer,
+* figure,
+* nav,
+* video,
+* header,
+* pre
+
+Inline elements only take up the space they need. Inline elements can start anywhere in a line, You cannot put block elements inside inline elements.
+
+Examples of iniline elements are :
+* a anchor,
+* b bold,
+* i italics,
+* br break,
+* img image,
+* q ,
+* script,
+* span,
+* input (All types),
+* button,
+* label,
+* select,
+* textarea.
+
 https://hacks.mozilla.org/2015/03/understanding-inline-box-model/
 ### display block
 
@@ -44,6 +81,12 @@ Default value for `position` is `static`.
 It is positioned relative to it's closest non-static positioned ancestor.
 
 4. `sticky`: Lookup on MDN.
+
+### `display:none` vs `visibility:hidden`
+
+`display:none` means that the tag in question will not appear on the page at all (although you can still interact with it through the dom). There will be no space allocated for it between the other tags.
+
+`visibility:hidden` means that unlike `display:none`, the tag is not visible, but space is allocated for it on the page
 
 #### Identifying the containing block
 
@@ -290,5 +333,65 @@ Positioned absolutely with left top to 50%, and translate adjust for its own siz
     background: #ccc;
     opacity: 0.7;
     z-index: 1000;
+}
+```
+
+### borders vs outlines
+
+In CSS, borders and outline are nearly the same thing, with two main differences:
+
+With borders, you can target each side individually (i.e. top, left, right, and bottom), by using border-top, border-left, etc. With outlines, it's either all four sides, or none at all.
+
+Borders take up physical space on your page, but outlines don't. So for example, if you added a 1px border to a box that is 200px wide, then the total width of the box with the border would be 202px. If you added an outline to that same box, the total width would still be 200px, since outlines overlay on top of the element, instead of to the side of the element.
+
+### margins and paddings
+
+If the margin property has four values:
+
+`margin: 10px 5px 15px 20px;`
+top margin is 10px
+right margin is 5px
+bottom margin is 15px
+left margin is 20px
+If the margin property has three values:
+
+`margin: 10px 5px 15px;`
+top margin is 10px
+right and left margins are 5px
+bottom margin is 15px
+If the margin property has two values:
+
+`margin: 10px 5px;`
+top and bottom margins are 10px
+right and left margins are 5px
+If the margin property has one value:
+
+`margin: 10px;`
+all four margins are 10px
+
+### input and focus
+
+You can hide default outline shown in focused state of input using:
+```css
+.form-control input:focus {
+    outline: 0;
+}
+```
+
+### CSS Variables
+
+Variables are declared within a scope.
+For a global scope you can use either the :root or the body selector.
+
+The variable name must begin with two dashes (--) and is case sensitive.
+
+e.g.
+```css
+:root {
+  --main-bg-color: coral;
+}
+/* usage by var()*/
+#div1 {
+  background-color: var(--main-bg-color);
 }
 ```
