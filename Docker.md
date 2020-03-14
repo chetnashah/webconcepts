@@ -92,6 +92,11 @@ docker exec -it mycontainer env
 ```
 
 
+### Getting hold of a shell within the container
+```sh
+# to get a bash shell in the container
+docker exec -it <container name> /bin/bash
+```
 #### docker exec interactive
 
 

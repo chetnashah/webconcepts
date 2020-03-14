@@ -95,3 +95,64 @@ We opted to name `jessie` explicitly instead of using the corresponding `stable 
 In many cases `dpkg` will spot that you wanted
 `dpkg-deb` and run it for you.
 
+
+
+### Package listing and repositories
+
+1. `Main` - The main component contains applications that are free software, can be freely redistributed and are fully supported by the Ubuntu team. This includes the most popular and most reliable open-source applications available, many of which are included by default when you install Ubuntu.
+
+2. `restricted` - proprietary drivers are kept in the restricted component. non-open-source artifacts
+
+3. `Universe` - The universe component is a snapshot of the free, open-source, and Linux world. It houses almost every piece of open-source software, all built from a range of public sources. Canonical does not provide a guarantee of regular security updates for software in the universe component, but will provide these where they are made available by the community.
+
+4. `Multiverse` - The multiverse component contains software that is not free, which means the licensing requirements of this software do not meet the Ubuntu main component licence policy. The onus is on you to verify your rights to use this software and comply with the licensing terms of the copyright holder.
+
+
+### Personal Package Archives (PPAs)
+
+Personal Package Archives (PPAs) are a kind of repository. Developers create them in order to distribute their software. In order to add a PPA you need its "location", which is in the format  `ppa:[username]/[ppaname]`. You can find this information on the PPA's Launchpad page.
+
+Packages in PPAs do not undergo the same process of validation as packages in the main repositories. PPAs are a low-security alternative to the main repositories, so the user will be installing software at their own risk.
+
+Adding ppas to the list of repositiories to fetch packages from:
+```sh
+sudo add-apt-repository ppa:user/ppa-name
+sudo apt-get update
+```
+
+
+### Font management
+
+There are various locations in GNU/Linux in which fonts can be kept. 
+These locations are defined in `/etc/fonts/fonts.conf`; 
+standard ones include `/usr/share/fonts` (multiple users), `/usr/local/share/fonts`, and `~/.fonts` (single user).
+
+Fonts reside in `usr/share/fonts` so that they can be used by all the users of the system.
+
+Installing fonts using `fc-cache`:
+```sh
+## Note: if you do not have fc-cache 
+## you can install it by `apt install fontconfig`
+sudo fc-cache -f -v
+```
+
+
+The fonts that appear in the barebones terminal are also known as console-fonts.
+and usually located in `/usr/share/consolefonts/`
+
+```sh
+# see table of glyphs
+showconsolefont
+```
+
+Changing font of console using setfont:
+```sh
+# setfont temporarily change the font if passed a font name
+setfont /usr/share/consolefonts/UbuntuMono-R-8x16.psf
+```
+**Note** - In order to use a font inside terminal it has to be a `.psf` i.e. a PC Screen font.
+
+You might need to convert this way a regular font to be used in console `.otf -> .bdf -> .psf`
+
+
+
