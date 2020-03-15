@@ -10,6 +10,18 @@
 
 `command &> out`
 
+### groupadd
+
+Creates a group in unix system
+
+```sh
+sudo groupadd docker
+```
+
+### usermod
+
+
+
 ### Virtual Box Ubuntu
 
 Guest -> Host(Windows) connections are blocked by windows firewall.

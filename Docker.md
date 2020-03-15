@@ -7,6 +7,9 @@ Best practices: https://runnable.com/blog/9-common-dockerfile-mistakes
 
 Using docker on windows: use docker toolbox. (it wraps a linux vm inside it)
 
+**Note** - Older versions of Docker were called docker, docker.io, or docker-engine.
+Latest correct community package is now known as `docker-ce`.
+
 Use docker inspect to get more info on a container
 ```sh
 docker inspect container-id
@@ -15,6 +18,19 @@ docker inspect container-id
 Use `docker logs` to get logs for given container
 ```sh
 docker logs container-id
+```
+
+### Docker usage by non-root users
+
+The Docker daemon binds to a Unix socket instead of a TCP port. By default that Unix socket is owned by the user `root` and other users can only access it using `sudo`. The Docker daemon always runs as the `root` user.
+
+If you don’t want to preface the docker command with `sudo`, create a Unix group called `docker` and add users to it. When the Docker daemon starts, it creates a Unix socket accessible by members of the `docker` group.
+do:
+```sh
+sudo groupadd docker
+sudo usermod -aG docker $USER
+# Log out and log back in so that your group membership is re-evaluated
+newgrp docker
 ```
 
 ### Seeing all processes being run by docker
@@ -97,6 +113,14 @@ docker exec -it mycontainer env
 # to get a bash shell in the container
 docker exec -it <container name> /bin/bash
 ```
+
+### access to docker commands/daemon within a docker container 
+Thecontainer should be started with docker.sock volume mounted
+e.g.
+```sh
+docker run -p 8080:8080 -p 50000:50000 -v /var/run/docker.sock:/var/run/docker.sock --name jenkins -d jenkins-docker
+```
+
 #### docker exec interactive
 
 
@@ -145,6 +169,12 @@ sudo unshare --fork --pid --mount-proc bash
 ps aux
 exit
 ```
+
+### DockerHub
+
+#### Repositories
+Repositories can have docker images
+
 
 ### nsenter tool
 
@@ -228,5 +258,20 @@ var/cache/
 var/cache/misc/
 ```
 
+#### image history
+Show the history of an image
+
+```sh
+docker image history [OPTIONS] IMAGE
+```
+
 ### Creating image without dockerfile
 
+### Important docker commands
+
+```Dockerfile
+# set env variable
+ENV JAVA_HOME=/usr/java/openjdk-13
+
+
+```
