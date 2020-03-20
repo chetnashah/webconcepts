@@ -12,3 +12,12 @@ Since a Firebase project is a GCP project:
 
 * Deleting a project deletes it across Firebase and GCP.
 
+
+### Firebase Project
+
+A firebase project can have multiple apps.
+All these apps use same cloud firestore and cloud storage.
+Good use case is Android, ios, web app would fall under same firebase project.
+
+If apps are going to use same data/configuration, it is good idea to put them under single project.
+

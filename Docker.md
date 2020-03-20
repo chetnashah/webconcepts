@@ -124,6 +124,27 @@ docker run -p 8080:8080 -p 50000:50000 -v /var/run/docker.sock:/var/run/docker.s
 #### docker exec interactive
 
 
+### docker setup "Mounted from"
+
+```
+The push refers to a repository [mycompany.com:5000/blah]
+a35c50f48e25: Preparing
+// more preparing
+0c3170905795: Waiting
+// more waiting
+47a9d8491623: Mounted from foo
+e856ece746ae: Mounted from foo
+f2ec1bba02a6: Mounted from bar
+6407c62d4add: Mounted from foo
+0c3170905795: Mounted from bar
+df64d3292fd6: Mounted from bar
+5ed59af669b0: Pushed
+a35c50f48e25: Pushed
+```
+
+This indicates the the specified layers you want to push to that repository do not exist in that repository, but they do exist in another repository on the same registry server which you have read access to. Instead of transferring the layers of the network, docker shares the layers between the repositories.
+
+
 
 ### Managing docker networks
 

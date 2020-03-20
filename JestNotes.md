@@ -27,6 +27,13 @@ Jest config can live in
 2. `jest.config.js`
 3. custom json file provided with `--config`.
 
+#### Presets
+
+Jest can have presets of its own that can be used for base configuration, instead 
+of users manually specifying all the config.
+This is useful for big and popular config like `ts-jest`.
+
+
 ### Matchers
 
 Usually when you se expect, what gets returned is an expectation object, the only thing you can do on an expectation object is to use matchers like `toBe` etc.

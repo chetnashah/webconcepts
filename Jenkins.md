@@ -23,6 +23,56 @@ PATH	/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/us
 slave agent - 50000
 web ui interface - 8080
 
+### Jenkins job DSL
+
+Enables infrastructure/pipeline as code. Only functionality is to create new jobs programatically.
+Allows jobs and views to be configured via DSL.
+Needs JOb DSL Plugin. starts as freestylproject.
+IN Build UI step select => Process Job DSL.
+
+You need to approve script in Manage Jenkins > In process script approval
+
+example
+```groovy
+// This dsl script when executed generates 
+// a brand new Job named "job-name-generated" with UI according
+// to the script blocks mentioned below
+job('job-name-generated') {
+    scm { // Source Code management 
+        git('git://github.com/chetnashah/list-of-cheeses.git') { node ->
+            node / gitConfigName('chetnashah')
+            node / gitConfigEmail('chetshah80@gmail.com')
+        }
+    }
+
+    wrappers {
+        nodejs('nodejs') // this is Manage Jenkins -> configure tools -> nodejs installations -> name
+    }
+
+    steps {
+        shell("npm install")
+    }
+}
+```
+
+Each docker plugin can introduce its own groovy syntax/block for configuration,
+equivalent to plugin specific inputs in UI. (https://jenkinsci.github.io/job-dsl-plugin/)
+
+### Jenkins pipelines
+
+Essentially Jenkins build steps in code.
+
+Build steps allow you to
+1. build/compile
+2. test
+3. deploy
+within code.
+
+#### Jenkins pipelines vs Jenkins Job DSL
+
+Job DSL creates new jobs based on code you write.
+wheas
+
 
 
 ### Global software installation for jenkins
