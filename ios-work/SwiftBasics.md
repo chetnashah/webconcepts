@@ -98,7 +98,7 @@ func greet(person: String, from hometown: String) -> String {
 }
 
 // using argumentlabel at the place of argument
-print(greet("John", from: "Cupertino"))
+print(greet(person: "John", from: "Cupertino"))
 ```
 
 **Omitting argument labels**:
@@ -108,6 +108,17 @@ func someFunction(_ firstParamName: Int, secondParamName: Int) {
 }
 
 someFunction(1, secondParamName: 2)
+```
+
+Calling without argument labels will crash if `_` is not specified
+e.g.
+```swift
+func someFunc(parm: String) {
+    print(parm)
+}
+
+someFunc("Hi") // This will crash
+someFunc(parm: "Hi")// this works
 ```
 
 **Default Param Values**:
