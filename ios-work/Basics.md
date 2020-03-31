@@ -55,6 +55,17 @@ An area which will not be blocked by hardware.
 Use the "+" icon on top right corner
 
 
+### Workspace
+
+A workspace is xcode document that groups projects and other documents so
+that you can work on them together. A workspace can contain any number
+of Xcode projects, plus any other files you would want to include.
+A workspace provides implicit and explicit relationships among the included
+projects and their targets.
+
+`Note`: All Xcode projects in a workspace are built in the same directory referred to
+as `workspace build directory`.
+
 ### Target
 
 Build settings defined at target level override any values
@@ -63,6 +74,8 @@ assigned to those build settings at project level.
 A `target` contains instructions in the form of build settings and build phases
 for building a project. A target inherits projects build settings.
 
+Useful part about targets: Each target can be present on the device side by side.
+
 ### Build configuration
 
 One of several possible configurations. The one which is used right now is stored as 
@@ -70,8 +83,15 @@ a part of the current scheme.
 
 ### Scheme
 
-A scheme uses a specific build configuration at a time.
+You can have multiple scehmes (variants) of your app, but only one is active at a time (shown on top left near play button).
+A scheme uses a one specific build configuration at a time.
 TO change the build configuration used by current scheme, you need to edit the sceheme.
+
+A scheme can have multiple targets (to be built).
+One can view all the targets of the scheme by going to
+edit scheme -> Build on the left pane.
+
+schemes are saved in separate xml file within xcuserdata or xcshareddata. The .xcscheme files are standard xml.
 
 ### Access build settings in code
 
