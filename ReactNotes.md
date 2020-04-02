@@ -138,6 +138,8 @@ this.setState((prevState, props) => {
 
 In React, this is usually solved by making a component “controlled”. Just like the DOM `<input>` accepts both a `value` and an `onChange` prop, so can the custom TemperatureInput accept both `temperature` and `onTemperatureChange` props from its parent Calculator. Also known as moving state up.
 
+
+
 #### React render props
 
 a render prop is a function prop that a component uses to know what to render. One interesting thing to note about render props is that you can implement most higher-order components (HOC) using a regular component with a render prop. In fact, any prop that is a function that a component uses to know what to render is technically a “render prop”.
@@ -208,6 +210,14 @@ is sugar for
   }
 }
 ```
+
+### shouldComponentUpdate
+
+`shallow equal` is not the same as `===`
+It is `===` + top/first level `===` in case objects key/values.
+
+A `PureComponent`s `sCU` only `shallowly compares props and state both`.
+If they are same, no need to render the tree.
 
 ### React HOCs
 
@@ -358,7 +368,14 @@ Also somewhere in the ancestors, we need to specify `getChildContext(){}` and `A
 
  ## React Fiber
 
+
+File for class instance: `ReactFiberClassComponent.js`
+
  It breaks rendering into chunks rather than a single recursive call, using some sort of data structure - fiber that tracks work.
+
+A fiber is a JS object that corresponds to a stack frame, but it also
+corresponds to an instance of a component. It contains info about a component,
+its input and its output.
 
  React Fiber also takes into account work priorities for the processing of render related work.
 

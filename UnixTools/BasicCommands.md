@@ -38,4 +38,26 @@ Get DNS info with nameserverS:
 `dig google.com ANY +noall +answer`
 
 
+### Inspecting binaries
 
+on mac:
+```sh
+objdump -macho -section-headers /bin/ls
+```
+on unix:
+```sh
+nm binaryname
+```
+
+`.a` files is known as static library or static archive, typically we combine mulitple `.o` file into a `.a` file.
+
+The linker `ld` copies and relocates all the code in executable object while making `.a` result in larger executable.
+
+1. When linking a static library, everything is copied into the target executable/binary. (verify all address using `nm/objdump`)
+
+2. When linking a dynamic library, you usually have open references
+that would be resolved at dynamic lib loading or runtime.(Verify all address using `nm/objdump`)
+
+`Dynamic Library`: also referred to as shared library, shared object, dynamically linked library, .dll, .so etc is archive of object files that can be loaded at arbitrary memory address
+and lnked with a program in memory at loadtime or runtime.
+It is done by `dyld` on macOS. `man dlopen` also.

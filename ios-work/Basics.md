@@ -105,3 +105,24 @@ and in code you can access like
 let serverUrl = Bundle.main.object(forInfoDictionaryKey: "ServerURL") as! String
 print(serverUrl)
 ```
+
+### Build Rules (Xcode UI)
+
+Build rules specify how different file types
+should be compiled. If u want to add custom processing
+for a certain file type, you can add a new build rule.
+
+### Frameworks, libraries and Embedded Content (XCode UI General)
+
+
+### Link Binary with Libraries (Xcode UI Build phases)
+
+### Frameworks
+
+Most frameowrks are shared libraries with hassle free packaging.
+Directories of a frameowrk:
+1. Headers: Public exposed C/ObjC headers. Swift does not use these.
+2. Modules: LLVM and swift module info. `.modulemap` files are used by clang.
+3. Resources: All kinds of assets/images
+4. Versions: 
+
