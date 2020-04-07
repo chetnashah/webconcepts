@@ -11,3 +11,6 @@ Consist of smaller tools:
 8. gym
 9. scan
 
+### Plugins
+
+Plugins have any number of actions.

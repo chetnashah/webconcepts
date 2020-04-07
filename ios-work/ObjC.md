@@ -32,6 +32,8 @@ e.g
 -(int) max:(int)num1 andNum2:(int)num2;
 ```
 
+the argument names can be empty.
+
 #### definition
 
 You can think of `:` as the part of the function-name;
@@ -45,12 +47,19 @@ joiningArgumentn:(argumentTypeN)paramNameN
 }
 ```
 The things to the left of the argumentType are `named arguments` and should be used at the calling site.
+First argument will not have an argument name only paramName
 and the tings to the right of the argumentType are the parameter names and should be used in the implementation.
 
 Would be called as following:
 ```objc
 [someobj function_name:11 joiningArgument2:22 joiningArgumentn:99]
 ```
+
+The argumentnames can be emtpy. 
+If argument names are empty, nothing goes before `:` in callsite. 
+e.g. `[someobj fun_name:11 :22 :99]`
+but you can never call using param names.
+
 
 #### calling
 ```
@@ -249,6 +258,7 @@ name. Morever the usage compared to method calls is with a `.` e.g. `instanceObj
 @interface Person
 - @property (copy) NSString* name;// will generate ivar "_name" and getters/setters as "name" used via . and also method setName
 @end
-
-
 ```
+
+`@synthesize` a property within an implementation, allows you to use custom prop name instead of `_propName` ivar.
+

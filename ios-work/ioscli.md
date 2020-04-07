@@ -45,3 +45,18 @@ xcodebuild -exportArchive -archivePath ~/Downloads/My-App.xcarchive
 
 Lets you specify some options when you create an `.ipa` file.
 
+### codesign
+
+tool to sign
+
+Things need to sign
+1. signing cert
+2. prov profile
+3. Entitlement
+
+#### types of cert
+
+cert are all about identity
+
+1. dev
+2. distribution
