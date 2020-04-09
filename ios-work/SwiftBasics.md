@@ -86,41 +86,23 @@ func printAndCount(string: String) -> Int {
 
 #### Argument labels and parameter names
 
+3 use cases.
 ```swift
-func someFunction(argumentLabel parameterName: Int) {
-    // In the function body,
-    // parameterName refers to the argument value for that parameter
-}
+func some1(alabel aname: Int) {
 
-// parameter usage in fn body is as usual
-func greet(person: String, from hometown: String) -> String {
-    return "Hello \(person)! Glad u could visit via \(hometown)"
 }
+func some2(_ aname: Int) {
 
-// using argumentlabel at the place of argument
-print(greet(person: "John", from: "Cupertino"))
+}
+func some3(aname: Int) {
+
+}
+// calls allowed are below only
+// any other way will result in compiler error
+some1(alabel: 22);
+some2(11);
+some3(aname: 88);
 ```
-
-**Omitting argument labels**:
-```swift
-func someFunction(_ firstParamName: Int, secondParamName: Int) {
-
-}
-
-someFunction(1, secondParamName: 2)
-```
-
-Calling without argument labels will crash if `_` is not specified
-e.g.
-```swift
-func someFunc(parm: String) {
-    print(parm)
-}
-
-someFunc("Hi") // This will crash
-someFunc(parm: "Hi")// this works
-```
-
 **Default Param Values**:
 
 ```swift
@@ -259,6 +241,10 @@ In practice, you don’t need to write self in your code very often. If you don�
 
 #### Initialization
 
+Classes and structs must set stored properties to initial values, they
+cannot be left in indeterminate state on creation.
+There is not a concept of constructor here.
+
 Struct can have their members initialized either in
 1. definition
 2. instance creation e.g. `Person(age: 11)`
@@ -267,6 +253,13 @@ Struct can have their members initialized either in
 Class can have their members initialized either in
 1. definition
 2. init block of defintion
+
+Instances of class types can also implement a deinitializer,
+which performs custom cleanup.
+
+Initializers, written using `init` keyword, is called to create new
+instance of a type within the definition.
+
 
 #### Properties
 
@@ -307,7 +300,7 @@ struct Rect {
 ```swift
 struct Cuboid {
     var width = 0.0, height = 0.0, depth = 0.0
-    var volume: Double {
+    var volume: Double {// note there is no func here, means its a read-only computed property, also note the lack of equals sign here
         return width * height * depth
     }
 }
@@ -319,3 +312,55 @@ print("the volume of fourByFiveByTwo is \(fourByFiveByTwo.volume)")
 Property observers observe and respond to changes in a property’s value. Property observers are called every time a property’s value is set, even if the new value is the same as the property’s current value.
 
 `Propert wrappers`: A property wrapper adds a layer of separation between code that manages how a property is stored and the code that defines a property.
+
+### Protocol
+
+A `Protocol` defines a blueprint of methods,properties and other requirements that suit a particular task or piece of functionality.
+
+e.g. `Showable`, `Comparable` etc. would be some examples.
+Any type that satisfies the requirements of protocol is said to confirm
+to a protocol.
+
+Protocol definition:
+```swift
+protocol SomeProtocol {
+    // protocol requirements here
+}
+```
+
+Protocol usage:
+```swift
+struct SomeStructure : FirstProtocol, AnotherProtocol {
+
+}
+class SomeClass: FirstProtocol, AnotherProtocol {
+
+}
+```
+
+### Extensions
+
+```swift
+extension SomeType {
+    // new functionality for SomeType goes here
+}
+```
+Extension can also make adopt the existing type to new protocols e.g.
+```swift
+extension SomeType: ANewProtocol {
+    // code to support to confirm ANewProtocol
+}
+```
+e.g.
+```swift
+protocol TextRepresentable {
+    var textualDesc: String { get } 
+}
+extension Dice: TextRepresentable {
+    var textualDesc: String {
+        return "A \(sides)-sided dice"
+    }
+}
+```
+`Note`: extensions can add compute properties but cannot add stored properties or add property observers to existing properties.
+

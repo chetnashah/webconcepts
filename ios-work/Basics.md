@@ -126,3 +126,7 @@ Directories of a frameowrk:
 3. Resources: All kinds of assets/images
 4. Versions: 
 
+### Push Notifications
+
+If you receive local or remote notifications while your app is running in the foreground, you are responsible for passing the info to your users in an app specific way.
+

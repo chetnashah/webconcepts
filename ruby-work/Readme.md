@@ -1,3 +1,8 @@
+RubyGems is a hosted ruby library service.
+It centralizes where you look for a library, and installing
+ruby libraries / apps.
+
+Use `RVM` for ruby version managment like `nvm` is for node.
 
 packages are known as `gems`.
 

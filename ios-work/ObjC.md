@@ -168,6 +168,33 @@ int main()
 	book.book_id = 100;
 }
 ```
+### id data type
+
+Generic data type that can store value of any data type.
+e.g.
+```objc*
+- (id) method: (int) apples;
+```
+Can be used to `store objects of any type` in a variable with `id` data type.
+```objc
+id han;
+Car* c = [[Car alloc] init];
+Man* m = [[Man alloc] init];
+// assign any value to `id` type variable
+han = Car;
+han = Man;
+```
+
+### Error/Exception handling
+
+```objc
+@try {
+	// statements
+}
+@catch (NSException * e) {
+	// handler code
+}
+```
 
 ### Classes
 
@@ -226,6 +253,125 @@ the value `a` in `[a b:c]` where `b` is the method being called, `c` is the argu
 @end
 ```
 
+#### Access modifiers
+
+```objc
+@interface Tuna: NSObject{
+@private // only members of this class allowed to access
+	int x;
+	int y;
+@protected // default: this class + subclasses
+	int z;
+	int a;
+}
+```
+
+### enum
+
+Introduces a data type where values are only possible from given list.
+```objc
+enum day {m, t, w, h, f}
+enum day today = w;
+```
+
+### class categories
+
+Add functionality to existing source (without subclassing).
+Many times you cannot modify original interface or implementation
+because it is a framework class e.g. `NSString` etc.
+
+Objective C allows you to `add your own methods` to existing
+classes through categories and class extensions.
+
+Where to add this code:
+In a separate header file like `XYZPerson+XYZPersonNameDisplayAdditions.h`
+and implementation in `XYZPerson+XYZPersonNameDisplayAdditions.m`.
+
+**Note** - It is not possible to declare
+additional instance variable in a category. The only way to add a traditional property backed by new instance variable is to use class extension, not category.
+
+1. `Categories add method to existing classes`.
+Syntax is same as class (which already exists) followed by category name in parens.
+```objc
+@interface ClassName (CategoryName)
+- (int) someMethod;
+@end
+```
+
+```objc
+@implementation ClassName (CategoryName)
+- (int) someMethod {
+	// something something
+}
+@end
+```
+Any methods declared in category will be available to all instances
+of original class as well as any subclasses of original class.
+At runtime there is no difference between method added by category vs original class.
+
+Category method names should not clash.
+In order to prevent this undefined behavior, best practice
+to add prefix to method names in categories on framework classes.
+e.g. `xyz_methodname` where `xyz` identifiers your app.
+
+2. Class Extensions extend the internal implementation.
+##### Class extension
+Similar to a Cateogry, but only be added to a class for which you have
+source code at compile time.
+
+Syntax is similar to category, but no name given to Category, so
+class extensions are often referred to as anonymous categories.
+```objc
+@interface ClassName ()
+@end
+```
+e.g.
+```objc
+@interface XYZPerson () {
+	int _someCustomInstanceVar;
+}
+- (int) someMethod;
+@property NSObject * extraProperty;// property allowed in class extension
+@end
+```
+
+
+### global/extern vars
+
+vars that are global in the process, accesss across multiple files
+Defined outside main function.
+Prefix variable with lowercase `g`.
+e.g. `int gStarted = 1`.
+
+```objc
+// main.m
+int gStarted = 1; // global var definition
+int main(int argc, const char* argv[]) {
+	NSLog(@"%i", gStarted);
+	return 0;
+}
+```
+Usage of global vars in other files via `extern`:
+```objc
+// Person.m
+@implementation Person
+-(void) changeGstart{
+	extern int gStarted;
+	gStarted = 42;
+}
+@end
+```
+
+
+#### `@class` vs import
+
+`#import` brings the entire header file in question into the current file; any files that THAT file #imports are also included.
+
+`@class`, on the other hand (when used on a line by itself with some class names), just tells the compiler "Hey, you're going to see a new token soon; it's a class, so treat it that way).
+
+This is very useful when you've got the potential for 'circular includes'; ie, `Object1.h` makes reference to `Object2`, and `Object2.h` makes reference to `Object1`. If you `#import` both files into the other, the compiler can get confused as it tries to `#import Object1.h`, looks in it and sees `Object2.h`; it tries to `#import Object2.h`, and sees `Object1.h`, etc.
+
+If, on the other hand, each of those files has `@class Object1`; or `@class Object2;`, then there's no circular reference. Just be sure to actually #import the required headers into your implementation (.m) files.
 
 #### Object allocation and initialization
 
