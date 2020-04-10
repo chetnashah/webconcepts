@@ -408,3 +408,12 @@ name. Morever the usage compared to method calls is with a `.` e.g. `instanceObj
 
 `@synthesize` a property within an implementation, allows you to use custom prop name instead of `_propName` ivar.
 
+### Method Swizzling
+
+Swizzling is act of changing functionality of method by replacing
+implementation of that method with another, usually at runtime.
+
+Reasons:
+1. introspection
+2. overriding default behavior
+3. dynamic method loading

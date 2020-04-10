@@ -243,23 +243,64 @@ In practice, you don’t need to write self in your code very often. If you don�
 
 Classes and structs must set stored properties to initial values, they
 cannot be left in indeterminate state on creation.
-There is not a concept of constructor here.
+There is not a concept of constructor here, only init blocks.
+Both `struct` and `class` can have `init` blocks.
 
 Struct can have their members initialized either in
-1. definition
-2. instance creation e.g. `Person(age: 11)`
-3. init block of definition
+1. definition (property default values)
+2. instance creation e.g. `Person(age: 11)` (known as member initializer)
+3. `init` block of definition
 
 Class can have their members initialized either in
-1. definition
-2. init block of defintion
+1. definition (property default values)
+2. `init` block of defintion
 
 Instances of class types can also implement a deinitializer,
 which performs custom cleanup.
 
-Initializers, written using `init` keyword, is called to create new
-instance of a type within the definition.
+If all the properties in class/struct have a default value,
+there is no need for `init` block.(we call this `default initializer`).
+These are called when `no inits are present`.
 
+**Member initializer for struct** - Structs are given
+a default member initializer for each member name.
+e.g.
+```swift
+struct s1{
+    var a: Int;
+    var b: String;
+}
+var ss = s1(a:2, b:"Adfa");
+```
+
+**NOTE** - If you define a custom `init` block, you cannot invoke
+the default or member initalizer anymore..In order to still use them, see `Extensions`.
+
+There can be multiple `init` blocks with different signatures,
+and they can make use of each other, within `init` blocks using `self.init`.
+
+
+#### Class inheritance and initalization
+
+Use `override init` in subclasses.
+
+**required initializers** - use `required` keyword in fron t of `init` to
+indicate every subclass must implement that initializer
+Also the subclass implementation also needs to have `required` keyword
+indicating further subclasses in the chain need to fulfill the requirement.
+
+```swift
+class SomeClass {
+    required init(){
+        // init impl
+    }
+}
+class SomeSubClass : SomeClass {
+    required init(){
+        // subclass init impl
+    }
+}
+```
 
 #### Properties
 
@@ -307,15 +348,42 @@ struct Cuboid {
 let fourByFiveByTwo = Cuboid(width: 4.0, height: 5.0, depth: 2.0)
 print("the volume of fourByFiveByTwo is \(fourByFiveByTwo.volume)")
 ```
+**Constant properties** - Can only be set once in `init`. Declared
+using `let` instead of `var`.
 
 `Property observers`:
 Property observers observe and respond to changes in a property’s value. Property observers are called every time a property’s value is set, even if the new value is the same as the property’s current value.
 
 `Propert wrappers`: A property wrapper adds a layer of separation between code that manages how a property is stored and the code that defines a property.
 
+#### Optional values
+
+`nil` is null value.
+Explicityly encoded in type e.g.
+```swift
+var resp: String? // value is nil by default
+```
+
+if you print it, it will print like `Optionl("SomeString")`
+So to use it, one has to explicitly unwrap it like following:
+```swift
+var resp: String?
+print("The value of resp is \(resp!)")
+```
+
+**optional chaining** - does graceful unwrapping by returning `nil` if
+value 
+e.g
+`resp?.message?.text` returns nil if either of the optional values are nil.
+
+**`if let` binding**:  
+
 ### Protocol
 
 A `Protocol` defines a blueprint of methods,properties and other requirements that suit a particular task or piece of functionality.
+Also `Protocols can be used as types`.
+
+Protocols can inherit more protocols to add more requirements.
 
 e.g. `Showable`, `Comparable` etc. would be some examples.
 Any type that satisfies the requirements of protocol is said to confirm
@@ -338,7 +406,111 @@ class SomeClass: FirstProtocol, AnotherProtocol {
 }
 ```
 
+`Confirming Properties`: can require confirming type to provide instance property
+with given name and type. and whether it must be gettable or gettable and settable. Property requirements are always declared as variable properties.
+```swift
+protocol SomeProtoCol {
+    var mustBeSettable: Int {get set}
+    var doesNotNeedtoBesettable: Int { get }
+}
+```
+If property is a `type level property`, it should have `static var propName`
+
+`Confirming Methods`: 
+```swift
+protocol RandomNumberGenerator {
+    func random() -> Double
+}
+```
+mutating methods to have `mutating` keyword in front of func:
+```swift
+protocol Toggleable {
+    mutating func toggle()
+}
+```
+
+`initalizers`:
+```swift
+protocol SomeProtocol {
+    init(someParam: Int)
+}
+class SomeClass: SomeProtocol {
+    required init(someParam: Int) {// Note the use of required!
+        // init implementation
+    }
+}
+```
+
+
+### Delegation
+
+`Delegation` is a design pattern that enables a class or structure to
+handoff some of its responsibilities to instance of another type.
+
+`Delegate` are defined using protocols.
+
+A confirming type known as a delegate is guaranteed to provide
+the functionality that has been delegated. Delegate callers often use
+`delegate?.delegateprotocolmethod`
+Here is an exmaple
+```swift
+// a delegate that can be adopted to track game progress
+protocol DiceGameDelegate: AnyObject {
+    func gameDidStart(_ game: DiceGame)
+    func game(_ game: DiceGame, didStartNewTurnWithDiceRoll diceRoll: Int)
+    func gameDidEnd(_ game: DiceGame)
+}
+
+class SnakesAndLadders{
+    let finalSquare = 25
+    let dice = Dice(sides: 6, generator: LinearGenerator())
+    var square = 0
+    var board: [Int]
+
+    init() {
+        board = Array(repeating:0, count: finalSquare + 1)
+        // some more board stuff
+    }
+    weak var delegate: DiceGameDelegate?
+    func play(){
+        square = 0
+        delegate?.gameDidStart(self)
+        gameLoop: while square != finalSquare {
+            let diceRoll = dice.roll()
+            delegate?.game(self, didStartNewTurnWithDiceRoll: diceRoll)
+            // some snake game logic stuff
+        }
+        delegate?.gameDidEnd(self)
+    }
+}
+
+class DiceGameTracker: DiceGameDelegate{
+    var numOfTurns = 0
+    func gameDidStart(_ game: DiceGame){
+        numOfTurns = 0
+        if game is SnakesAndLadders {
+            print("Started a new game")
+        }
+    }
+    func game(_ game: DiceGame, didStartNewTurnWithDiceRoll diceRoll: Int) {
+        numOfTurns += 1
+        print("Rolled a \(diceRoll)")
+    }
+    func gameDidEnt(_ game: DiceGame) {
+        print("Game lasted for \(numOfTurns)")
+    }
+}
+```
+
+### Adding protocol conformance with Extensions
+
+protocol specify functional requirements, and extensions help add them,
+see below.
+
 ### Extensions
+
+Extensions can add `new properties, methods and subscripts` to an existing
+type. kind of like `objc category`.
 
 ```swift
 extension SomeType {
@@ -361,6 +533,17 @@ extension Dice: TextRepresentable {
         return "A \(sides)-sided dice"
     }
 }
+
+//if a type already confirms to all requirements 
+// of a protocol, but has not stated that it adopts the protocol
+// you can make it adopt protocol with empty extension
+struct Hamster {
+    var name: String
+    var textDesc: String {
+        return "A hamster named \(name)"
+    }
+}
+extension Hamster: TextRepresentable {} // Hamster already confirms
 ```
 `Note`: extensions can add compute properties but cannot add stored properties or add property observers to existing properties.
 
