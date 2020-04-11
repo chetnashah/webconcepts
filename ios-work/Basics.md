@@ -130,3 +130,22 @@ Directories of a frameowrk:
 
 If you receive local or remote notifications while your app is running in the foreground, you are responsible for passing the info to your users in an app specific way.
 
+### Grand central dispatch
+
+SYstem library for scheduling in multi threaded code.
+Maintaines a pool of threads.
+Decides which thread is used for execution.
+A `dispatch queue` is a queue onto which work can be put to be scheduled.
+Work submitted to the main dispatch queue is guaranteed to be executed on the main thread.
+
+```swift
+DispatchQueue.main.async {
+    // some work to be done on main thread.
+}
+
+DispatchQueue.global().async {
+    // dome work
+}
+```
+
+

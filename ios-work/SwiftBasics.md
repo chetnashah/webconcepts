@@ -279,6 +279,27 @@ the default or member initalizer anymore..In order to still use them, see `Exten
 There can be multiple `init` blocks with different signatures,
 and they can make use of each other, within `init` blocks using `self.init`.
 
+**Failable initializer** - if you name your init block as `init?`, it
+indicates, that the `init?` block can return nill. and return value
+of constructing the class can be nil. i.e. `Person() that contains init?` will return `Person?` optional instead of a properly initialized `Person`.
+
+e.g.
+```swift
+struct Person {
+    var ssn: String
+    init?(ssn: String) {
+        if (ssn.count < 11) {
+            return nil
+        } else {
+            self.ssn = ssn
+        }
+    }
+}
+
+var p: Person? = Person("abcd")
+print(p?.ssn) // nil, because abcd is less than 11 chars
+
+```
 
 #### Class inheritance and initalization
 
@@ -371,12 +392,24 @@ var resp: String?
 print("The value of resp is \(resp!)")
 ```
 
+when assigning a value to an optional type, the assignmed value is put
+inside the optional wrapper.
+```swift
+var k: Int?
+k = 11 // k is now Optioanl(11)
+```
+
 **optional chaining** - does graceful unwrapping by returning `nil` if
 value 
 e.g
 `resp?.message?.text` returns nil if either of the optional values are nil.
 
-**`if let` binding**:  
+**default value operator** - `optValue ?? "defaultval"` is common syntax for
+an (unrwapped) optional value to be returned else a default value
+
+**`if let` binding**: this binding automatically unwraps value out of optional
+
+
 
 ### Protocol
 
@@ -547,3 +580,66 @@ extension Hamster: TextRepresentable {} // Hamster already confirms
 ```
 `Note`: extensions can add compute properties but cannot add stored properties or add property observers to existing properties.
 
+### Arrays and Dictionaries
+
+Both are strongly typed value types(copy on assignment) and 
+need entry types specified ahead of time.
+
+```swift
+// some notations
+var arr2 = Array<Int>()
+var dict2 = Dictionar<Int, String>()
+
+var arr = [Int]()
+var dict = [Int:String]()
+```
+
+### Closures
+
+Similar to blocks in objective-C
+Closures are reference types.
+
+Closures can capture and store references to any variables from the
+context in which they are defined. This is known as closing over variables.
+
+Closure Expressions are unnamed closures.
+```swift
+// Note the syntax: In normal functions the params and retType are outside braces,
+// for closures, params and retType are inside braces
+{(params) -> retType in
+    statements
+}
+
+// use case are utility Higher order funcs
+reversedNames = names.sorted(by: {(s1: String, s2: String) -> Bool in
+    return s1 > s2
+})
+```
+
+`Escaping closure`: A closure is said to escape a function when
+closure is passed as an argument to the function, but is called after
+the function returns.
+```swift
+var completionHandlers: [() -> Void] = []
+func someFuncWithEscapingClosure(completionHandler: @escaping () -> Void) {
+    completionHandlers.append(completionHandler)
+}
+```
+
+`Auto closures`: It does not take any args, and when called, returns
+the value of expression wrapped inside it.
+```swift
+let customerProvider = { customersInLine.removeAt(at: 0) }
+// call customerProvider()
+```
+
+#### Trailing closures
+
+If the final argument of a call is a closure, it can be put outside
+parantheses as a trailing block e..g
+```swift
+names.sorted {
+    (s1: String, s2: String) -> Bool in
+        return s1 > s2
+}
+```
