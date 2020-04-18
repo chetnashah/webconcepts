@@ -126,6 +126,35 @@ Directories of a frameowrk:
 3. Resources: All kinds of assets/images
 4. Versions: 
 
+### NSNOtification
+
+Similar as Localbroadcastmanager or eventbus.
+
+### ActionSheet(bottoms sheet UI) and AlertDialog(center modal uI)
+
+common class `UIAlertController` for both, just differnet styles.
+```swift
+var alert = UIAlertController(
+    title:"some title",
+    message:"Issue commands",
+    preferredStyle: UIAlertControllerStyle.ActionSheet
+    // use UIAlertControllerStyle.Alert for Alert dialog
+)
+// add buttons
+alert.addAction(UIAlertAction(/* config */))
+alert.addAction(UIAlertAction(/* config */))
+alert.addAction(UIAlertAction(/* config */))
+
+// show the alert/actionsheet
+presentViewController(alert, animated: true, completion: nil)
+```
+
+### NSUserDefaults
+
+Equivalent to `SharedPreferences` on android.
+Very tiny storage for property list data. i.e. key/value pairs e.g. useful for 
+settings.
+
 ### Push Notifications
 
 If you receive local or remote notifications while your app is running in the foreground, you are responsible for passing the info to your users in an app specific way.

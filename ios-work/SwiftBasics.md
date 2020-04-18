@@ -12,6 +12,157 @@ e.g.
 var person: String
 ```
 
+#### `AnyObject` Type
+
+A special type/protocol
+
+equivalent to Objective C's `id` type, essentially meaning pointer to object of an unknown class
+
+`AnyObject` means any class, but it cannot hold a struct/enum.
+Also, `AnyObject` is different from `Any`.
+e.g.
+```swift
+touchDigit(sender: AnyObject)// sender could have been a UIButton or a UISlider or Any other Object
+```
+
+#### Type casting
+
+Type casting in Swift is implemented with the `is` and `as` operators. These two operators provide a simple and expressive way to check the type of a value or cast a value to a different type.
+
+```swift
+class MediaItem {
+    var name: String
+    init(name: String) {
+        self.name = name
+    }
+}
+
+class Movie: MediaItem {
+    var director: String
+    init(name: String, director: String) {
+        self.director = director
+        super.init(name: name)
+    }
+}
+
+class Song: MediaItem {
+    var artist: String
+    init(name: String, artist: String) {
+        self.artist = artist
+        super.init(name: name)
+    }
+}
+
+let library = [
+    Movie(name: "Casablanca", director: "Michael Curtiz"),
+    Song(name: "Blue Suede Shoes", artist: "Elvis Presley"),
+    Movie(name: "Citizen Kane", director: "Orson Welles"),
+    Song(name: "The One And Only", artist: "Chesney Hawkes"),
+    Song(name: "Never Gonna Give You Up", artist: "Rick Astley")
+]
+
+var movieCount = 0
+var songCount = 0
+
+for item in library {
+    if item is Movie { // type check with is
+        movieCount += 1
+    } else if item is Song {
+        songCount += 1
+    }
+}
+
+```
+
+you can try to downcast to the subclass type with a type cast operator (`as?` or `as!`)
+
+```swift
+for item in library {
+    if let movie = item as? Movie {
+        print("Movie: \(movie.name), dir. \(movie.director)")
+    } else if let song = item as? Song {
+        print("Song: \(song.name), by \(song.artist)")
+    }
+}
+
+@IBAction func touchDigit(sender: AnyObject) {
+    if let sendingButton = sender as? UIButton {
+        let digit = sendingButton.currentTitle!
+    } else if let sendingSlider = sender as? UISlider {
+        let digit = String(Int(sendingSlider.value))
+    }
+}
+```
+
+`Switch based type level pattern matching`:
+```swift
+var things = [Any]()
+things.append(0)
+things.append(0.0)
+things.append(42)
+things.append(3.14159)
+things.append("hello")
+things.append((3.0, 5.0))
+things.append(Movie(name: "Ghostbusters", director: "Ivan Reitman"))
+things.append({ (name: String) -> String in "Hello, \(name)" })
+
+for thing in things {
+    switch thing {
+    case 0 as Int:
+        print("zero as an Int")
+    case 0 as Double:
+        print("zero as a Double")
+    case let someInt as Int:
+        print("an integer value of \(someInt)")
+    case let someDouble as Double where someDouble > 0:
+        print("a positive double value of \(someDouble)")
+    case is Double:
+        print("some other double value that I don't want to print")
+    case let someString as String:
+        print("a string value of \"\(someString)\"")
+    case let (x, y) as (Double, Double):
+        print("an (x, y) point at \(x), \(y)")
+    case let movie as Movie:
+        print("a movie called \(movie.name), dir. \(movie.director)")
+    case let stringConverter as (String) -> String:
+        print(stringConverter("Michael"))
+    default:
+        print("something else")
+    }
+}
+```
+
+TypeAlias:
+```swift
+typealias PropertyList = AnyObject
+```
+
+### `Self` Type
+
+In a protocol declaration or a protocol member declaration, the `Self` type refers to the eventual type that conforms to the protocol.
+
+In a structure, class, or enumeration declaration, the Self type refers to the type introduced by the declaration.
+
+Type inspection: Use `type(of: value)` Returns the dynamic type of a value
+
+```swift
+class Superclass {
+    func f() -> Self { return self }
+}
+let x = Superclass()
+print(type(of: x.f()))
+// Prints "Superclass"
+
+class Subclass: Superclass { }
+let y = Subclass()
+print(type(of: y.f()))
+// Prints "Subclass"
+
+let z: Superclass = Subclass()
+print(type(of: z.f()))
+// Prints "Subclass"
+```
+
 ### Value types
 
 A value type is a type whose value is copied when it’s assigned to a variable or constant, or when it’s passed to a function. i.e. `copy by value on assignment`
@@ -28,6 +179,46 @@ struct Resolution {
 
 let hd = Resolution(width: 1920, height: 1080)
 var cinema = hd // different instances
+```
+
+**Note** - By default, the properties of a value type cannot be modified from within its instance methods
+
+if you need to modify the properties of your structure or enumeration within a particular method, you can opt in to mutating behavior for that method.
+
+E.g. `Array.append(element)`, `append` is a `mutating func` since it is 
+an instance method of value type `Array`.
+```swift
+struct Point {
+    var x = 0.0, y = 0.0
+    mutating func moveBy(x deltaX: Double, y deltaY: Double) {
+        x += deltaX
+        y += deltaY
+    }
+}
+var somePoint = Point(x: 1.0, y: 1.0)
+somePoint.moveBy(x: 2.0, y: 3.0)
+print("The point is now at (\(somePoint.x), \(somePoint.y))")
+// Prints "The point is now at (3.0, 4.0)"
+```
+Mutating methods can assign an entirely new instance to the implicit self property.
+```swift
+struct Point {
+    var x = 0.0, y = 0.0
+    mutating func moveBy(x deltaX: Double, y deltaY: Double) {
+        self = Point(x: x + deltaX, y: y + deltaY)
+    }
+}
+```
+
+#### Value types containing reference types
+
+```swift
+struct ButtonWrapper {
+    var name: String
+    var button: Button
+}
+var b1 = ButtonWrapper(name: "b1", button: Button())
+var b2 = b1 // b1 and b2 point to the same Button but different names (copies)
 ```
 
 ### Reference Types
@@ -303,7 +494,21 @@ print(p?.ssn) // nil, because abcd is less than 11 chars
 
 #### Class inheritance and initalization
 
-Use `override init` in subclasses.
+Use `override init` in subclasses if subclass `init` has same signature (usually it would not, it would probably have more params).
+
+If your subclass doesn’t define any designated initializers, it automatically inherits all of its superclass designated initializers.
+
+RecipeIngredient has nonetheless provided an implementation of all of its superclass’s designated initializers. Therefore, RecipeIngredient automatically inherits all of its superclass’s convenience initializers too.
+
+1. A designated initializer must ensure that all of the properties introduced by its class are initialized before it delegates up to a superclass initializer `super.init()`.
+
+2. `super.init()` must be called before calling `super.prop` or `super.method`. A designated initializer must delegate up to a superclass initializer before assigning a value to an inherited property. If it doesn’t, the new value the designated initializer assigns will be overwritten by the superclass as part of its own initialization.
+
+3. An initializer cannot call any instance methods, read the values of any instance properties, or refer to self as a value until after the first phase of initialization is complete.
+
+When you write a subclass initializer that matches a superclass designated initializer, you are effectively providing an override of that designated initializer. Therefore, you must write the override modifier before the subclass’s initializer definition. This is true even if you are overriding an automatically provided default initializer, as described in Default Initializers.
+
+if convenience initializer overrides a designated initializer from its superclass, it must be marked with the override modifier.
 
 **required initializers** - use `required` keyword in fron t of `init` to
 indicate every subclass must implement that initializer
@@ -408,7 +613,13 @@ e.g
 an (unrwapped) optional value to be returned else a default value
 
 **`if let` binding**: this binding automatically unwraps value out of optional
-
+```swift
+if let constantName = someOptional {
+   //statements using 'constantName' 
+} else {
+// the value of someOptional is not set (or nil).
+}
+```
 
 
 ### Protocol
