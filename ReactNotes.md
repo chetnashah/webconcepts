@@ -274,6 +274,71 @@ const MyComponent = React.memo(function MyComponent(props) {
 });
 ```
 
+
+### React.useMemo (vs React.memo)
+
+```js
+const memoizedValue = useMemo(() => computeExpensiveValue(a, b), [a, b]);
+```
+
+Returns a memoized value.
+
+Pass a “create” function and an array of dependencies. useMemo will only recompute the memoized value when one of the dependencies has changed. This optimization helps to avoid expensive calculations on every render.
+
+Remember that the function passed to `useMemo` runs during rendering. Don’t do anything there that you wouldn’t normally do while rendering. For example, side effects belong in `useEffect`, not `useMemo`.
+
+In the future, React may choose to “forget” some previously memoized values and recalculate them on next render, e.g. to free memory for offscreen components. Write your code so that it still works without useMemo — and then add it to optimize performance
+
+### React.useEffect
+
+If you have a `useEffect` function without dependencies, it will be called after
+every render.
+
+If you have a `useEffect` function with `[]` as dependencies, it is same as
+`componentDidMount`.
+
+`useEffect` function, can optionally return a cleanup function.
+
+useEffec will not accept `async` functions. The alternative is to declare and use async function inside a regular useEffect function.
+
+```js
+import React, { useState, useEffect } from "react";
+import Axios from "axios";
+
+export default function Fetcher({ url }) {
+  const [data, setData] = useState(null);
+
+  useEffect(
+    () => {
+      // Start it off by assuming the component is still mounted
+      let mounted = true;
+
+      const loadData = async () => {
+        const response = await Axios.get(url);
+        // We have a response, but let's first check if component is still mounted
+        if (mounted) {
+          setData(response.data);
+        }
+      };
+      loadData();
+
+      return () => {
+        // When cleanup is called, toggle the mounted variable to false
+        mounted = false;
+      };
+    },
+    [url]
+  );
+
+  if (!data) {
+    return <div>Loading data from {url}</div>;
+  }
+
+  return <div>{JSON.stringify(data)}</div>;
+}
+```
+
+
 ### React lifecycle for a composite component in Stack reconciler
 
 ``` 
