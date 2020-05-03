@@ -255,6 +255,24 @@ Also somewhere in the ancestors, we need to specify `getChildContext(){}` and `A
 
 #### React Context (16.3 and after)
 
+Use `createContext` + `CreatedContext.Provider with value prop` at the site of the provider and
+
+Use `CreatedContext.Consumer` which has function as a child, which looks like `(context) => (return some element)`, in the site of use.
+
+#### useContext hook
+
+
+
+### React.memo
+
+Class components can bail out from rendering when their input props are the same using PureComponent or shouldComponentUpdate. Now you can do the same with function components by wrapping them in React.memo.
+
+```js
+// memoize functional-component in terms of props
+const MyComponent = React.memo(function MyComponent(props) {
+  /* only rerenders if props change */
+});
+```
 
 ### React lifecycle for a composite component in Stack reconciler
 
