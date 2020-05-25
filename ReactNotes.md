@@ -134,6 +134,19 @@ this.setState((prevState, props) => {
 });
 ```
 
+### componentDidUpdate
+
+Called after updating/render.
+You can call setstate, but wrap inside an if condition to prevent infinte recursion
+```js
+componentDidUpdate(prevProps) {
+  // Typical usage (don't forget to compare props):
+  if (this.props.userID !== prevProps.userID) {
+    this.fetchData(this.props.userID);
+  }
+}
+```
+
 #### React controlled Components
 
 In React, this is usually solved by making a component “controlled”. Just like the DOM `<input>` accepts both a `value` and an `onChange` prop, so can the custom TemperatureInput accept both `temperature` and `onTemperatureChange` props from its parent Calculator. Also known as moving state up.

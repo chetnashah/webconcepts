@@ -1,9 +1,17 @@
 
+**The user interface refers to notification channels as "categories."**
+
 Starting in Android 7.0 (API level 24), you can display related notifications in a group (previously called "bundled" notifications).
 
 Notification groups are not the same as notification channel groups.
 
 Notice that the code on this page uses the `NotificationCompat` APIs from the Android support library. These APIs allow you to add features available only on newer versions of Android while still providing compatibility back to Android 4.0 (API level 14). However, some new features such as the inline reply action result in a no-op on older versions.
+
+### Notifiation settings
+
+"Push Notifications", in terms of FCM/GCM/etc, are a different concept from "App Notifications".
+
+The "Notifications" screen in System Settings is only about what apps are, or are not, allowed to use NotificationManager to pop up notifications in the system tray. That's blocked at the NotificationManager level in the system process, and isn't communicated to the application. Push Notifications can be thought of as simply a specific form of network communication, and that is not tied to whether or not the app is allowed to display a notification in the tray.
 
 ### Notification behaviors
 
