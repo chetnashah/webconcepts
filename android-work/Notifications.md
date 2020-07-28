@@ -7,6 +7,12 @@ Notification groups are not the same as notification channel groups.
 
 Notice that the code on this page uses the `NotificationCompat` APIs from the Android support library. These APIs allow you to add features available only on newer versions of Android while still providing compatibility back to Android 4.0 (API level 14). However, some new features such as the inline reply action result in a no-op on older versions.
 
+### Heads up notification
+
+Above android Oreo, set channel importance to high.
+
+Below android Oreo, set priority high and notification sound must also be set.
+
 ### Notifiation settings
 
 "Push Notifications", in terms of FCM/GCM/etc, are a different concept from "App Notifications".

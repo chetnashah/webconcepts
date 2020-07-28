@@ -1,4 +1,8 @@
 
+### special props
+
+there are two special props (ref and key) which are used by React, and are thus not forwarded to the component.
+
 ### React Refs
 it can be inconvenient for highly reusable “leaf” components like FancyButton or MyTextInput. These components tend to be used throughout the application in a similar manner as a regular DOM button and input, and accessing their DOM nodes may be unavoidable for managing focus, selection, or animations
 
@@ -16,8 +20,33 @@ Shape of ref variable `{ current: any }`, e.g. `const node = this.myRef.current`
 
 What is attached to ref.current?
 
-In case of ref being used on html element, current points to dom node.
-In case of ref being used on a custom class component, current points to mounted instance of the component.
+1. In case of ref being used on html element, current points to dom node.
+2. In case of ref being used on a custom class component, current points to mounted instance of the component.
+3. **You may not use ref attribute on function components** because they do not have instances.
+
+NOte: however you can use ref attribute **inside** a function as long as you refer to a dom
+or class component via `useRef`:
+```js
+function CustomTextInput(props) {
+  const textInput = useRef(null);
+  
+  function handleClick() {
+    textInput.current.focus();
+  }
+return (
+    <div>
+      <input
+        type="text"
+        ref={textInput} />
+      <input
+        type="button"
+        value="Focus the text input"
+        onClick={handleClick}
+      />
+    </div>
+  );
+}
+```
 
 ref updates happen before componentDidMount or componentDidUpdate lifecycle methods
 
@@ -96,6 +125,7 @@ function logProps(Component) {
   });
 }
 ```
+**Ref forwarding is not limited to DOM components. You can forward refs to class component instances, too.**
 
 #### React setState signatures
 
