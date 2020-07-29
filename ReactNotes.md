@@ -72,6 +72,13 @@ React will call the ref callback with the DOM element when the component mounts,
 If the ref callback is defined as an inline function, it will get called twice during updates, first with null and then again with the DOM element. This is because a new instance of the function is created with each render, so React needs to clear the old ref and set up the new one. You can avoid this by defining the ref callback as a bound method on the class, but note that it shouldn’t matter in most cases.
 
 
+#### Custom ref prop like `innerRef` vs ref forwarding
+
+One needs to use ref forwarding only if they want prop name to be `ref` i.e. maintain the `ref` contract to other components, because
+`ref` is a special prop name which does not get forwarded.
+
+For all other cases, custom ref props just work fine like `innerRef` etc, just work fine.
+
 
 #### Ref forwarding pre 16.3
 
