@@ -19,6 +19,21 @@ Use `docker logs` to get logs for given container
 ```sh
 docker logs container-id
 ```
+each sandboxed container process will have its logs emitted and saved/persisted by container id that can be retrieved by above command.
+
+### Docker toolbox
+
+Use `docker quickstart terminal` from start menu (it sets up stuff like VM/networking etc behind the scenes), and normal terminal `docker.exe` will not work.
+
+A major difference between the course lecture using Docker Desktop vs. Docker Toolbox is that you will not be able to use localhost anymore.
+
+Instead, you will need to access your machine with the IP address `192.168.99.100`
+
+### Docker client
+
+A client or cli that forwards all the docker commands to the docker daemon/docker server.
+
+
 
 ### Docker usage by non-root users
 
@@ -96,8 +111,30 @@ After exposing ports, `docker ps` will show the exposing using `->` e.g.
 **NOTE**
 By default, the port on the host is mapped to 0.0.0.0, which means all IP addresses. You can specify a particular IP address when you define the port mapping, for example, -p 127.0.0.1:6379:6379
 
+Note: it is ok to have multiple processes running inside a docker container
+
+### dropping a shell in context of a running container.
+
+Instead of doing `docker exec -it CONTAINER COMMAND` continuously, it is
+a good idea to drop shell in context of a container.
+
+which is done using:
+```sh
+docker exec -it CONTAINERID sh
+```
+this can  also be done by `docker run` e.g
+
+```sh
+docker run -it busybox sh
+```
+images that do not have sh will fail e.g
+```sh
+# fails
+$ docker run -it hello-world sh 
+```
 ### Running command in a docker container using `docker exec`
 
+allows you to run additional commands in a container
 ```sh
 docker exec -it CONTAINER COMMAND
 # e.g.
@@ -107,6 +144,36 @@ docker exec -it mycontainer env
 # TERM=xterm
 ```
 
+Why `-it`?
+for connecting terminal to stdin of container command
+
+### removing docker containers
+
+Use `docker rm ContainerID`
+or use `docker system prune`
+
+### docker run
+
+docker `run` basically copies the fs snapshot present in the docker `image` (made on building a dockerfile)  in a new process which is sandboxed (at a network/disk level), which is now known as a container.
+
+When using plain `docker run imagename` it will run the default startup command
+present within the image.
+
+The default startup command in the image can be overriden using 
+`docker run imagename somecommand`.
+
+e.g. 1. `docker run busybox`
+vs `docker run busybox echo "foo bar"` - here echo command is an override over startup command after start of busybox image container.
+Another example is `docker run busybox ls`.
+
+Note: the override command is run in the context of running container
+
+#### docker run subparts
+`docker run` = `docker create imagename` + `docker start containerid`.
+
+1. `docker create`: creation part is the prepping process of a empty sandboxed process by copying the layers from image to the sandbox processed disk etc.
+2. `docker start`: starting part is the running of the default startup command present within the image or the override startup command supplied from cli. This command can also be used to restart stopped containers. 
+**note: `docker start` does not output container logs to stdout unlike `docker run`, so use `docker logs` to inspect container logs**
 
 ### Getting hold of a shell within the container
 ```sh

@@ -16,6 +16,9 @@ Usually starts with FROM etc.
 
 A compiled version of Dockerfile(still just a file only), 
 usually has an id and a name also.
+
+A docker image is a filesystem snapshot after build with start/run instrunctions.
+
 Docker image is made using:
 ``` sh
 docker build dirWithDockerFile
