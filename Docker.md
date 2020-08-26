@@ -33,7 +33,10 @@ Instead, you will need to access your machine with the IP address `192.168.99.10
 
 A client or cli that forwards all the docker commands to the docker daemon/docker server.
 
-
+#### Docker build
+Docker build will build image from a set of commands in a file called `Dockerfile`.
+At the end of `docker build`, we get an image-id.
+Image-id image can be run by docker using `docker run image-id`
 
 ### Docker usage by non-root users
 
