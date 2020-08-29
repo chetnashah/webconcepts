@@ -21,6 +21,15 @@ docker logs container-id
 ```
 each sandboxed container process will have its logs emitted and saved/persisted by container id that can be retrieved by above command.
 
+### Why alpine as base image?
+https://www.youtube.com/watch?v=sIG2P9k6EjA
+
+Components within alpine image:
+1. musl libc
+2. busybox: includes most of posix shell, utils, coreutils
+3. apk-tools : pkg manager
+4. toolchain
+
 ### Docker toolbox
 
 Use `docker quickstart terminal` from start menu (it sets up stuff like VM/networking etc behind the scenes), and normal terminal `docker.exe` will not work.
@@ -214,7 +223,11 @@ a35c50f48e25: Pushed
 
 This indicates the the specified layers you want to push to that repository do not exist in that repository, but they do exist in another repository on the same registry server which you have read access to. Instead of transferring the layers of the network, docker shares the layers between the repositories.
 
+### Dockerfile syntax
 
+`FROM`: specifies base image
+`RUN`: run some command that usually affects fs
+`CMD`: launch start command of the image that will be built
 
 ### Managing docker networks
 

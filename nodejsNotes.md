@@ -27,6 +27,21 @@ To restart a crashed application in a more reliable way, whether 'uncaughtExcept
 
 #### unhandled rejection
 
+"unhandledrejection" is an event emitted on process object.
+How to add listener for this event:
+```js
+process.on('unhandledRejection', (reason, promise) => {
+  console.log('Unhandled Rejection at:', promise, 'reason:', reason);
+  // Application specific logging, throwing an error, or other logic here
+});
+```
+try this to raise unhandled rejection:
+```js
+new Promise((resolve, reject) => {
+  setTimeout(() => reject('woops'), 500);
+});
+```
+
 "Rejection" is the canonical term for a promise reporting an error.
 ```
 const { MongoClient } = require('mongodb');
@@ -68,7 +83,6 @@ new Promise((_, reject) => reject(new Error('woops'))).
 ```
 
 It will throw an unhandledRejection because `err` in the catch block is not defined.
-`unhandledRejection` will get the argument you passed to `reject()`.
 
 
 if you attach a listener to 'unhandledRejection', the default warning to the console (the UnhandledPromiseRejectionWarning from previous examples) will not print to the console. That message only gets printed if you don't have a handler for 'unhandledRejection'.
@@ -192,6 +206,11 @@ Prior to the introduction of TypedArray in ECMAScript 2015 (ES6), the JavaScript
 
 Now that TypedArray has been added in ES6, the Buffer class implements the Uint8Array API in a manner that is more optimized and suitable for Node.js' use cases.
 
+### Streams
+
+Note: All streams are event emitters.
+
+
 ### EventEmitter
 
 The relevant module name is `events`;
@@ -228,6 +247,34 @@ Adds the listener function to the end of the listeners array for the event named
 `on` is a synonym for `addListener`.
 Has methods .on(eventName, listener) -> to register listeners,
 and .emit(eventName) -> synchronously calls all registered listeners.
+
+Examples of commonly used event emitters in nodejs:
+1. process
+2. httpServer ie. `http.Server`
+3. netServer i.e. `net.Server`
+
+Writable Stream (and also event emitters by association) examples:
+1. HTTP requests, on the client
+2. HTTP responses, on the server
+3. fs write streams
+4. zlib streams
+5. crypto streams
+6. TCP sockets
+7. child process stdin
+8. process.stdout, process.stderr
+
+Readable streams (and also event emitters by association) examples:
+Readable streams are an abstraction for a source from which data is consumed.
+examples:
+1. HTTP responses, on the client
+2. HTTP requests, on the server
+3. fs read streams - created using `fs.createReadStream`.
+4. zlib streams
+5. crypto streams
+6. TCP sockets
+7. child process stdout and stderr
+8. process.stdin - always available
+
 
 #### Event emitter listeners
 If you pass `function abc()` with `addListener/on` methods, then `this` inside the
@@ -278,7 +325,7 @@ Outgoing request made by node.
 1. `abort`
 2. `connect`
 3. `continue`
-4. `response` - indicates we have got a response
+4. `response` - indicates we have got a response, only emitted once, value received in this listener is instance of `IncomingMessage`.
 5. `socket`
 6. `upgrade`
 7. 
