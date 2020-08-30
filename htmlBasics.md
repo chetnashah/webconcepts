@@ -488,3 +488,12 @@ If the chosen effect were "move", then the original data should be removed from 
 The target for `dragover` and `drop` events is current node.
 
 This data can be useful for swapping src and drop-target at end of a drag.
+
+
+### Animations
+
+Ways to animate:
+1. modify `element.style.top/left` etc and other style props in periodic/frame callbacks.
+2. `Element.animate([JSONKeyframes, options])`
+3. CSS animations with `transition`: all property changes are animated automatically.
+4. CSS animation with `animation` attribute.  syntax looks like: `animation: name duration timing-function delay iteration-count direction fill-mode play-state;` where `name` is keyframe declaration via `@keyframe`
