@@ -164,6 +164,11 @@ clientRequest.on('response', (res: IncomingMessage) =>{
 });
 ```
 
+#### serverResponse : setHeader vs writeHead
+`response.setHeader()` allows you only to set a singular header.
+
+`response.writeHead()` will allow you to set pretty much everything about the response head including` status code`, and `multiple headers`.
+
 ### path module
 
 Useful method is `path.parse(pathString)`.

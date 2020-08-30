@@ -3,6 +3,14 @@
 
 there are two special props (ref and key) which are used by React, and are thus not forwarded to the component.
 
+## react dom event callbacks
+
+```
+onClick onContextMenu onDoubleClick onDrag onDragEnd onDragEnter onDragExit
+onDragLeave onDragOver onDragStart onDrop onMouseDown onMouseEnter onMouseLeave
+onMouseMove onMouseOut onMouseOver onMouseUp
+```
+
 ### React Refs
 it can be inconvenient for highly reusable “leaf” components like FancyButton or MyTextInput. These components tend to be used throughout the application in a similar manner as a regular DOM button and input, and accessing their DOM nodes may be unavoidable for managing focus, selection, or animations
 
@@ -133,6 +141,27 @@ function logProps(Component) {
 }
 ```
 **Ref forwarding is not limited to DOM components. You can forward refs to class component instances, too.**
+
+#### useRef vs createRef
+
+The difference is that `createRef` will always create a new ref. In a class-based component, you would typically put the ref in an instance property during construction (e.g. `this.input = createRef()`). You don't have this option in a function component. `useRef` takes care of returning the same ref each time as on the initial rendering.
+
+Keep in mind that useRef doesn’t notify you when its content changes. Mutating the `.current` property doesn’t cause a re-render. If you want to run some code when React attaches or detaches a ref to a DOM node, you may want to use a callback ref instead
+
+Also for element based `refs` needed in dom manipulation, use below instead of 
+`useRef`:
+```js
+const Example = () => {
+   const [ref, setRef] = useState(null);
+   const onRefSet = useCallback(ref => {
+      setRef(ref);
+      ref.current.focus(); // a side effect!
+   });
+
+   // well, you can re
+   return <div ref={onRefSet}>😎</div>
+}
+```
 
 #### React setState signatures
 
@@ -305,12 +334,64 @@ Also somewhere in the ancestors, we need to specify `getChildContext(){}` and `A
 
 #### React Context (16.3 and after)
 
+1. createContext + Provider + Consumer
 Use `createContext` + `CreatedContext.Provider with value prop` at the site of the provider and
-
++
 Use `CreatedContext.Consumer` which has function as a child, which looks like `(context) => (return some element)`, in the site of use.
+
+2. `createContext` + `Provider` + `static contextType = MyContext` + `this.context` in class
+
+3. `createContext` + `Provider` + `useContext` hook
+
+All consumers that are descendants of a `Provider` will re-render whenever the `Provider`’s value prop changes. The propagation from `Provider` to its descendant consumers (including `.contextType` and `useContext`) is not subject to the `shouldComponentUpdate` method, so the consumer is updated even when an ancestor component skips an update.
 
 #### useContext hook
 
+If you’re familiar with the context API before Hooks, `useContext(MyContext)` is equivalent to `static contextType = MyContext` in a class, or to `<MyContext.Consumer>`.
+
+`useContext(MyContext)` only lets you read the context and subscribe to its changes. You still need a `<MyContext.Provider>` above in the tree to provide the value for this context.
+
+```js
+const themes = {
+  light: {
+    foreground: "#000000",
+    background: "#eeeeee"
+  },
+  dark: {
+    foreground: "#ffffff",
+    background: "#222222"
+  }
+};
+
+const ThemeContext = React.createContext(themes.light);
+
+function App() {
+  return (
+    <ThemeContext.Provider value={themes.dark}>
+      <Toolbar />
+    </ThemeContext.Provider>
+  );
+}
+
+function Toolbar(props) {
+  return (
+    <div>
+      <ThemedButton />
+    </div>
+  );
+}
+
+function ThemedButton() {
+  const theme = useContext(ThemeContext);  
+  return (
+    <button style={{ background: theme.background, color: theme.foreground }}>
+        I am styled by theme context!
+    </button>
+  );
+}
+```
+
+#### this.context vs Context.Consumer vs useContext for consuming a context
 
 
 ### React.memo
@@ -349,7 +430,7 @@ If you have a `useEffect` function with `[]` as dependencies, it is same as
 
 `useEffect` function, can optionally return a cleanup function.
 
-useEffec will not accept `async` functions. The alternative is to declare and use async function inside a regular useEffect function.
+useEffect will not accept `async` functions. The alternative is to declare and use async function inside a regular useEffect function.
 
 ```js
 import React, { useState, useEffect } from "react";
@@ -388,6 +469,167 @@ export default function Fetcher({ url }) {
 }
 ```
 
+Unlike `componentDidMount` and `componentDidUpdate`, the function passed to `useEffect` fires after layout and paint, during a deferred event. This makes it suitable for the many common side effects, like setting up subscriptions and event handlers, because most types of work shouldn’t block the browser from updating the screen.
+
+Although `useEffect` is deferred until after the browser has painted, it’s guaranteed to fire before any new renders. React will always flush a previous render’s effects before starting a new update.
+
+#### Dependencies of useEffect
+
+Make sure all the props/state that are used by effect are specified as dependencies:
+```js
+useEffect(
+  () => {
+    const subscription = props.source.subscribe();
+    return () => {
+      subscription.unsubscribe();
+    };
+  },
+  [props.source],
+);
+```
+
+functions as dependencies of `useEffect` effect function:
+Recommended solution: move functions inside useEffect.
+```js
+function ProductPage({ productId }) {
+  const [product, setProduct] = useState(null);
+
+  async function fetchProduct() {
+    const response = await fetch('http://myapi/product/' + productId); // Uses productId prop    const json = await response.json();
+    setProduct(json);
+  }
+
+  useEffect(() => {
+    fetchProduct();
+  }, []); // 🔴 Invalid because `fetchProduct` uses `productId`  // ...
+}
+```
+
+Correct way to write a counter with `useState` and `useEffect`:
+```js
+function Counter() {
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    const id = setInterval(() => {
+      setCount(c => c + 1); // ✅ This doesn't depend on `count` variable outside    }, 1000);
+    return () => clearInterval(id);
+  }, []); // ✅ Our effect doesn't use any variables in the component scope
+  return <h1>{count}</h1>;
+}
+```
+
+**Why refs not needed in useEffect dependencies** - The reason behind this is that `useRef` isnot related to the render cycle. I mean, it's not recreated, neither is automatically updated after every render, like `state`, `props` or variables created during render usually are.
+Moreover object created by `useRef` lasts lifetime of the component.
+It works because `useRef` return value doesn't change on renders.
+
+### React portal
+
+`ReactDOM.createPortal(child, container)` - used to render child outside of a parent.
+A typical use case for portals is when a parent component has an overflow: hidden or z-index style, but you need the child to visually “break out” of its container. For example, dialogs, hovercards, and tooltips.
+
+Features like context work exactly the same regardless of whether the child is a portal, as the portal still exists in the React tree regardless of position in the DOM tree.
+
+This includes event bubbling. An event fired from inside a portal will propagate to ancestors in the containing React tree, even if those elements are not ancestors in the DOM tree.
+
+```jsx
+import React from 'react';
+import ReactDOM from 'react-dom';
+export default function Modal(props) {
+  if(!props.open) {
+    return null;
+  }
+
+  return ReactDOM.createPortal(
+    <div style={{ zIndex: 1000, position: 'fixed', left: 0,top:0, bottom: 0,right: 0, backgroundColor: 'rgba(0,0,0,0.6)'}}>
+      <div style={{ position: 'fixed', left: '50%', top: '50%', transform: 'translate(-50%, -50%)', backgroundColor: 'white'}}>
+      <button onClick={props.onClose}>
+        Close
+      </button>
+      {props.children}
+      </div>
+    </div>,
+    document.getElementById('portal-root')
+  );
+}
+```
+#### Desigining portal component
+
+Important prop: children : whatever you want to show within modal, that should be children
+of Modal component.
+
+### useCallback hook
+
+```js
+const memoizedCallback = useCallback(
+  () => {
+    doSomething(a, b);
+  },
+  [a, b],
+);
+```
+Returns a memoized callback.
+
+Pass an inline callback and an array of dependencies. `useCallback` will return a memoized version of the callback that only changes if one of the dependencies has changed. This is useful when passing callbacks to optimized child components that rely on reference equality to prevent unnecessary renders (e.g. `shouldComponentUpdate`).
+
+`useCallback(fn, deps)` is equivalent to `useMemo(() => fn, deps)`.
+
+**Note** - The array of dependencies is not passed as arguments to the callback. Conceptually, though, that’s what they represent: every value referenced inside the callback should also appear in the dependencies array.
+
+### useReducer hook
+
+`const [state, dispatch] = useReducer(reducer, initialArg, init);`
+
+The identity of the `dispatch` function from `useReducer` is always stable — even if the reducer function is declared inside the component and reads its `props`.
+
+```
+function Example(props) {
+  // Keep latest props in a ref.  
+  const latestProps = useRef(props);  
+  useEffect(() => {    latestProps.current = props;  });
+  useEffect(() => {
+    function tick() {
+      // Read latest props at any time      
+      console.log(latestProps.current);    }
+
+    const id = setInterval(tick, 1000);
+    return () => clearInterval(id);
+  }, []); // This effect never re-runs
+  }
+```
+
+### useState hook
+
+`const [state, setState] = useState(initialState);`
+
+React guarantees that setState function identity is stable and won’t change on re-renders. This is why it’s safe to omit from the useEffect or useCallback dependency list.
+
+`setState` can be functional (calculate new state based on prev e.g. like in reducers): 
+```jsx
+function Counter({initialCount}) {
+  const [count, setCount] = useState(initialCount);
+  return (
+    <>
+      Count: {count}
+      <button onClick={() => setCount(initialCount)}>Reset</button>
+      <button onClick={() => setCount(prevCount => prevCount - 1)}>-</button>
+      <button onClick={() => setCount(prevCount => prevCount + 1)}>+</button>
+    </>
+  );
+}
+```
+
+`useState` can also accept a function: used for lazy initialization:
+If the initial state is the result of an expensive computation, you may provide a function instead, which will be executed only on the initial render
+```js
+const [state, setState] = useState(() => {
+  const initialState = doExpensiveComputation();
+  return initalState;
+});
+```
+
+**Note** - useState has this optimisation:
+If you update a State Hook to the same value as the current state, React will bail out without rendering the children or firing effects (Uses `Object.is` i.e. reference/prmitive equality).
 
 ### React lifecycle for a composite component in Stack reconciler
 
@@ -715,4 +957,65 @@ What completeUnitOfWork callstack looks like:
 
 
 
+### Hooks 
 
+#### schema 
+```js
+function createHook(): Hook {
+  return {
+    memoizedState: null,
+
+    baseState: null,
+    queue: null,
+    baseUpdate: null,
+
+    next: null,
+  };
+}
+```
+`next` is also a hook:
+```js
+
+export type Hook = {
+  memoizedState: any,
+
+  baseState: any,
+  baseUpdate: Update<any> | null,
+  queue: UpdateQueue<any> | null,
+
+  next: Hook | null,
+};
+
+type Effect = {
+  tag: HookEffectTag,
+  create: () => mixed,
+  destroy: (() => mixed) | null,
+  inputs: Array<mixed>,
+  next: Effect,
+};
+
+type Update<A> = {
+  expirationTime: ExpirationTime,
+  action: A,
+  next: Update<A> | null,
+};
+
+type UpdateQueue<A> = {
+  last: Update<A> | null,
+  dispatch: any,
+};
+```
+
+Why the hook restrictions, because hooks form a linkedlist/queue like below:
+```js
+{
+  memoizedState: 'foo',
+  next: {
+    memoizedState: 'bar',
+    next: {
+      memoizedState: 'bar',
+      next: null
+    }
+  }
+}
+```

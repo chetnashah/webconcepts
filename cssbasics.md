@@ -395,3 +395,9 @@ e.g.
   background-color: var(--main-bg-color);
 }
 ```
+
+### z-index
+
+Learn about stacking context.
+
+**Note**: z-index only works on positioned elements (position:absolute, position:relative, or position:fixed).
