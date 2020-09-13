@@ -421,6 +421,36 @@ You can call requestIdleCallback() within an idle callback function to schedule 
 
 Ideally don't do dom mutations in idlecallbacks. Use it for stuff that has less priority. Your idle callback should avoid doing anything that could take an unpredictable amount of time
 
+### window.requestAnimationFrame(callback);
+
+The `window.requestAnimationFrame()` method tells the browser that you wish to perform an animation and requests that the browser calls a specified function to update an animation before the next repaint. The method takes a callback as an argument to be invoked before the repaint.
+**Note**: Your callback routine must itself call requestAnimationFrame() if you want to animate another frame at the next repaint.
+
+`callback`:     The function to call when it's time to update your animation for the next repaint. The callback function is passed one single argument, a `DOMHighResTimeStamp` similar to the one returned by `performance.now()`, indicating the point in time when `requestAnimationFrame()` starts to execute callback functions.
+
+Return: A long integer value, the request id, that uniquely identifies the entry in the callback list. This is a non-zero value, but you may not make any other assumptions about its value. You can pass this value to window.cancelAnimationFrame() to cancel the refresh callback request.
+
+```js
+// two second animation - check elapsed variable
+const element = document.getElementById('some-element-you-want-to-animate'); 
+let start;
+
+function step(timestamp) {
+  if (start === undefined)
+    start = timestamp;
+  const elapsed = timestamp - start;
+
+  // `Math.min()` is used here to make sure that the element stops at exactly 200px.
+  element.style.transform = 'translateX(' + Math.min(0.1 * elapsed, 200) + 'px)';
+
+  if (elapsed < 2000) { // Stop the animation after 2 seconds
+    window.requestAnimationFrame(step);
+  }
+}
+
+window.requestAnimationFrame(step);
+```
+
 ### HTML events
 
 #### e.target vs e.currentTarget
