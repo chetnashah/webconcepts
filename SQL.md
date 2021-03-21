@@ -21,12 +21,56 @@ e.g. `CREATE DATABASE hello_world_db;`
 Tell me the currently used db:
 `SELECT database();`
 
+### FOREIGN KEY constraint in mysql
+
+```sql
+-- 1 customer: many orders (one to many relationship)
+CREATE TABLE customers(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    first_name VARCHAR(100),
+    last_name VARCHAR(100),
+    email VARCHAR(100)
+);
+
+CREATE TABLE orders(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    order_date DATE,
+    amount DECIMAL(8,2),
+    customer_id INT,
+    FOREIGN KEY (customer_id) REFERENCES customers(id)
+);
+```
+
+### JOINs
+
+An alternative to JOINs is subqueries.
+e.g.
+```sql
+SELECT * FROM orders WHERE customer_id=
+       (
+              SELECT id FROM customers
+              WHERE last_name='George'
+       );
+```
+
+#### CROSS (Product) JOIN (MxN)
+
+Makes `MxN` rows, does not put any logic.
+```sql
+SELECT * from customers, orders;
+-- or
+SELECT * 
+FROM table1 
+CROSS JOIN table2;
+```
 ### Execution order of clauses:
 
 `FROM & JOINs` determine & filter rows
 `WHERE` more filters on the rows
 `GROUP BY` combines those rows into groups
 `HAVING` filters groups
+`SELECT`
+`DISTINCT`
 `ORDER BY` arranges the remaining rows/groups
 `LIMIT` filters on the remaining rows/groups
 ### Execute .sql file in mysql cli
@@ -169,6 +213,16 @@ Good idea to always setup `DEFAULT` along with `NOT NULL` in create table.
 
 Aliases are specified via `AS` keyword and we can have aliases 
 for columns as well as tables.
+
+**NOTE** - **You cannot use aliases declared in SELECT clause within the WHERE clause becuase WHERE
+clause executes before SELECT**
+e.g. following is an invalid query:
+```sql
+SELECT logcount, logUserID, maxlogtm
+   , DATEDIFF(day, maxlogtm, GETDATE()) AS daysdiff
+FROM statslogsummary
+WHERE daysdiff > 120 -- error!!! - where executes before select
+```
 
 ### Mysql PRIMARY KEY with AUTO INCREMENT example:
 ```sql
