@@ -214,8 +214,8 @@ Good idea to always setup `DEFAULT` along with `NOT NULL` in create table.
 Aliases are specified via `AS` keyword and we can have aliases 
 for columns as well as tables.
 
-**NOTE** - **You cannot use aliases declared in SELECT clause within the WHERE clause becuase WHERE
-clause executes before SELECT**
+**NOTE** - **You cannot use aliases declared in `SELECT` clause within the `WHERE` clause becuase WHERE
+clause executes before SELECT**, The alternate solution is to use `WITH` clause, which allows to define alias before query is executed.
 e.g. following is an invalid query:
 ```sql
 SELECT logcount, logUserID, maxlogtm
@@ -224,6 +224,18 @@ FROM statslogsummary
 WHERE daysdiff > 120 -- error!!! - where executes before select
 ```
 
+### Mysql WITH clause
+
+A `common table expression (CTE)` is a named (Alias) temporary result set that exists within the scope of a single statement and that can be referred to later within that statement, possibly multiple times
+
+With for table aliases:
+```sql
+WITH
+  cte1 AS (SELECT a, b FROM table1),
+  cte2 AS (SELECT c, d FROM table2)
+SELECT b, d FROM cte1 JOIN cte2
+WHERE cte1.a = cte2.c;
+```
 ### Mysql PRIMARY KEY with AUTO INCREMENT example:
 ```sql
 CREATE TABLE unique_cats(cat_id INT NOT NULL AUTO_INCREMENT
