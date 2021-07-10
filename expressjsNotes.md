@@ -245,19 +245,22 @@ app.use(passport.initialize());
 app.use(passport.session());
 ```
 
-* Purpose of `serializeUser` and `deserializeUser` : Convert a db record for a user to a cookie and vice-versa. Usually we take the record and just extract the id and send it as a cookie to browser. And when a client request comes with cookie containing user id, we deserialize the user record from db using the id inside the cookie that came in the request.
+* Purpose of `serializeUser` and `deserializeUser` : Only needed for **session id serialization and deserialization**. Convert a db record for a user to a cookie-id and vice-versa. Usually we take the record and just extract the id and send it as a cookie to browser. And when a client request comes with cookie containing user id, we deserialize the user record from db using the id inside the cookie that came in the request.
 
 There is 1:1 relationship between cookie's sid <-> user, managed by passport.
 
 #### Verify Callback in Passport
 
-Strategies require what is known as a verify callback. The purpose of a verify callback is to find the user that possesses a set of credentials.
+Strategies require what is known as a verify callback. The purpose of a verify callback is to find the user that possesses a set of credentials. (This is where
+authenticator has verified the authenticity and we have some profile info, that we
+must save with the database.)
 
 verifycb :: credentials -> done(user);
 
-When Passport authenticates a request, it parses the credentials contained in the request. It then invokes the verify callback with those credentials as arguments, in this case username and password. If the credentials are valid, the verify callback invokes done to supply Passport with the user that authenticated.
+When Passport authenticates a request, it parses the credentials contained in the request. It then invokes the verify callback with those credentials as arguments, in this case username and password. If the credentials are valid, the verify callback  should invoke done to supply Passport with the user that authenticated.
 
-
+The user supplied via `done` fn inside verify callback ends up in `req.user` for 
+subsequent middlewares/handlers.
 #### 
 
 `passport.session()` acts as a middleware to alter the req object and change the 'user' value that is currently the session id (from the client cookie) into the true deserialized user object.
@@ -309,6 +312,32 @@ app.get('/home/settings', passport.authenticate('google'), (req, res) => {
 // or return unauthorized
 ```
 
+**NOte**: `passport.authenticate` middleware can be used for multiple routes/flows e.g.
+1. initiating user grant flow in Oauth
+2. exchange received code for an accesstoken with authorization server.
+
+### getting google user info given accesstoken (ya29.zlvkcjv...)
+
+The accesstoken should have been requested with scope profile in order 
+for this to work.
+
+GET `https://www.googleapis.com/oauth2/v2/userinfo`
+with
+`Authorization: Bearer ya29.aldkfja32asFlq3jflafASdflk3j4fldkajAQREFADQ-Q0-hxpEp-JnsN2b6laE7kF54Wy7ykiXL1Ngu2Ek4ZSvG_0rrWa8rbf7Qv2-abcdefgh`
+
+will return something like:
+```
+{
+  "family_name": "doe", 
+  "name": "john doe", 
+  "picture": "https://lh3.googleusercontent.com/a-/Asfkjslkjfwfsdlkjsfsdf423sdfsdwReg=abcd-e", 
+  "locale": "en", 
+  "email": "johndoe@gmail.com", 
+  "given_name": "john", 
+  "id": "1234567890987654321", 
+  "verified_email": true
+}
+```
 ### express-session vs cookie-session
 
 The basic difference between both these relates to how and where is the session data being stored. Cookie session is basically used for lightweight session applications where the session data is stored in a cookie but within the client [browser], whereas, Express Session stores just a mere session identifier within a cookie in the client end, whilst storing the session data entirely on the server. Cookie Session is helpful in applications where no database is used in the back-end. However, the session data cannot exceed the cookie size. On conditions where a database is used, it acts like a cache to stop frequent database lookups which is expensive.
