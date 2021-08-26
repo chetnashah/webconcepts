@@ -36,6 +36,72 @@ angular.module('MyApp')
 });
 ```
 
+### calling order
+
+calling order:
+
+1. `app.config()`
+2. `app.run()`
+3. directive's `compile` functions (if they are found in the dom)
+4. `app.controller()`
+5. directive's `link` functions (again, if found) (sets up watching exp etc)
+
+```html
+<div ng-app="myApp" ng-controller="myCtrl">
+    <div test1 test2> </div>
+</div>
+```
+
+```js
+var myApp = angular.module('myApp', []);
+
+myApp.factory('aProvider', function() {
+   console.log("factory");
+});
+
+myApp.directive("test1", function() {
+    console.log("directive setup");
+    return {
+        compile: function() {
+        	console.log("directive compile test1");
+        },
+    }
+});
+
+myApp.directive("test2", function() {
+    return {
+        link: function() {
+        console.log("directive link");
+        }
+    }
+});
+
+myApp.run(function() {
+    console.log("app run");
+});
+
+myApp.config( function() {
+    console.log("app config");
+});
+
+myApp.controller('myCtrl', function($scope) {
+    console.log("app controller");
+});
+```
+
+### Angularjs controller ($scope augmenter)
+
+AngularJS, a controller is a JavaScript constructor function that is used to augment the AngularJS scope.
+
+When a controller is attached to the DOM via the `ng-controller` directive, AngularJS will instantiate a new controller object, using the specified controller's constructor function. 
+
+A new child scope will be available as an injectable parameter to the controller's constructor function as `$scope`
+
+
+Scope is the glue between application controller and the view. During the template linking phase the directives set up `$watch` expressions on the scope. The `$watch` allows the directives to be notified of property changes, which allows the directive to render the updated value to the DOM.
+
+Both controllers and directives have reference to the scope, but not to each other.
+
 ### AngularJS compilation process
 
 ```js
@@ -383,6 +449,11 @@ If `scope` property of DDO is set to {} (object hash), then a new "isolate" scop
 Savvy readers may be wondering what the difference is between link and controller. The basic difference is that controller can expose an API, and link functions can interact with controllers using require.
 
 Best Practice: use controller when you want to expose an API to other directives. Otherwise use link.
+
+### Linking phase
+
+The linking phase is where you attach the data ( $scope ) to the linking function and it should return you the linked html. Since the directive also specifies where this html goes or what it changes, it is already good to go. This is the function where you want to make changes to the linked html, i.e the html that already has the data attached to it. In angular if you write code in the linking function its generally the post-link function (by default). It is kind of a callback that gets called after the linking function has linked the data with the template.
+
 
 ### Transclusion
 
