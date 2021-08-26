@@ -1,4 +1,12 @@
 
+### Webpack config important fields
+
+1. `entry` - where to start
+2. `output` - what do we want outputted.
+3. `module` - module level processing & transformation, has a field called `rules`
+4. `plugins` - more powerful processing and hooks into webpack compiler.
+5. `resolve` - where to find modules/things etc.
+
 ### Webpack sync module loading in nutshell
 
 Below is bundle code for a `index.js`, that uses
