@@ -49,7 +49,7 @@ controller can be inline function at a field level.
 * controller is the right place to manipulate scope, including adding methods on scope, to be used to manipulate scope.
 * If you need to change the scope from the link function, call a method of controller.
 * since the controller is executed before the link function, you should initialized the scope in the former so the latter can get a valid model to work on
-* avoid DOM manipulation in the controller
+* avoid DOM manipulation in the controller, right place is the link function
 * i.e. controller should have no acess to directive or dom, only setup scope & have methods to manipulate scope.
 
 #### What is a directive controller?
@@ -77,11 +77,222 @@ The `$watch allows the directives to be notified of property changes, which allo
 This arrangement isolates the controller from the directive as well as from the DOM. 
 This is an important point since it makes the controllers view agnostic, which greatly improves the testing story of the applications.
 
+#### Isolate scope
+
+1. bring simple value in to isolate scope:
+```js
+    scope: {
+        user: '=person'
+    },
+    controller: function($scope){
+        $scope.printMe = function() {
+            console.log($scope.user); // name inside directive can be different then outers interface
+        }
+    }
+```
+```html
+<my-directive person=sompersonobj>
+```
+
+#### $parse vs $interpolate vs $compile
+
+* `$compile` - it can take the whole markup and turn it into a linking function that, when executed against a certain scope will turn a piece of HTML text into dynamic, live DOM with all the directives (here: ng-src) reacting to model changes. One would invoke it as follows: $compile(imgHtml)($scope) and would get a DOM element with all the DOM event bounds as a result. $compile is making use of $interpolate (among other things) to do its job.
+* `$interpolate` knows how to process a string with embedded interpolation expressions, ex.: `/path/{{name}}.{{extension}}`. In other words it can take a string with interpolation expressions, a scope and turn it into the resulting text. One can think of the $interpolation service as a very simple, string-based template language. Given the above example one would use this service like: `$interpolate("/path/{{name}}.{{extension}}")($scope)` to get the `path/image.jpg` string as a result.
+* `$parse` is used by $interpolate to evaluate individual/single expressions `name, extension` against a scope. It can be used to both read and set values for a given expression. For example, to evaluate the name expression one would do: `$parse('name')($scope)` to get the "image" value. To set the value one would do: `$parse('name').assign($scope, 'image2')`
+All those services are working together to provide a live UI in AngularJS. But they operate on different levels:
+
+`$parse` is concerned with **individual expressions only** `(name, extension)`. It is a read-write service.
+`$interpolate` is read only and is concerned with strings containing **multiple expressions** `(/path/{{name}}.{{extension}})`
+$compile is at the heart of AngularJS machinery and can turn HTML strings (with directives and interpolation expressions) into live DOM.
 
 
+#### What is transclusion and when do I need it?
+
+You can think of this pattern as similar to managing `this.props.children` equivalent in React.
+
+Consider a directive called myDirective in an element, and that element is enclosing some other content, let's say:
+
+```html
+<div my-directive>
+    <button>some button</button>
+    <a href="#">and a link</a>
+</div>
+```
+If myDirective is using a template, you'll see that the content of <div my-directive> will be replaced by your directive template. So having:
+```js
+app.directive('myDirective', function(){
+    return{
+        template: '<div class="something"> This is my directive content</div>'
+    }
+});
+```
+will result in this render:
+```html
+<div class="something"> This is my directive content</div> 
+```
+Notice that the content of your original element `<div my-directive>` will be lost (or better said, replaced). So, say good-bye to these buddies:
+```html
+<button>some button</button>
+<a href="#">and a link</a>
+```
+So, what if you want to keep your `<button>...` and `<a href>...` in the DOM? You'll need something called transclusion. The concept is pretty simple: Include the content from one place into another. So now your directive will look something like this:
+```js
+app.directive('myDirective', function(){
+    return{
+        transclude: true,// notice this directive gets priority
+        // and it is directive's decision on whether to replace or transclude
+        template: '<div class="something"> This is my directive content <div class="something" ng-transclude></div></div>'
+
+    }
+});
+```
+This would render:
+```html
+<div class="something"> This is my directive content
+    <button>some button</button>
+    <a href="#">and a link</a>
+</div>
+``` 
+In conclusion, you basically use transclude when you want to preserve the contents of an element when you're using a directive.
+
+`ng-transclude` attribute tells where the included/transcluded content will go.
+
+**Note: directive has the control on whether or not to include original content**
 
 ### AngularJS expressions vs JS expressions
 AngularJS expressions are JavaScript-like code snippets that are mainly placed in interpolation bindings such as `<span title="{{ attrBinding }}">{{ textBinding }}</span>`, but also used directly in directive attributes such as `ng-click="functionExpression()"`. you can get more info on context/scope of expression of evaluation by seeing `{{ this }}`.
+
+
+### structural directives
+
+Some examples are `ng-if`, `ng-repeat`, `ng-switch` directive.
+Structural directives are made using `transclude function`, in cases where
+you have dynamic transclusion, instead of simple transclusion.
+
+Usually appear as attribute directives.
+
+Full params of link function are: `scope, el, attrs, controller, transcludeFn`.
+i.e SEACT.
+controller stands for the `required` controller.
+
+
+### decorator directives
+
+Usually in attribute form e.g. `ng-app`, `ng-controller`, `ng-click`(all event handling directives are decorator directives, e.g. `ng-model`), `ng-show`, `ng-hide` as well.
+
+Dom is modified using link function, which gets four params:
+1. scope
+2. iElement - instance element
+3. iAttrs - instance attributes
+4. controller
+
+`event pause` pause handler directive
+```js
+angular.module('plunker').directive('eventPause', function(){
+  return {
+    restrict: 'A',
+    scope: {// bad practice for non-element directives i.e. attr based directives
+            // because two attrs directives with isolate scope clash & break directive
+      eventPause: '&'
+    },
+    link: function(scope, el, attrs) {// use attrs instead of isolate scope
+      const videoEl = el[0];
+      videoEl.addEventListener('pause', event=> {
+        console.log('video pause event fired');
+        // all dom listeners modifying or interacting
+        // with scope, should involve digest.
+        scope.$apply(function(){
+          scope.eventPause();
+        });
+      })
+    }
+  }
+})
+```
+```html
+      <video spacebar-support event-pause="handlePause()" id="vid" controls preload="none">
+        <source src="http://media.w3.org/2010/05/sintel/trailer.mp4" type="video/mp4"></source>
+      </video>
+``` 
+
+#### Proper way for attrs directive expresion parsing to avoid scope conflicts
+Correct way for expression handling of attr directives:
+```js
+angular.module('plunker').directive('eventPlay', function($parse){
+  return {
+    restrict: 'A',
+    link: function(scope, el, attrs) {
+      const fn = $parse(attrs['eventPlay']);
+      const videoEl = el[0];
+      videoEl.addEventListener('play', event=> {
+        console.log('video play event fired');
+        // all dom listeners modifying or interacting
+        // with scope, should involve digest.
+        scope.$apply(function(){
+          fn(scope,{extra: 'args'});
+        });
+      })
+    }
+  }
+})
+```
+```html
+      <video spacebar-support event-play="handlePlay()" id="vid" controls preload="none">
+        <source src="http://media.w3.org/2010/05/sintel/trailer.mp4" type="video/mp4"></source>
+      </video>
+``` 
+
+#### ng-click clone
+
+```html
+<!DOCTYPE html>
+<!-- index.html -->
+<html>
+  <head>
+    <link rel="stylesheet" href="lib/style.css" />
+    <script src="lib/script.js"></script>
+  </head>
+
+  <body ng-app="plunker" ng-cloak>
+    <div ng-controller="MainCtrl">
+      <h1>Hello {{name}}</h1>
+      <p>Start editing and see your changes reflected here!</p>
+      <button my-click="outsideHandler(evt)">click me</button>
+    </div>
+  </body>
+</html>
+```
+```js
+// script.js
+import angular from 'angular';
+
+angular.module('plunker', []).controller('MainCtrl', function($scope) {
+  $scope.name = 'Plunker';
+  $scope.outsideHandler = function(evt) {
+    console.log('outside click handler: ', evt);
+  }
+});
+
+angular.module('plunker').directive('myClick', function($parse) {
+  return {
+    restrict: 'A',
+    link: function(scope, el, attrs) {
+      const realEl = el[0];
+      const fn = $parse(attrs['myClick']);
+      realEl.addEventListener('click', evt => {
+        scope.$apply(function(){
+          fn(scope, {evt: evt});
+        });
+      })
+    }
+  }
+})
+```
+
+#### Watching attribute values given by directive html
+
+Use `scope.$watch(attrs['attrName'], (newVal, oldVal) => {/*  */})`, which
+can be setup in a link function.
 
 #### expression evaluation
 AngularJS does not use JavaScript's `eval()` to evaluate expressions. Instead AngularJS's `$parse` service processes these expressions.
@@ -111,6 +322,16 @@ It is possible to access the context object using the identifier this and the lo
 
 https://gist.github.com/CMCDragonkai/6282750
 
+
+### difference between link and controller
+
+what the difference is between link and controller. The basic difference is that controller can expose an API, and link functions can interact with controllers using require.
+
+Best Practice: use controller when you want to expose an API to other directives. Otherwise use link.
+
+Link can have two parts: pre-link and post-link function.
+Post-link function is equivalent to `componentDidMount` of reactjs.
+Also post-link function of children runs before parent's post-link function.
 ### $observe
 
 `$observe()` is a method on the Attributes object, and as such, it can only be used to observe/watch the value change of a DOM attribute. It is only used/called inside directives. Use $observe when you need to observe/watch a DOM attribute that contains interpolation (i.e., `{{}}`'s).
