@@ -73,6 +73,49 @@ CROSS JOIN table2;
 `DISTINCT`
 `ORDER BY` arranges the remaining rows/groups
 `LIMIT` filters on the remaining rows/groups
+
+
+### **column aliases** declared in **select clause** cannot be used in **where clause**
+
+Due to above mentioned execution order,
+aliases declared in `select` clause are only discovered after
+`where` clause, so one cannot use `ALIASNAME` inside a `WHERE` clause
+for mysql,sql server etc.
+
+Although some environments like `snowflake` allow using aliases declared
+in `select` clause to be used in `where` clause
+
+
+### Subquerying
+
+Subquerying can be done in 3 places:
+1. `SELECT CLAUSE` - 
+```sql
+select customerid, fright, (select avg(freight) from orders)
+from orders
+```
+
+2. `FROM STATEMENT` - inner query becomes data source for outer query.
+also useful to do aggregate of an aggregate.
+```sql
+select shipcountry, avg(num_orders) from
+       (select customerid, shipcountry, count(*)as num_orders
+       from orders
+       group by 1,2) subtable
+group by 1
+```
+
+3. `WHERE CLAUSE`- useful for set/rows/table generation and used in `WHERE X IN ROWS` clause.
+```sql
+select * from orders
+where employeeid in
+(select employeeid from employees where firstname like '%a%')
+```
+
+### WITH queries and CTEs
+
+
+
 ### Execute .sql file in mysql cli
 
 `mysql> source myfile.sql`

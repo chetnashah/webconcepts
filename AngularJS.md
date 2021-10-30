@@ -89,6 +89,29 @@ myApp.controller('myCtrl', function($scope) {
 });
 ```
 
+### inter directive communication
+
+usually via containing scope
+like lifting state up in react js.
+
+#### Service can be used to communicate between directives
+
+Something like a `userListState` service.
+
+```js
+angular.module('app').factory('userListState', function(){
+  return {
+    selectedUser: null
+  };
+});
+
+// still will need to bind via scope.state = userListState
+```
+
+#### Directives that should be services
+
+Imperative views e..g Modal directive/service
+
 ### Angularjs controller ($scope augmenter)
 
 AngularJS, a controller is a JavaScript constructor function that is used to augment the AngularJS scope.
@@ -446,9 +469,9 @@ If `scope` property of DDO is set to {} (object hash), then a new "isolate" scop
 
 #### link vs controller
 
-Savvy readers may be wondering what the difference is between link and controller. The basic difference is that controller can expose an API, and link functions can interact with controllers using require.
+Savvy readers may be wondering what the difference is between `link` and `controller`. The basic difference is that `controller` can expose an API, and link functions can interact with `controllers` using `require`.
 
-Best Practice: use controller when you want to expose an API to other directives. Otherwise use link.
+Best Practice: use `controller` when you want to expose an API to other directives. Otherwise use `link`.
 
 ### Linking phase
 
@@ -478,6 +501,41 @@ When to use transclusion function?
 If you are just using ngTransclude then you don't need to worry about this function, since ngTransclude will deal with it for us.
 If you want to manually control the insertion and removal of the transcluded content in your directive then you must use this transclude function. When you call a transclude function it returns a a jqLite/JQuery object that contains the compiled DOM, which is linked to the correct transclusion scope.
 
+
+### require keyword in directive
+Require another directive and inject its controller as the fourth argument to the linking function. The `require` property can be a string, an array or an object:
+
+1. a string containing the name of the directive to pass to the linking function
+2. an array containing the names of directives to pass to the linking function. The argument passed to the 3. linking function will be an array of controllers in the same order as the names in the require property
+4. an object whose property values are the names of the directives to pass to the linking function. The argument passed to the linking function will also be an object with matching keys, whose values will hold the corresponding controllers.
+
+(no prefix) - Locate the required controller on the current element. Throw an error if not found.
+? - Attempt to locate the required controller or pass null to the link fn if not found.
+^ - Locate the required controller by searching the element and its parents. Throw an error if not found.
+^^ - Locate the required controller by searching the element's parents. Throw an error if not found.
+?^ - Attempt to locate the required controller by searching the element and its parents or pass null to the link fn if not found.
+?^^ - Attempt to locate the required controller by searching the element's parents, or pass null to the link fn if not found.
+
+```js
+angular.module('docsTabsExample', [])
+.directive('myPane', function() {
+  return {
+    require: ['^^myTabs', 'ngModel'],
+    restrict: 'E',
+    transclude: true,
+    scope: {
+      title: '@'
+    },
+    link: function(scope, element, attrs, controllers) {// note the list of controllers
+      var tabsCtrl = controllers[0],
+          modelCtrl = controllers[1];
+
+      tabsCtrl.addPane(scope);
+    },
+    templateUrl: 'my-pane.html'
+  };
+});
+```
 
 ### Firing events in angular
 
