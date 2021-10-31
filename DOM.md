@@ -11,19 +11,22 @@ https://developer.mozilla.org/en-US/docs/Web/API/Node
 
 Node.nodeType can have one of the following values that represents the type of the node:
 
-1. Node.ELEMENT_NODE
-2. Node.ATTRIBUTE_NODE
-3. Node.TEXT_NODE
-4. Node.CDATA_SECTION_NODE
+1. Node.ELEMENT_NODE - `1`
+2. Node.ATTRIBUTE_NODE - deprecated
+3. Node.TEXT_NODE - `3`
+4. Node.CDATA_SECTION_NODE - deprecated
 5. Node.PROCESSING_INSTRUCTION_NODE
-6. Node.COMMENT_NODE
-7. Node.DOCUMENT_NODE
-8. Node.DOCUMENT_TYPE_NODE
-9. Node.DOCUMENT_FRAGMENT_NODE
+6. Node.COMMENT_NODE - `8`
+7. Node.DOCUMENT_NODE - `9`
+8. Node.DOCUMENT_TYPE_NODE - `10`
+9. Node.DOCUMENT_FRAGMENT_NODE- `11`
 10. Node.NOTATION_NODE
 
 
 #### HOw to get the node type?
+
+The `nodeType` is present on all the nodes in the DOM tree.
+
 ```js
 const paragraph = document.querySelector('p');
 paragraph.nodeType === Node.ELEMENT_NODE; // => true
@@ -47,6 +50,9 @@ paragraph instanceof Node;        // => true
 paragraph instanceof HTMLElement; // => true
 ```
 
+`Node` is more fundamental than an `Element`, as `Element` is a type of `Node`, where as we can have
+other types of nodes like `comment node` or `text node`.
+i.e. `Element extends Node`.
 
 ### Creating elements
 
@@ -74,8 +80,8 @@ function addElement () {
 
 ### Ways of selecting elements
 
-1. `document.getElementById`
-2. `document.getElementByClassName`
+1. `document.getElementById` - Returns an `Element` reference matching id.
+2. `document.getElementByClassName` - Returns an `Element` reference matching class.
 3. `querySelector` - all in one selector e.g. `h1`, `#red`, `.myclass`. In case of multiple matches, will return the first match. Returns instance of `Element`.
 4. `document.getElementsByTagName` - return value not an array but array like object, extending protolink over `HTMLCollection`.
 
@@ -83,8 +89,15 @@ function addElement () {
 5. `element.getElementsByClassName`: gets matching elements by class in the subtree of the element on which the method is being run.
 6. `element.getElementsByTagName`: similar to above.
 
-7. `querySelectorAll`: similar to queryselector, but returns a `NodeList` of `Element`.
+7. `querySelectorAll`: similar to queryselector, but returns a `NodeList` of `Element`s.
 
+
+#### HTMLCollection vs NodeList
+
+`HTMLCollection` is a live list, i.e. even after selection, it can change, if someone updates
+the DOM.
+where as `NOdeList` is a static list.
+Also HTMLCollection will only contain elements, where as `NOdeLIst` will contain all types of nodes.
 
 ### Printing selected element properties
 
@@ -120,3 +133,116 @@ console.log('Hey hi');
 ```
 
 #### innerHTML
+
+`innerHTML` differs from `innerText`, because `innerHTML` also understands `HTML`
+elements and its parsing, objects etc.
+e.g. setting `innerHTML` will parse HTML and setup corresponding `HTMLElement` objects
+in the dom.
+Similarly getting `innerHTML` property will return the html including the element tags.
+
+
+### Attributes
+
+`key=value` pairs present on `HTMLElement`s in order to configure elements.
+
+`Global attributes` are attributes common to all HTML elements; they can be used on all elements, though they may have no effect on some elements. e.g `id` attribute, `class` attribute, `data-*` attribute, `style` attribute.
+
+`Element level attributes` are specific to cetain elements:
+e.g.
+1. `href` attribute on `a`
+2. `disabled` on `button`, `input`, `option`, `select`.
+3. `crossorigin` on `img`, `video/audio`, `script`, `link`.
+4. `checked` on `input type checkbox`
+5. `method` on `form`.
+6. `name` on `button`, `form`, `iframe`, `input`, `select`, `meta`.
+7. `novalidate` on `form`.
+8. `size` on `input`, `select`.
+9. `src` on `audio`, `iframe`, `img`, `input`, `script`, `source`, `track`, `video`.
+10. `target` on `a`, `form`.
+11. `type` on `button`, `input`, `embed`, `script`, `source`, `style`, `link`.
+12. `value` on `button`, `data`, `input`, `li`, `option`, `progress`, `param`.
+13. `height/width`: on `canvas`, `embed`, `iframe`, `img`, `input`, `object`, `video`.
+14 `form`: indicates the form that is owner of the element, this attribute is present on `button`, `input`, `label`, `object`, `select`.
+
+Some times sub-attributes of an element will depend on a main attribute ee.g. 
+`<input type="radio">` vs `<input type="range">` will decide what kind of sub attributes e.g. `min`, `max` apply to `<input type="range">` element.
+
+Getting an attribute:
+`element.getAttribute(attrName)`
+**Note** : Some attributes will have shortcuts, e.g. instead of doing `inputEl.getAttribute('value')`, one can directly do `inputEl.value`. But not all properties will have shortcuts.
+
+`Setting attribute`:
+One can set attribute via:
+`el.setAttribute(attrName, valueToSet)`
+
+
+### DOM traversal methods
+
+1. `children` - returns `HTMLCollection`.
+2. `sibling` - `nextSibling` and `previousSibling` return NOdes, for corresponding element methods use `nextElementSibling` and `previousElementSibling`.
+3. `parentElement` - property on the `Node` interface, `node.parentElement` is the parent element of the current node. This is always a DOM `Element` object, or null. **NOte** - only `Element Nodes` can be parent,no other type of node can be parent.
+
+
+#### parentNode vs parentElement
+
+In most cases, `parentElement` it is the same as `parentNode`. The only difference comes when a node's `parentNode` is not an element. If so, `parentElement` is null.
+
+```js
+document.body.parentNode; // the <html> element
+document.body.parentElement; // the <html> element
+
+document.documentElement.parentNode; // the document node
+document.documentElement.parentElement; // null
+
+(document.documentElement.parentNode === document);  // true
+(document.documentElement.parentElement === document);  // false
+```
+
+
+#### `children` vs `childNodes`
+
+`children` only contains `Element`s via `HTMLCollection` where as `childNodes` returns `NodeList` which will also contain both element and non-element nodes like comments etc.
+
+### style modification with inline styles
+
+`el.style` refers to inline style applied to the element, it does not contain all the computed style
+
+property names are camel cased i.e `el.style.backroundColor = 'red'`
+
+#### getting actual computed style
+
+Use `window.getComputedStyle(el)` to get actual computed style for an element: The `Window.getComputedStyle()` method returns an object containing the values of all CSS properties of an element, after applying active stylesheets and resolving any basic computation those values may contain.
+
+Returns instance of `CSSStyleDeclaration`.
+
+`Preferred way of updating styles`: add or remove classes to an element. Remember, an element can have many classes applied to it.
+
+So use `el.classList`:
+The  `Element.classList` is a read-only property that returns a live `DOMTokenList` collection of the class attributes of the element. This can then be used to manipulate the class list. It is a more convinient alternative over raw manipulation via `El.getAttribute('class')` and manipulating raw strings.
+
+Using classList is a convenient alternative to accessing an element's list of classes as a space-delimited string via `element.className`.
+`DOMTokenList` has methods like `add`, `remove`, and array based methods, although it is an arrayLike object, not an array.
+`toggle`: 
+e.g. `todoEl.classList.toggle('done')`
+
+### Creating elements and adding them to DOM
+
+#### Create elements with `document.createElement`
+
+`createElement` takes a `tagName` and
+returns an instance of `Element`.
+
+```js
+const newH2 = document.createElement('h2');
+// newH2 still not added to dom tree, exists independently.
+```
+
+Adding created elements/nodes to DOM with
+`Node.appendChild`:
+
+The `Node.appendChild()` method adds a `node` to the end of the list of children of a specified parent node. 
+
+If the given child is a reference to an existing node in the document, `appendChild()` moves it from its current position to the new position (there is no requirement to remove the node from its parent node before appending it to some other node).
+
+**This means that a node can't be in two points of the document simultaneously**. So if the node already has a parent, the node is first removed, then appended at the new position.
+
