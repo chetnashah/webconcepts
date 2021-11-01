@@ -246,3 +246,40 @@ If the given child is a reference to an existing node in the document, `appendCh
 
 **This means that a node can't be in two points of the document simultaneously**. So if the node already has a parent, the node is first removed, then appended at the new position.
 
+#### insertAdjacentElement
+
+```html
+<!-- beforebegin -->
+<p>
+  <!-- afterbegin -->
+  foo
+  <!-- beforeend -->
+</p>
+<!-- afterend -->
+```
+```js
+// <div id="one">one</div>
+var d1 = document.getElementById('one');
+d1.insertAdjacentHTML('afterend', '<div id="two">two</div>');
+
+// At this point, the new structure is:
+// <div id="one">one</div><div id="two">two</div>
+```
+
+### `Element.remove` and `Node.removeChild`
+
+Case 1:
+`var oldChild = node.removeChild(child);`
+
+`child` is the child node to be removed from the DOM.
+`node` is the parent node of child.
+`oldChild` holds a reference to the removed child node, i.e., oldChild === child.
+
+The removed child node still exists in memory, but is no longer part of the DOM. With the first syntax form shown, you may reuse the removed node later in your code, via the oldChild object reference.
+
+
+Case 2:
+`node.removeChild(child);`
+no oldChild reference kept, so assuming your code has not kept any other reference to the node elsewhere, it will immediately become unusable and irretrievable, and will usually be automatically deleted from memory after a short time.
+
+
