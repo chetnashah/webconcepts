@@ -298,7 +298,7 @@ ways to not add listeners:
 have a `onEventName`
 attribute and you can set it in markup/html
 2. same as above but directly setting it in js. e.g `el.onEventName= fnToRun`
-an instance of this is `el.onclick = fnToRun`.
+an instance of it is `el.onclick = fnToRun`.
 
 Problem with above approach: you cannot have multiple listeners on an element.
 
@@ -321,7 +321,8 @@ The `addEventListener()` method of the `EventTarget` interface sets up a functio
 
 **Eventlistener internals**:
 * Event listener callback gets argument `evt` that is event object.
-* also `this` is also bound to element `el`.
+* also `this` is also bound to element `el`, which also same as `evt.currentTarget`.
+In case of an arrow function, `this` is bound to outer context.
 e.g.
 ```js
 el.addEventListener(evt => { // evt is event object
@@ -421,4 +422,28 @@ For example:
 ### focus/blur events
 
 There are 4 types of focus/blur events: blur/focus (non-bubble), focusin/focusout (bubble).
+
+### Object handlers
+
+We can assign not just a function, but an object as an event handler using `addEventListener`. When an event occurs, the object's `handleEvent` method is called.
+
+
+
+```html
+<button id="elem">Click me</button>
+
+<script>
+  let obj = {
+    handleEvent(event) {
+      alert(event.type + " at " + event.currentTarget);
+    }
+  };
+
+  elem.addEventListener('click', obj);
+</script>
+```
+
+### adding event listener from another event listener
+
+If an event listener is added to an EventTarget from inside another listener, that is during the processing of the event, that event will not trigger the new listener. However, the new listener may be triggered during a later stage of event flow, such as during the bubbling phase.
 
