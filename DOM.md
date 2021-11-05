@@ -447,3 +447,102 @@ We can assign not just a function, but an object as an event handler using `addE
 
 If an event listener is added to an EventTarget from inside another listener, that is during the processing of the event, that event will not trigger the new listener. However, the new listener may be triggered during a later stage of event flow, such as during the bubbling phase.
 
+### default behaviors
+
+1. checked update on checkbox click event
+2. input value update on keypresses
+3. Pressing a mouse button over a text and moving it – selects the text
+4. A click on a link – initiates navigation to its URL.
+5. A click on a form submit button – initiates its submission to the server.
+
+### passive handler
+The “passive” handler option
+The optional passive: true option of addEventListener signals the browser that the handler is not going to call preventDefault().
+
+Why that may be needed?
+
+There are some events like touchmove on mobile devices (when the user moves their finger across the screen), that cause scrolling by default, but that scrolling can be prevented using preventDefault() in the handler.
+
+So when the browser detects such event, it has first to process all handlers, and then if preventDefault is not called anywhere, it can proceed with scrolling. That may cause unnecessary delays and “jitters” in the UI.
+
+The passive: true options tells the browser that the handler is not going to cancel scrolling. Then browser scrolls immediately providing a maximally fluent experience, and the event is handled by the way.
+
+For some browsers (Firefox, Chrome), passive is true by default for touchstart and touchmove events.
+
+### returning false from handlers
+Returning `false` from a handler is an exception
+The value returned by an event handler is usually ignored.
+
+The only exception is return false from a handler assigned using `on<event>`.
+
+In all other cases, return value is ignored. In particular, there’s no sense in returning true.
+
+### Dispatching custom events
+
+We can generate not only completely new events, that we invent for our own purposes, but also built-in ones, such as click, mousedown etc. That may be helpful for automated testing.
+
+Built-in event classes form a hierarchy, similar to DOM element classes. The root is the built-in Event class.
+
+```js
+let event = new Event(type[, options]);
+```
+Arguments:
+
+`type` – event type, a string like "click" or our own like "my-event".
+
+`options` – the object with two optional properties:
+
+`bubbles`: true/false – if true, then the event bubbles.
+cancelable: true/false – if true, then the “default action” may be prevented. Later we’ll see what it means for custom events.
+By default both are false: `{bubbles: false, cancelable: false}`.
+
+### dispatching events from code
+
+After an event object is created, we should “run” it on an element using the call `elem.dispatchEvent(event)`.
+`dispatchEvent` execution is synchronous.
+
+Then handlers react on it as if it were a regular browser event. If the event was created with the bubbles flag, then it bubbles.
+
+In the example below the click event is initiated in JavaScript. The handler works same way as if the button was clicked:
+
+```html
+<button id="elem" onclick="alert('Click!');">Autoclick</button>
+
+<script>
+  let event = new Event("click");
+  elem.dispatchEvent(event);
+</script>
+```
+
+#### event.isTrusted
+There is a way to tell a “real” user event from a script-generated one.
+
+The property event.isTrusted is true for events that come from real user actions and false for script-generated events.
+
+### Creating and firing custom events
+
+We can leverage browser's existing event pub/sub system to our advantage rather
+than inventing our own.
+
+For our own, completely new events types like `"hello"` we should use `new CustomEvent`. Technically `CustomEvent` is the same as `Event`, with one exception.
+
+In the second argument (object) we can add an additional property `detail` for any custom information that we want to pass with the event.
+
+```html
+<h1 id="elem">Hello for John!</h1>
+
+<script>
+  // additional details come with the event to the handler
+  elem.addEventListener("hello", function(event) {
+    alert(event.detail.name);
+  });
+
+  elem.dispatchEvent(new CustomEvent("hello", {
+    detail: { name: "John" }
+  }));
+</script>
+```
+
+
+
+
