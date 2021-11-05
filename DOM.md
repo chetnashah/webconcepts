@@ -217,7 +217,7 @@ Returns instance of `CSSStyleDeclaration`.
 
 `Preferred way of updating styles`: add or remove classes to an element. Remember, an element can have many classes applied to it.
 
-So use `el.classList`:
+So use `el.classList`: Recommended way to style elements from code.
 The  `Element.classList` is a read-only property that returns a live `DOMTokenList` collection of the class attributes of the element. This can then be used to manipulate the class list. It is a more convinient alternative over raw manipulation via `El.getAttribute('class')` and manipulating raw strings.
 
 Using classList is a convenient alternative to accessing an element's list of classes as a space-delimited string via `element.className`.
@@ -282,4 +282,143 @@ Case 2:
 `node.removeChild(child);`
 no oldChild reference kept, so assuming your code has not kept any other reference to the node elsewhere, it will immediately become unusable and irretrievable, and will usually be automatically deleted from memory after a short time.
 
+`node.remove()` automatically removes itself from DOM tree.
+
+
+### window.innerHeight and window.innerWidth
+
+size of open document that is visible to the end user, e.g. if i open devtools
+to the right, then innerwidth will be decreased.
+
+
+### DOM events
+
+ways to not add listeners:
+1. All elements will 
+have a `onEventName`
+attribute and you can set it in markup/html
+2. same as above but directly setting it in js. e.g `el.onEventName= fnToRun`
+an instance of this is `el.onclick = fnToRun`.
+
+Problem with above approach: you cannot have multiple listeners on an element.
+
+#### EventTarget
+
+The `EventTarget` interface is implemented by objects that can receive events and may have listeners for them. In other words, any target of events implements the three methods associated with this interface.
+
+Methods are:
+```js
+EventTarget.addEventListener()
+EventTarget.removeEventListener()
+EventTarget.dispatchEvent() // Dispatches an event to this EventTarget
+```
+
+Common targets are `Element`, or `its children`, `Document`, and `Window`, but the target may be any object that supports events (such as `XMLHttpRequest`).
+
+#### addEventListener
+
+The `addEventListener()` method of the `EventTarget` interface sets up a function that will be called whenever the specified event is delivered to the target.
+
+**Eventlistener internals**:
+* Event listener callback gets argument `evt` that is event object.
+* also `this` is also bound to element `el`.
+e.g.
+```js
+el.addEventListener(evt => { // evt is event object
+  console.log(this); // this is bound to el, i.e. element where the eventlistener was added.
+})
+```
+
+`evt.path` is interesting property listing a collection of all the elements that were clicked along in the hierarchy of the element.
+
+**Event listeners execution order on the same element**:
+in queue/insertion order i.e. listener inserted first will be executed first.
+e.g. 
+```js
+$0.addEventListener('click', () => console.log('clicked 1'))
+$0.addEventListener('click', () => console.log('clicked 2'))
+$0.addEventListener('click', () => console.log('clicked 3'))
+// click on $0 results in following log
+// clicked 1
+// clicked 2
+// clicked 3
+```
+
+#### Click event listeners behavior for nested elements.
+
+clicking on a child:
+child listener fires first and then parent listeners, i.e. event is bubbled up 
+from target and respective listeners called.
+
+Default mode is bubbling, i.e event target listener is fired first then it bubbles 
+up through parents and fires respective listeners. so think "innermost listeners first" for default registering of listeners.
+
+Non default addEventListenr example:
+```js
+el.addEventListener('click', fn, true); // true stands for capture, default is false
+```
+
+e.g. log
+```txt
+document capture listener
+parent capture listener
+chld capture listener
+child bubble listener // default setting for listener
+parent bubble listener // default setting for listener
+document bubble listener // default setting for listener
+```
+
+### stopping propogation of an event
+
+use `e.stoppropogation` to stop normal flow mentioned above
+
+### events that do not bubble
+
+Which events do not bubble?
+Most events do bubble. There are several exception events that do not bubble. Some of them are:
+
+* `focus` (`focusin` is the equivalent bubbling version).
+* `blur` (`focusout` is the equivalent bubbling version).
+* `load`, `unload`, `abort`, `error`, `beforeunload`.
+* `mouseenter` (`mouseover` is similar but do bubble).
+* `mouseleave` (`mouseout` is similar but do bubble).
+* `DOMNodeInsertedIntoDocument`, `DOMNodeRemovedFromDocument` (both events are deprecated).
+* In IE prior to version 9: `change`, `submit` and `reset`.
+
+**Note** - non-bubble events are captured.
+
+### Event cancellation
+
+Canceling an event
+There are three types of event canceling.
+courtesy: https://transang.me/everything-about-event-bubbling/
+
+`preventDefault()`:
+- has no effect on non-cancelable events.
+- prevents the default handler of the event, such as form submission, text input, ...
+`stopPropagation()`: prevents the event to continue the capture/bubble chain.
+`stopImmediatePropagation()`: prevents the event listeners attached to the same target from being fired.
+
+![event cancellation rules](img/a-3.png)
+
+
+### event.target vs event.currentTarget
+
+`Event.target`: the element that triggers the event.
+`Event.currentTarget`: the element where the event listener is attached to.
+![event cancellation rules](img/L8agj.png)
+
+### event.relatedTarget
+
+For mousenter, mouseleave, mouseout, mouseover, dragenter, dragexit, blur, focus, focusin, focusout events, the event has one more property named relatedTarget which points to the secondary target, where target is the primary target. Use the following structure for your convenience to infer them.
+
+Event do <action> the <primary target> from/to the <secondary target>
+For example:
+
+`mouseenter`: mouse `enters/overs/dragenter` `event.target` from `event.relatedTarget`
+`mouseleave`: mouse `leaves/outs/dragexit` `event.target` to `event.relatedTarget`
+
+### focus/blur events
+
+There are 4 types of focus/blur events: blur/focus (non-bubble), focusin/focusout (bubble).
 
