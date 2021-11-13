@@ -543,6 +543,15 @@ In the second argument (object) we can add an additional property `detail` for a
 </script>
 ```
 
+### input events
+
+Helps us do instantaneous validation.
+`input` event type.
 
 
+one can get value in the listener using
+`evt.target.value`
+
+role of `name` attribute in `input` tags
+would be that they can serve as keys in formdata.
 
