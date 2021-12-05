@@ -47,6 +47,10 @@ Form factors like mobile will add following attributes:
 - Payment methods
 - Getting Help
 
+### Grouping elements shortcut
+
+Select elements and `Cmd + G`
+
 ### User context
 - What is your user doing? walking/running/sleeping/sitting.
 - Where is your user? Where do you want him to be? At home/in transit/outside
