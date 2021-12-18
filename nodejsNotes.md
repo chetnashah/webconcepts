@@ -16,12 +16,22 @@ $ node
 
 The module that gets loaded first via the cli is the main module.
 
+### closing server from code
+
+`httpServer.close(cb)` - close the server, graceful shutdown to no longer accept connections, frees up event loop from listening to file I/O and gets the process ready for shutdown.
+The optional cb will be called once the 'close' event occurs
+
+### Process monitoring
+
+Something outside of the app process, which is in charge of checking health and app process restart in case it crashes.
+e.g. `systemd`, `pm2`, `upstart`, `forever`.
+
 ### error handling
 
 Default behavior:
 The `uncaughtException` event is emitted in the `process` eventEmitter when an uncaught JavaScript exception bubbles all the way back to the event loop. By default, Node.js handles such exceptions by printing the stack trace to stderr and exiting with code 1, overriding any previously set process.exitCode.
 
-**Note**: The correct use of 'uncaughtException' is to perform synchronous cleanup of allocated resources (e.g. file descriptors, handles, etc) before shutting down the process. It is not safe to resume normal operation after 'uncaughtException'.
+**Note**: The correct use of 'uncaughtException' is to perform synchronous cleanup of allocated resources (e.g. file descriptors, handles, etc) before shutting down the process. It is not safe to resume normal operation after 'uncaughtException', so just terminate by calling `exit` in this listener.
 
 To restart a crashed application in a more reliable way, whether 'uncaughtException' is emitted or not, an external monitor should be employed in a separate process to detect application failures and recover or restart as needed.
 
@@ -714,3 +724,143 @@ It is worth noting that when an IPC channel is established between the parent an
 `SIGKILL` cannot have a listener installed, it will unconditionally terminate Node.js on all platforms.
 `SIGSTOP` cannot have a listener installed.
 
+
+### callback API design
+
+https://blog.izs.me/2013/08/designing-apis-for-asynchrony/
+
+CHOOSE SYNC OR ASYNC callbacks, BUT NOT BOTH in the same function.
+it may be possible to invoke a callback immediately in some situations (say, data is already available) while the callback needs to be deferred in others (the socket isn’t ready yet). The tempting thing is to invoke the callback synchronously when possible, and otherwise defer it. Not a good idea.
+
+Problem case:
+```js
+import { readFile } from 'fs' const cache = new Map(); 
+function inconsistentRead (filename, cb) {   
+  if (cache.has(filename)) {// invoked synchronously     
+    cb(cache.get(filename))   
+  } else {// asynchronous function    
+    readFile(filename, 'utf8', (err, data) => {       
+      cache.set(filename, data)       
+      cb(data)     
+    })
+  }
+}
+```
+Cause problem with below functions:
+```js
+function createFileReader (filename) {   
+    const listeners = []; 
+    inconsistentRead(filename, value => { // sync firing, if no listeners registered nothing will fire    
+      listeners.forEach(listener => listener(value));
+      });
+    return {
+      onDataReady: listener => listeners.push(listener);// public api to register listeners
+    }
+}
+```
+IN second case callback never invoked:
+```js
+const reader1 = createFileReader('data.txt');// after return we can register listeners, which can be invoked in future event loop run
+reader1.onDataReady(data => {   
+  console.log(`First call data: ${data}`);
+  // ...sometime later we try to read again from   // the same file   
+  
+  const reader2 = createFileReader('data.txt');// no callback will happen
+  reader2.onDataReady(data => {     
+    console.log(`Second call data: ${data}`);   
+  }) 
+})
+```
+
+async callback interacts with eventloop, where as sync one does not, so a source of bugs.
+
+A `synchronous callback` is invoked before a function returns, that is, while the API receiving the callback remains on the stack. 
+An example might be: `list.foreach(callback);` when `foreach()` returns, you would expect that the callback had been invoked on each element.
+
+An `asynchronous or deferred callback` is invoked after a function returns, or at least on another thread’s stack. Mechanisms for deferral include threads and main loops (other names include event loops, dispatchers, executors). Asynchronous callbacks are popular with IO-related APIs, such as `socket.connect(callback);` you would expect that when connect() returns, the callback may not have been called, since it’s waiting for the connection to complete.
+
+Guidelines: 
+* A given callback should be either always sync or always async, as a documented part of the API contract.
+* An async callback should be invoked by a main loop or central dispatch mechanism directly, i.e. there should not be unnecessary frames on the callback-invoking thread’s stack, especially if those frames might hold locks.
+
+Synchronous callbacks:
+
+1. Are invoked in the original thread, so do not create thread-safety concerns by themselves.
+2. In languages like C/C++, may access data stored on the stack such as local variables.
+3. In any language, they may access data tied to the current thread, such as thread-local variables. For example many Java web frameworks create thread-local variables for the current transaction or request.
+5. May be able to assume that certain application state is unchanged, for example assume that objects exist, timers have not fired, IO has not occurred, or whatever state the structure of a program involves.
+
+Asynchronous callbacks:
+
+1. May be invoked on another thread (for thread-based deferral mechanisms), so apps must synchronize any resources the callback accesses.
+2. Cannot touch anything tied to the original stack or thread, such as local variables or thread-local data.
+3. If the original thread held locks, the callback will be invoked outside them.
+4. Must assume that other threads or events could have modified the application’s state.
+
+Node’s synthetic deferral function: `process.nextTick`, which runs the supplied callback at the end of the current run-to-completion. 
+You can also use `setImmediate`, but that’s slightly slower
+e.g. of the solution
+```js
+var cachedValue;
+function usuallyAsync(cb) {
+  if (cachedValue !== undefined)
+    process.nextTick(function() {// async
+      cb(cachedValue);
+    });
+  else
+    doSomeSlowThing(function(result) {//async
+      cb(cachedValue = result);
+    });
+}
+```
+
+
+### Graceful shutdown advice
+
+Here are the four steps of how you can do a graceful shutdown in an easy way.
+should be done in case of uncaught exception or process kill signals received by the process.
+
+1. Handle process kill signal - `handler that will call below three steps`
+2. Stop new requests from client - `server.close()`
+3. Close all data process - `db.close()`
+4. Exit from process - `process.exit`
+
+
+```js
+// terminate.js
+function terminate (server, options = { coredump: false, timeout: 500 }) {
+  // Exit function
+  const exit = code => {
+    options.coredump ? process.abort() : process.exit(code);
+  };
+
+  return (code, reason) => (err, promise) => {
+    if (err && err instanceof Error) {
+    // Log error information, use a proper logging library here :)
+      console.log(err.message, err.stack)
+    }
+
+    // Attempt a graceful shutdown
+    server.close(exit);
+    setTimeout(exit, options.timeout).unref();
+  }
+}
+module.exports = terminate
+```
+
+main server
+```js
+const http = require('http')
+const terminate = require('./terminate')
+const server = http.createServer(...)
+
+const exitHandler = terminate(server, {
+  coredump: false,
+  timeout: 500
+})
+
+process.on('uncaughtException', exitHandler(1, 'Unexpected Error'))
+process.on('unhandledRejection', exitHandler(1, 'Unhandled Promise'))
+process.on('SIGTERM', exitHandler(0, 'SIGTERM'))
+process.on('SIGINT', exitHandler(0, 'SIGINT'))
+```

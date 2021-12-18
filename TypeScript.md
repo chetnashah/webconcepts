@@ -24,6 +24,13 @@ It tells typescript how your project is supposed to be processed.
 tsc --outfile bundle.js f1.ts f2.ts f3.ts // order matters
 ```
 
+### linting
+
+`TSlint` is deprecated.
+https://typescript-eslint.io/docs/linting/tslint
+
+prefer `eslint` with typescrpt parser i.e typescript-eslint project
+
 ### Useful tsconfig options
 
 * `strictNullChecks` - Usually keep this true to keep all types seperate, If you want a variable to hold null value, you will have to explicitly specify it in type.
