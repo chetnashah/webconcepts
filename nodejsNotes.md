@@ -290,6 +290,22 @@ examples:
 7. child process stdout and stderr
 8. process.stdin - always available
 
+`Error handling in event emitters`:
+similar to callbacks, you cannot directly throw errors on the stack,
+instead you have to propogate errors via `error` event, which should be reserved
+for error event, along with Error object as argument.
+
+**Note** - EventEmitter treats the `error` event in a special way. 
+It will automatically throw an exception and exit the application,
+if such an event is emitted and no associated listener is found. 
+For this reason it is always recommended to register a listener for the `error` event.
+e.g. 
+```js
+// if we don't add an error listener, error event emit will terminate the app
+ee.addListener('error', () => {// adding error listener prevents app from termination on error event
+  console.log('error happened on ee');
+});
+```
 
 #### Event emitter listeners
 If you pass `function abc()` with `addListener/on` methods, then `this` inside the
@@ -864,3 +880,37 @@ process.on('unhandledRejection', exitHandler(1, 'Unhandled Promise'))
 process.on('SIGTERM', exitHandler(0, 'SIGTERM'))
 process.on('SIGINT', exitHandler(0, 'SIGINT'))
 ```
+
+### Nodejs EventTarget
+
+`EventTarget` is a class available in node global:
+```js
+const target = new EventTarget();
+
+target.addEventListener('foo', (event) => {
+  console.log('foo event happened!');
+});
+```
+API:
+1. `target.addListener`
+2. `target.removeListener`
+3. `target.dispatchEvent`: dispatch to all listeners.
+
+The `NodeEventTarget` is a Node.js-specific extension to `EventTarget` that emulates a subset of the `EventEmitter` API.
+
+Node.js EventTarget vs. DOM EventTarget
+There are two key differences between the Node.js EventTarget and the EventTarget Web API:
+
+1. Whereas DOM EventTarget instances may be hierarchical, there is no concept of hierarchy and event propagation in Node.js. That is, an event dispatched to an EventTarget does not propagate through a hierarchy of nested target objects that may each have their own set of handlers for the event.
+2. In the Node.js EventTarget, if an event listener is an async function or returns a Promise, and the returned Promise rejects, the rejection is automatically captured and handled the same way as a listener that throws synchronously (see EventTarget error handling for details).
+
+
+#### NodeEventTarget vs. EventEmitter#
+
+Tried in node 16, wasn't able to instantiate `NodeEventTarget`, seems to be not exported?
+The NodeEventTarget object implements a modified subset of the EventEmitter API that allows it to closely emulate an EventEmitter in certain situations. A NodeEventTarget is not an instance of EventEmitter and cannot be used in place of an EventEmitter in most cases.
+
+1. Unlike `EventEmitter`, any given listener can be registered at most once per event type. Attempts to register a listener multiple times are ignored.
+2. The `NodeEventTarget` does not emulate the full `EventEmitter` API. Specifically the `prependListener()`, `prependOnceListener()`, `rawListeners()`, `setMaxListeners()`, `getMaxListeners()`, and `errorMonitor` APIs are not emulated. The `'newListener'` and `'removeListener'` events will also not be emitted.
+3. The `NodeEventTarget` does not implement any special default behavior for events with type `'error'`.
+4. The `NodeEventTarget` supports `EventListener` objects as well as functions as handlers for all event types.
