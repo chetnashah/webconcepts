@@ -290,22 +290,6 @@ examples:
 7. child process stdout and stderr
 8. process.stdin - always available
 
-`Error handling in event emitters`:
-similar to callbacks, you cannot directly throw errors on the stack,
-instead you have to propogate errors via `error` event, which should be reserved
-for error event, along with Error object as argument.
-
-**Note** - EventEmitter treats the `error` event in a special way. 
-It will automatically throw an exception and exit the application,
-if such an event is emitted and no associated listener is found. 
-For this reason it is always recommended to register a listener for the `error` event.
-e.g. 
-```js
-// if we don't add an error listener, error event emit will terminate the app
-ee.addListener('error', () => {// adding error listener prevents app from termination on error event
-  console.log('error happened on ee');
-});
-```
 
 #### Event emitter listeners
 If you pass `function abc()` with `addListener/on` methods, then `this` inside the
@@ -324,6 +308,29 @@ All readable and writable streams are event-emitters in nodejs.
 
 CLients should add a named event `error` listener.
 If such a listener is present nodejs will call this instead of crashing node/process.
+
+`Error handling in event emitters`:
+similar to callbacks, you cannot directly throw errors on the stack,
+instead you have to propogate errors via `error` event, which should be reserved
+for error event, along with Error object as argument.
+
+**Note** - EventEmitter treats the `error` event in a special way. 
+It will automatically throw an exception and exit the application,
+if such an event is emitted and no associated listener is found. 
+For this reason it is always recommended to register a listener for the `error` event.
+e.g. 
+```js
+// if we don't add an error listener, error event emit will terminate the app
+ee.addListener('error', () => {// adding error listener prevents app from termination on error event
+  console.log('error happened on ee');
+});
+```
+
+
+### Extending event emitters
+
+Always remember to call `super()` in constructor to initialize
+EventEmitter internals.
 
 ### Readable stream events
 
