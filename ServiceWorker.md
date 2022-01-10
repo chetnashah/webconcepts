@@ -3,7 +3,10 @@ Service workers essentially act as proxy servers that sit between web applicatio
 
 * A service worker is an `event-driven worker registered against an origin and a path`.
 
-* A service worker is run in a worker context: it therefore has no DOM access, and runs on a different thread to the main JavaScript that powers your app, so it is non-blocking. the service worker is executed in a `ServiceWorkerGlobalScope`.
+* A service worker is run in a worker context: it therefore has no DOM access, and runs on a different thread to the main JavaScript that powers your app, so it is non-blocking. the service worker is executed in a `ServiceWorkerGlobalScope`. you have little control over when the service worker code is going to run. The browser decides when to wake it up and when to terminate it. The only way you can tell the browser, "Hey, I'm super busy doing important stuff", is to pass a promise into the `event.waitUntil()` method. With this, the browser will keep the service worker running until the promise you passed in has settled. With push events, there is an additional requirement that you must display a notification before the promise you passed in has settled.
+
+* Chrome will only show the "This site has been updated in the background." notification when a push message is received and the push event in the service worker does not show a notification after the promise passed to event.waitUntil() has finished.
+
 
 * It is designed to be fully async; as a consequence, APIs such as synchronous XHR and Web Storage can't be used inside a service worker.
 
@@ -11,7 +14,43 @@ Service workers essentially act as proxy servers that sit between web applicatio
 
 * A service worker won't receive events like fetch and push until it successfully finishes installing and becomes "active".
 
+### Check if client is focused in serviceworker
+
+```js
+function isClientFocused() {
+  return clients.matchAll({
+    type: 'window',
+    includeUncontrolled: true
+  })
+  .then((windowClients) => {
+    let clientIsFocused = false;
+    for (let i = 0; i < windowClients.length; i++) {
+      const windowClient = windowClients[i];
+      if (windowClient.focused) {
+        clientIsFocused = true;
+        break;
+      }
+    }
+
+    return clientIsFocused;
+  });
+}
+```
+```js
+  if (await isClientFocused()) {
+    console.log('Don\'t need to show a notification.');
+    return;
+  }
+
+  // Client isn't focused, we need to show a notification.
+  return self.registration.showNotification('Had to show a notification.');
+```
+
+
+
+
 ### Scope and control
+
 
 Scope and control
 The default scope of a service worker registration is `./` relative to the script URL. 
