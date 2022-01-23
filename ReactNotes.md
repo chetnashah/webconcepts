@@ -1,4 +1,11 @@
 
+### hooks setState vs API setState
+
+API setState for class components:
+call to `this.setState()` always results in a re-render, even if same state value is set.
+
+`hooks setstate`(https://reactjs.org/docs/hooks-reference.html#bailing-out-of-a-state-update): For a functional component using useState hook, the setter if called with the same state will not trigger a re-render. However for an occasional case if the setter is called immediately it does result in two renders instead of one
+
 ### special props
 
 there are two special props (ref and key) which are used by React, and are thus not forwarded to the component.
