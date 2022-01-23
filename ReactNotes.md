@@ -638,6 +638,35 @@ const [state, setState] = useState(() => {
 **Note** - useState has this optimisation:
 If you update a State Hook to the same value as the current state, React will bail out without rendering the children or firing effects (Uses `Object.is` i.e. reference/prmitive equality).
 
+
+### useMemo Use cases
+
+1. expensive computation caching
+2. reference based caching of frequently reacreated objects/functions on each render.
+
+### useCallback
+
+special case of `useMemo`, where computed value to cache is a function/callback.
+
+### useReducer hook
+
+useReducer is usually preferable to useState when you have complex state logic that involves multiple sub-values or when the next state depends on the previous one.
+for initial state, object or more complex state.
+
+**React guarantees that dispatch function identity is stable and won’t change on re-renders. This is why it’s safe to omit from the useEffect or useCallback dependency list.**
+
+Basic usage:
+```js
+const [state, dispatch] = useReducer(reducer, initialArgOrState, init);// if init fn is specified, it takes initArg as arg to create initial state
+```
+
+shape of reducer fn: `(currState, action) => newState`, think designing like functional setstate e.g where you derive new state
+from old state and action.
+Since reducers are pure, they can sit outside of component also
+
+Reducer return value is compared with object.is to decide to bail out or render
+
+
 ### React lifecycle for a composite component in Stack reconciler
 
 ``` 
