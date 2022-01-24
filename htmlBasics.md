@@ -3,10 +3,51 @@
 The load event only happens once per URL/location, when all its resources
 are loaded.
 
+### Class Hierarchy
+
+EventTarget <-- Node <-- Element <--- HTMLElement
+
 ### Want to read chrome source code?
 
 https://cs.chromium.org/ has well x-refed chromium source.
 Refresh your c++ a little.
+
+
+### EventTarget
+
+The EventTarget interface is implemented by objects that can receive events and may have listeners for them.
+
+`EventTarget.addEventListener()`
+Registers an event handler of a specific event type on the EventTarget.
+
+`EventTarget.removeEventListener()`
+Removes an event listener from the EventTarget.
+
+`EventTarget.dispatchEvent()`
+Dispatches an event to this EventTarget.
+
+### `this` in eventlistener callback
+
+When attaching a handler function to an element using addEventListener(), 
+the value of `this` inside the handler will be a reference to the element. 
+It will be the same as the value of the `currentTarget` property of the event argument that is passed to the handler.
+
+**Normal function listener this** - `this` is bound to currentTarget of event where event occurred.
+```js
+document.getElementById("app").addEventListener("click", function (ev) {
+  console.log("ev = ", ev);
+  console.log("ev.currentTarget", ev.currentTarget);
+  console.log("this = ", this);
+  console.log("this === ev.currentTarget", this === ev.currentTarget);// true
+});
+```
+
+**Arrow function listener this** - for arrow functions, this is bound to outer `this`.
+
+
+Prefer named functions as event listener callback - so they can be removed easily, 
+because anonymous function reference is lost on creation.
+
 
 #### What are block and inline elements?
 
@@ -527,3 +568,71 @@ Ways to animate:
 2. `Element.animate([JSONKeyframes, options])`
 3. CSS animations with `transition`: all property changes are animated automatically.
 4. CSS animation with `animation` attribute.  syntax looks like: `animation: name duration timing-function delay iteration-count direction fill-mode play-state;` where `name` is keyframe declaration via `@keyframe`
+
+### tagName property on Element
+
+The tagName property returns the tag name of the element. 
+In HTML, the returned value of the tagName property is always in UPPERCASE.
+
+Try: `$0.tagName` which returns `DIV` for a selected div.
+
+### className property on Element
+
+```js
+		function myFunction() {
+		  document.getElementById("myDIV").className = "mystyle";  // making use of className property
+		}
+```
+
+
+### nav tag
+
+The `<nav>` HTML element represents a section of a page whose purpose is to provide navigation links, 
+either within the current document or to other documents. 
+
+Common examples of navigation sections are menus, tables of contents, and indexes.
+
+```html
+<nav class="crumbs">
+    <ol>
+        <li class="crumb"><a href="#">Bikes</a></li>
+        <li class="crumb"><a href="#">BMX</a></li>
+        <li class="crumb">Jump Bike 3000</li>
+    </ol>
+</nav>
+```
+
+
+### data attributes
+
+useful for saving data in attributes of html elements
+
+```html
+<!DOCTYPE html> 
+<html> 
+<head> 
+    <script> 
+        function showDetails(course) { 
+            var course_author = course.getAttribute("data-course-author"); 
+            alert(course.innerHTML + " is written by "  
+                                    + course_author  + "."); 
+        } 
+    </script> 
+</head> 
+  
+<body> 
+    <ul> 
+        <div class="btn-group">
+        <button onclick="showDetails(this)" id="html_interview" 
+                data-course-author="Educative">HTML5 - An Interview Refresher</button>
+        <button onclick="showDetails(this)" id="HTML5_CSS_JS" 
+                data-course-author="Istvan Novak"> Unravelling HTML5, CSS and JS</button>
+        <button onclick="showDetails(this)" id="react" 
+                data-course-author="Robin Wieruch">The Road to React: The one with Hooks</button>
+        <button onclick="showDetails(this)" id="ts" 
+                data-course-author="Carl Rippon">Using TypeScript with React</button>
+        </div>
+    </ul> 
+</body> 
+</html>
+```
