@@ -636,3 +636,15 @@ useful for saving data in attributes of html elements
 </body> 
 </html>
 ```
+
+
+### How to make any element clickable?
+
+Put the element inside a anchor tag i.e. `a`
+e.g.
+```html
+    <a href="https://www.educative.io/courses/web-development-unraveling-html-css-js">
+         <img src="https://lh3.googleusercontent.com/X_nmVnbN_DvvyXsx7PAOf0O4szQYN03tt6gxtx8GfreiSfQiCmbn7SNItVU64LVjEgV2fWrdO_buYQ1h1Sb68s4jgwBscqU=s620"
+          width="130" height="85">
+      </a>
+```
