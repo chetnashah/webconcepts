@@ -240,6 +240,91 @@ Window-relative coordinates: clientX/clientY.
 Document-relative coordinates: pageX/clientX.
 
 
+### Resource Hints
+
+Specified in `link` tag inside `rel` attribute.
+e.g.
+```html
+<link rel="preload" href="abcd...">
+```
+
+Using `as` to specify the type of content to be preloaded allows the browser to:
+
+* Prioritize resource loading more accurately.
+* Store in the cache for future requests, reusing the resource if appropriate.
+* Apply the correct content security policy to the resource.
+* Set the correct Accept request headers for it.
+
+Has `as` attribute options which has to be one of following:
+1. `script`
+2. `style`
+3. `audio`
+4. `video`
+5. `image`
+6. `font`
+7. `document`
+8. `track`
+9. `worker`
+10. `fetch`
+11. `object`
+12. `embed`
+
+
+`type` attribute might also be need to specified, `crossorigin` attribute also.
+
+#### Preconnect
+
+Hints to connect early,
+save times in
+* Resolve DNS
+* Make TCP connection
+* Do TLS handshake
+
+### Prefetch
+
+* download the resource
+* Do not execute the resource
+
+`prefetch` is intended for prefetching resources that will be used in the next navigation/page load (e.g. when you go to the next page). This is fine, but isn't useful for the current page! In addition, browsers will give prefetch resources a lower priority than preload ones — the current page is more important than the next
+
+### Preload
+
+In it's most basic form it sets the link that has `rel="preload"` to a high priority
+
+The preload keyword on link elements provides a declarative fetch primitive that addresses the above use case of initiating an early fetch and separating fetching from resource execution. As such, preload keyword serves as a low-level primitive that enables applications to build custom resource loading and execution behaviors without hiding resources from the user agent and incurring delayed resource fetching penalties.
+
+
+
+The `preload` value of the `<link>` element's rel attribute lets you declare fetch requests in the HTML's `<head>`, specifying resources that your page will need very soon, which you want to start loading early in the page lifecycle, before browsers' main rendering machinery kicks in
+
+```html
+<head>
+  <meta charset="utf-8">
+  <title>JS and CSS preload example</title>
+
+  <link rel="preload" href="style.css" as="style">
+  <link rel="preload" href="main.js" as="script">
+
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <h1>bouncing balls</h1>
+  <canvas></canvas>
+
+  <script src="main.js" defer></script>
+</body>
+```
+
+e.g fonts:
+Lazy loading of fonts carries an important hidden implication that may delay text rendering: the browser must construct the render tree, which is dependent on the DOM and CSSOM trees, before it knows which font resources it needs in order to render the text. As a result, font requests are delayed well after other critical resources, and the browser may be blocked from rendering text until the resource is fetched.
+
+speed up can be done via:
+```html
+<link rel="preload" href="/fonts/my-font.woff2" as="font">
+<link rel="stylesheet" href="/styles.min.css">
+```
+
 ### Critical rendering path
 
 Good talks:
@@ -260,6 +345,11 @@ https://www.youtube.com/watch?v=PkOBnYxqj3k
 * JS execution can be blocked on CSS
 * DOM construction can be blocked on JS execution.
 
+
+#### CSSOM
+
+the "Recalculate Style" in developer tools shows the total time it takes to parse CSS, construct the CSSOM tree.
+
 ### DomContentLoaded event
 
 The DOMContentLoaded event fires when the initial HTML document has been completely loaded and parsed, 
@@ -267,6 +357,9 @@ The DOMContentLoaded event fires when the initial HTML document has been complet
 Indicates that the DOM/HTML/markup tree is ready to be manipulated.
 This is useful if you have placed your script tag before html. as the listener inside will only fire after html is done.
 The original target for this event is the Document that has loaded
+
+**Note** - DomCOntentloaded event is only fired after all `defer`red scripts are downloaded and executed. If you are using deferred scripts, they are anyway going to run after the dom is ready so no need of an extra Domcontentloaded event listener. The defer scripts are executed after domInteractive, before domContentLoaded; it's sequential.
+
 
 A different event, load, should be used only to detect a fully-loaded page. It is a common mistake to use load where DOMContentLoaded would be more appropriate.
 
