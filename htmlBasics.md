@@ -240,6 +240,79 @@ Window-relative coordinates: clientX/clientY.
 Document-relative coordinates: pageX/clientX.
 
 
+### Critical rendering path
+
+Good talks:
+https://www.youtube.com/watch?v=FnhieCCfhlA
+https://www.youtube.com/watch?v=PkOBnYxqj3k
+
+
+* DOM construction is incremental - flush early, stream often.
+* CSS blocks rendering, not parsing, so DOM construction can proceed without styles, but painting will be blocked.
+* CSS is not incremental, entire file is needed to make CSSOM, so splitting style sheets is useful.
+* JS blocks parsing and rendering (but browser may do speculative parsing anyway), JS needs to be both fetched, parsed and executed and only then following DOM construction can proceed.
+* CSS blocks script execution, script download is not affected - This is because JS can depend on CSSOM
+* Render Tree = CSSOM + DOM(html). e,g, there might be some tags in dom tree, but `display: none` in CSSOM tree, then they are removed from render tree, because they dont need to be rendered.
+
+#### why get css out as soon as possible?
+
+* CSS blocks rendering
+* JS execution can be blocked on CSS
+* DOM construction can be blocked on JS execution.
+
+### DomContentLoaded event
+
+The DOMContentLoaded event fires when the initial HTML document has been completely loaded and parsed, 
+**without waiting for stylesheets, images, and subframes to finish loading**.
+Indicates that the DOM/HTML/markup tree is ready to be manipulated.
+This is useful if you have placed your script tag before html. as the listener inside will only fire after html is done.
+The original target for this event is the Document that has loaded
+
+A different event, load, should be used only to detect a fully-loaded page. It is a common mistake to use load where DOMContentLoaded would be more appropriate.
+
+```js
+window.addEventListener('DOMContentLoaded', (event) => {
+    console.log('DOM fully loaded and parsed');
+});
+```
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Testing load events</title>
+    <script>
+        // this will not work because DOM/HTML is not loaded yet
+        document.getElementById("btn").addEventListener('click', function(ev) {
+            console.log('head script: click happened on : ', this);
+        });
+    </script>
+    <script>
+        window.addEventListener('DOMContentLoaded', function(){
+            console.log('DOMContentLoaded');
+            // this will work because we are setting up listeners after DOM/HTML is loaded.
+            document.getElementById("btn").addEventListener('click', function(ev){
+                console.log('post domcontentloadedclick listener: click happened on: ', this);
+            });
+        });
+    </script>
+</head>
+<body>
+    <button id="btn">
+        Click me
+    </button>
+    <script>
+        // this will work correctly as DOM is loaded before it
+        document.getElementById("btn").addEventListener('click', function(ev) {
+            console.log('body last script: click happened on : ', this);
+        });
+    </script>
+</body>
+</html>
+```
 
 ### Touch Event
 

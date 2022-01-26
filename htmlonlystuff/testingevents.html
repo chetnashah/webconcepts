@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Testing load events</title>
+    <script>
+        // this will not work because DOM/HTML is not loaded yet
+        document.getElementById("btn").addEventListener('click', function(ev) {
+            console.log('head script: click happened on : ', this);
+        });
+    </script>
+    <script>
+        window.addEventListener('DOMContentLoaded', function(){
+            console.log('DOMContentLoaded');
+            // this will work because we are setting up listeners after DOM/HTML is loaded.
+            document.getElementById("btn").addEventListener('click', function(ev){
+                console.log('post domcontentloadedclick listener: click happened on: ', this);
+            });
+        });
+    </script>
+</head>
+<body>
+    <button id="btn">
+        Click me
+    </button>
+    <script>
+        // this will work correctly as DOM is loaded before it
+        document.getElementById("btn").addEventListener('click', function(ev) {
+            console.log('body last script: click happened on : ', this);
+        });
+    </script>
+</body>
+</html>
