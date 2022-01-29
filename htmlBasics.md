@@ -92,6 +92,35 @@ id is used to identify the HTML element through the Document Object Model (via J
 
 name corresponds to the form element and identifies what is posted back to the server, e.g. in a form.
 
+### header element
+
+The `<header>` HTML element represents introductory content, typically a group of introductory or navigational aids. It may contain some heading elements but also a logo, a search form, an author name, and other elements.
+
+### label element
+
+The `<label>` HTML element represents a caption for an item in a user interface via its `for` attribute.
+
+```html
+<div class="preference">
+    <label for="cheese">Do you like cheese?</label>
+    <input type="checkbox" name="cheese" id="cheese">
+</div>
+
+<div class="preference">
+    <label for="peas">Do you like peas?</label>
+    <input type="checkbox" name="peas" id="peas">
+</div>
+```
+
+Associating a `<label>` with an `<input>` element offers some major advantages:
+
+* The label text is not only visually associated with its corresponding text input; it is programmatically associated with it too. 
+* The `<label>` then needs a `for` attribute whose value is the same as the input's `id`.
+* When a user clicks or touches/taps a label, the browser passes the focus to its associated input (the resulting event is also raised for the input). That increased hit area for focusing the input provides an advantage to anyone trying to activate it — including those using a touch-screen device
+
+Multiple labels can be associated with the same form control.
+
+
 ### `<template>` element
 
 https://www.html5rocks.com/en/tutorials/webcomponents/template/
@@ -546,6 +575,12 @@ i.e. act upon data as per listeners wish.
 
 Steps on drop receiving element:
 1. specify drop element by returning ev.preventDefault() in ondragover method of drop receiving element.
+
+### `id` vs `name` in input tag
+
+* `name` identifies `form field`*; so they can be shared by controls that stand to represent multiple possibles values for such a field (radio buttons, checkboxes). They will be submitted as keys for form values.
+
+* `id` identifies `DOM elements`; so they can be targeted by CSS or JavaScript.
 
 
 #### How can one listen to scroll events in a div?

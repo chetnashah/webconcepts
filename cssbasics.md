@@ -37,6 +37,38 @@ Examples of iniline elements are :
 * textarea.
 
 https://hacks.mozilla.org/2015/03/understanding-inline-box-model/
+
+### css @import
+
+The `@import` CSS at-rule is used to `import style rules from other style sheets`.
+Imported rules must precede all other types of rules.
+e.g.
+```css
+@import 'custom.css';
+@import url("chrome://communicator/skin/");
+@import url('https://fonts.googleapis.com/css2?family=Lato&display=swap');
+```
+
+
+### css variables
+
+Custom properties (sometimes referred to as CSS variables or cascading variables) are entities defined by CSS authors that contain specific values to be reused throughout a document. 
+
+Custom properties allow a value to be stored in one place, then referenced in multiple other places. An additional benefit is semantic identifiers. For example, `--main-text-color` is easier to understand than `#00ff00`, especially if this same color is also used in other contexts.
+
+They are set using custom property notation (e.g., `--main-color: black;`) and are accessed using the `var()` function 
+(e.g., `color: var(--main-color);`).
+
+
+* A common best practice is to define custom properties on the `:root` pseudo-class, so that it can be applied globally across your HTML document:
+
+```css
+:root {
+  --main-bg-color: brown;
+}
+```
+
+
 ### display block
 
 Now, the difference between display: inline-block and display: block is that, with display: block, a line break happens after the element, so a block element doesn’t sit next to other elements.
@@ -101,6 +133,7 @@ It is positioned relative to it's closest non-static positioned ancestor.
 
 A CSS Rule consists of a list of (one or more)selectors and a list
 of declarations.
+To check in detail: https://kittygiraudel.github.io/selectors-explained/?
 
 A CSS declaration consists of a property and a value seperated by ':'
 
@@ -141,7 +174,7 @@ Presence and value attribute selectors and Substring value attribute selectors
 same declarations, you should seperate them by comma ','
 e.g. 
 ``` css
-h1, h2, p, .yetanotherclass {
+h1, h2, p, .yetanotherclass {/* reads as h1 or h2 or p or yetanother class all get these rules */
     text-align: center;
     color: red;
 }
@@ -178,7 +211,30 @@ selector:pseudo-class {
 }
 ```
 
+### Multiple class selectors
 
+#### multiple classes applied
+
+* Both classes are applied on same element:
+```css
+.classa.classb {
+    /* rules */
+}
+```
+
+* element of classa has a descendant element of classb:
+```css
+.classa .classb {
+    /* rules */
+}
+```
+
+* classa or classb, both should have these ruleset
+```css
+.classa,.classb {
+    /* rules */
+}
+```
 
 * About links:
 
@@ -215,6 +271,8 @@ and
 reducing the radii of the circle to half the size of the smallest side.
 e.g. 
 https://stackoverflow.com/questions/29966499/border-radius-in-percentage-and-pixels-px-or-em
+
+
 
 
 * CSS borders have properties like style, color and width,
@@ -281,6 +339,22 @@ Also order of overriding as follows:
 
 * https://github.com/reworkcss/css is a good CSS parser, i.e. converts css string input
 to CSS AST. used in various css tooling.
+
+
+### width and max-width
+
+```css
+width: 98%;
+max-width: 1140px;
+```
+you are telling the browser to give a width of 98% of the screen, but not bigger than 1140px.
+
+In your second example,
+```css
+width: 1140px;
+max-width: 98%;
+```
+you are telling the browser to give a width of 1140px but not larger than 98% of the browser.
 
 ### SCSS and SaSS
 
