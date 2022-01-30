@@ -893,3 +893,21 @@ e.g.
           width="130" height="85">
       </a>
 ```
+
+### scroll properties on document
+
+These properties exist on `document.documentElement`:
+
+1. `scrollTop` - how much from the top have we scrolled.
+2. `scrollHeight` - total height of content that is scrollable, usually will be the largest value
+3. `clientHeight` - visible client rect height of the window into the content.
+
+### input onChange vs onInput
+
+`oninput`: any change made in the text content, input fires any time the value changes.
+
+`onchange`: The change event is fired for <input>, <select>, and <textarea> elements when an alteration to the element's value is committed by the user.
+If it is an `<input />`: change + lose focus
+If it is a `<select>`: change option
+
+React, for some reason, attaches listeners for `Component.onChange` to the DOM `element.oninput`
