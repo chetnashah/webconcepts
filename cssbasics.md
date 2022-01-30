@@ -188,7 +188,7 @@ h1 + h2 {
 }
 ```
 
-* Nested selectors: Uses Space (' '), also known as decendent combinator. 
+* Nested/descendant selectors: `Uses Space (' ')`, also known as `decendent combinator`. 
 Only match when given nesting matches in dom structure.
 e.g.
 ``` css
@@ -199,7 +199,7 @@ e.g.
 ```
 **Note**: only descendant is selected.
 
-In order to match only direct children, use child combinator '>'
+In order to `match only direct children, use child combinator '>'`
 e.g. `#top > p` will match only p's that are direct children of elemnts with id top.
 
 
@@ -208,6 +208,25 @@ to specify a relation/state along with selector. commonly used for hover etc.
 ``` css
 selector:pseudo-class {
     property:value;
+}
+```
+
+
+### Multiple selectors
+
+`AND selection`: no spaces between selectors.
+Have them without spaces, think of it as an `and` selector:
+e.g.
+```css
+div.red { /* matches all divs and having class red */
+    /* rules */
+}
+```
+
+`OR selection`: put comma between selectors:
+```css
+span, li { /* matches span, also matches with li i.e. span or li */
+
 }
 ```
 
@@ -475,3 +494,92 @@ e.g.
 Learn about stacking context.
 
 **Note**: z-index only works on positioned elements (position:absolute, position:relative, or position:fixed).
+
+
+### pseudo stuff
+
+
+
+#### pseudo elements
+
+single colon `:` or double colon `::`?
+CSS3 specifies pseudo classes be specified with double colon: `::`
+
+`before` and `after`, part of the same element, e.g. part of the element with `.required` class mentioned below.
+You can have only one `before` and one `after` per element.
+`content` attribute is necessary in the pseudo element.
+
+specified in css with a class e.g.
+```css
+.required::before {
+    content: '';
+    display: block;
+    width: 10px;
+    height: 10px;
+    background-color: red;
+}
+```
+
+
+pseudo elements are not possible on inputs.
+
+When to use?
+Automatically add content via css if a class is applied.
+can also be used for tooltips if placed inside `element:hover::after`.
+
+Another pseudo element, is `::selection`.
+another one is `::first-line`
+
+
+#### pseudo classes
+
+Use a single colon i.e. `:`.
+represent `state` of an element.
+
+List of pseudo classes:
+1. `:hover`
+2. `:active`
+3. `:link`
+4. `:focus`
+5. `:checked`
+6. `:visited`
+7. `:optional`
+8. `:required`
+9. `:valid`
+10. `:invalid`
+11. `:disabled`
+12. `:empty`
+13. `:in-range`
+14. `:lang()`
+15. `:not(innerSelector)` - takes one more normal css selector inside which is negated.
+16. `:out-of-range`
+17. `:root`
+18. `:only-of-type`
+19. `:nth-child()`
+20. `:nth-of-type()`
+21. `first-child`
+22. `last-child`
+23. `first-of-type`
+24. `last-of-type`
+
+
+### css only tooltip
+
+tooltip text content will come from `data-` attribute from DOM.
+Can be made by adding a before pseudo element that hosts the tooltip view.
+
+Content is hosted by `before` pseudo element
+```css
+.avatar:hover::before {
+    content: attr(data-tooltip);
+}
+```
+
+Triangle arrow is hosted by `after` pseudo element.
+
+
+### inset property
+
+### Matching media queries in javascript
+
+Use `window.matchMedia(query)` to check media query matching.
