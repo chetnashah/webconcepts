@@ -121,6 +121,50 @@ Associating a `<label>` with an `<input>` element offers some major advantages:
 Multiple labels can be associated with the same form control.
 
 
+### output element
+
+The `<output>` HTML element is a container element into which 
+a site or app can inject the results of a calculation or the outcome of a user action.
+
+A good use case for such an element is things like `toast`.
+
+```html
+<output class="gui-toast">Item added to cart</output>
+```
+
+### article element
+
+The `<article>` HTML element represents a self-contained composition in a document, page, application, or site, which is intended to be independently distributable or reusable (e.g., in syndication). 
+Examples include: 
+a forum post, 
+a magazine or newspaper article, or 
+a blog entry, 
+a product card, 
+a user-submitted comment, 
+an interactive widget or gadget, 
+or any other independent item of content.
+
+
+### section element
+
+A generic collection of elements. Sections should always have a heading, with very few exceptions.
+
+`<section>` is a generic sectioning element, and should only be used if there isn't a more specific element to represent it. As an example, a navigation menu should be wrapped in a `<nav>` element, but a list of search results or a map display and its controls don't have specific elements, and could be put inside a `<section>`.
+
+```html
+<section>
+    <h2>Introduction</h2>
+    <p>This document provides a guide to help with the important task of choosing the correct Apple.</p>
+</section>
+```
+
+### role attribute
+
+The `role` attribute describes the role of an element in programs that can make use of it, 
+such as screen readers or magnifiers.
+
+
+
 ### `<template>` element
 
 https://www.html5rocks.com/en/tutorials/webcomponents/template/

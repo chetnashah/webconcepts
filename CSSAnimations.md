@@ -40,6 +40,27 @@ div {
 }
 ```
 
+
+### transition vs animation property
+
+`Transition`:
+
+Works on a property e..g `opacity` or `transform`.
+* Needs a triggering element (`:hover`, `:focus` etc.)
+* Only 2 animation states (`start` and `end`)
+* Used for simpler animations (buttons, dropdown menus and so on)
+* Easier to create but not so many animation/effect possibilities
+
+`Animation @keyframes`:
+
+Animations have a `name`, which corresponds to a `keyframe` that has to be defined as well.
+* It can be used for endless animations
+* Can set more than 2 states, e..g `0%{}, 25%{}, 50%{}, 100%{}`.
+* Jumps to original by default, in order to keep all the properties after animation is over, it can be overriden using `forwards`.
+* No boundaries
+* Can be iterated over and over, with a specified count.
+* `animation-play-state` can control play/pause via `paused`/`running`.
+
 ### Animation with `@keyframes`
 
 https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Animations/Using_CSS_animations
@@ -59,7 +80,7 @@ e.g.
 
 **Note** `0%` and `100%` can also be used instead of `from`/`to`.
 
-Now use that keyframe via `animation-name` where you are applying it
+Now use that `keyframe` via `animation-name` where you are applying it
 and duration is specified via `animation-duration`.
 
 ```css
@@ -113,3 +134,5 @@ animation: slide 2s ease 0.2s infinite reverse forwards;
 #### chaining animations
 
 Animations seperated by comma in `animation` field are chained
+
+

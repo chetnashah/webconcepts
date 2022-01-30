@@ -556,3 +556,36 @@ one can get value in the listener using
 role of `name` attribute in `input` tags
 would be that they can serve as keys in formdata.
 
+
+### Data attributes
+
+Attributes prefixed with `data-` that are used to store additional data in elements.
+
+They can be accessed from javascript via `elem.dataset.attrname`, if its name in DOM is `data-attrname`.
+e.g.
+```html
+<article
+  id="electric-cars"
+  data-columns="3"
+  data-index-number="12314"
+  data-parent="cars">
+...
+</article>
+```
+JS access:
+```js
+const article = document.querySelector('#electric-cars');
+// The following would also work:
+// const article = document.getElementById("electric-cars")
+
+article.dataset.columns // "3"
+article.dataset.indexNumber // "12314"
+article.dataset.parent // "cars"
+```
+
+css access via `attr` function:
+```css
+article::before {
+  content: attr(data-parent);
+}
+```
