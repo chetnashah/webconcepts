@@ -1,0 +1,38 @@
+* {
+    box-sizing: border-box;
+}
+
+.datepicker-overlay {
+    position: absolute;
+    background-color: white;
+    padding: 10px;
+    border: 1px solid black;
+}
+
+.is-hidden {
+    display: none;
+}
+
+.day-names-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+.days-container {
+    width: 100%;
+    display: grid;
+    grid-column-start: 3;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+    column-gap: 10px;
+    row-gap: 10px;
+}
+
+.days-container button:first-child {
+    grid-column-start: 3;
+}
+
+.day-unit {
+    width: auto;
+}
+

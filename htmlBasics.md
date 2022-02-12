@@ -49,6 +49,13 @@ Prefer named functions as event listener callback - so they can be removed easil
 because anonymous function reference is lost on creation.
 
 
+### What is needed for `margin: 0 auto` to work?
+
+1. The element must be block-level, e.g. `display: block` or `display: table`
+2. The element must `not float`
+3. The element must `not have a fixed or absolute` position
+4. The element must have a `width` that is not auto
+
 #### What are block and inline elements?
 
 Block elements take up full space of parent, examples of block elements are
@@ -120,6 +127,10 @@ Associating a `<label>` with an `<input>` element offers some major advantages:
 
 Multiple labels can be associated with the same form control.
 
+
+### span element
+
+`<span>` is very much like a `<div>` element, but `<div>` is a block-level element whereas a `<span>` is an inline element.
 
 ### output element
 
