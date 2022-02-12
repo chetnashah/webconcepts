@@ -8,32 +8,56 @@ export class MyDatePicker {
         this.options = options;
         const currentDate = new Date();
         this.shownMonth = currentDate.getMonth();
+        console.log('shownMonth = ', this.shownMonth);
         this.shownYear = currentDate.getFullYear();
-        this.overlayDiv = this.addDOM();
+        this.overlayDiv = this.addDOM(true);
         this.initListeners();
     }
 
-    addDOM() {
-        const overlay = this.createDatepickerOverlay();
+    addDOM(withHidden) {
+        const overlay = this.createDatepickerOverlay(withHidden);
         // .appendChild(overlay);
         this.el.parentElement.appendChild(overlay);
         return overlay;
     }
 
+    hideOverlay(){
+        this.overlayDiv.classList.toggle('is-hidden');
+    }
+
     initListeners(){
         this.el.addEventListener('click', () => {
-            this.overlayDiv.classList.toggle('is-hidden');
+            this.hideOverlay();
         });
     }
 
-    daysInMonth (month, year) { // Use 1 for January, 2 for February, etc.
-        return new Date(year, month, 0).getDate();
-    }      
+    daysInMonth (month, year) {
+        return new Date(year, month+1, 0).getDate();
+    }
 
-    createDatepickerOverlay() {
+    getNextMonthAndYear(month, year) {
+        if(month === 11) {
+            return [0, year+1];
+        } else {
+            return [month+1, year];
+        }
+    }
+
+    getPrevMonthAndYear(month, year) {
+        if(month === 0) {
+            return [11, year-1];
+        } else {
+            return [month-1, year];
+        }
+    }
+
+    createDatepickerOverlay(withHidden) {
         const overlayDiv = document.createElement('div');
+        overlayDiv.setAttribute('id', 'datepicker-overlay');
         overlayDiv.classList.add('datepicker-overlay');
-        overlayDiv.classList.add('is-hidden');
+        if(withHidden) {
+            overlayDiv.classList.add('is-hidden');
+        }
 
         const header = this.createHeader();
         overlayDiv.appendChild(header);
@@ -70,6 +94,8 @@ export class MyDatePicker {
 
         prevMonthBtn.addEventListener('click', () => {
             this.options?.onPrevMonthClick();
+            const [prevMonth, prevYear] = this.getPrevMonthAndYear(this.shownMonth, this.shownYear);
+            this.setShownMonthAndYear(prevMonth, prevYear);
         });
 
         const nextMonthBtn = document.createElement('button');
@@ -78,6 +104,8 @@ export class MyDatePicker {
 
         nextMonthBtn.addEventListener('click', () => {
             this.options?.onNextMonthClick();
+            const [nextMonth, nextYear] = this.getNextMonthAndYear(this.shownMonth, this.shownYear);
+            this.setShownMonthAndYear(nextMonth, nextYear);
         });
 
         const monthAndYear = `${MyDatePicker.monthsNamesList[this.shownMonth]} ${this.shownYear}`;
@@ -91,20 +119,39 @@ export class MyDatePicker {
         return header;
     }
 
+    setShownMonthAndYear(month, year) {
+        // console.log('shown month and year changed to ', month, ' year = ', year);
+        this.overlayDiv.remove();
+        this.shownMonth = month;
+        this.shownYear = year;
+        this.overlayDiv = this.addDOM(false);
+    }
+
     createDays(){
         const daysContainer = document.createElement('div');
+        daysContainer.setAttribute('id', 'days-container');
         daysContainer.classList.add('days-container');
 
         const firstDayDate = new Date(this.shownYear, this.shownMonth, 1);
         const firstDayDayOfWeek = firstDayDate.getDay();
 
-        console.log(`first day of ${MyDatePicker.monthsNamesList[this.shownMonth]} falls on ${MyDatePicker.dayNamesList[firstDayDayOfWeek]}`);
+        // console.log(`first day of ${MyDatePicker.monthsNamesList[this.shownMonth]} falls on ${MyDatePicker.dayNamesList[firstDayDayOfWeek]}`);
 
         const daysInMonth = this.daysInMonth(this.shownMonth, this.shownYear);
+        // console.log('days in month: ', this.shownMonth, ' is ', daysInMonth);
         for(let j=0;j<daysInMonth;j++) {
             const day = document.createElement('button');
             day.innerText = j+1;
             day.classList.add('day-btn');
+            if(j === 0) {
+                day.style.gridColumnStart = firstDayDayOfWeek+1;
+            }
+            day.addEventListener('click', (ev) => {
+                const selectedDate = new Date(this.shownYear, this.shownMonth, ev.target.innerText);
+                console.log('you selected: ', selectedDate);
+                this.options?.onSelect(selectedDate);
+                this.hideOverlay();
+            });
             daysContainer.appendChild(day);
         }
 

@@ -11,8 +11,8 @@ var picker = new MyDatePicker(fromdateInput, {
     onNextMonthClick: () => {
         console.log('on next month click');
     },
-    onSelect: function() {
-        console.log(this.getMoment().format('Do MMMM YYYY'));
+    onSelect: function(selDate) {
+        console.log(selDate);
     }
 });
 
