@@ -331,3 +331,29 @@ aws s3api list-objects-v2 --bucket formik-app-test
 aws s3api head-object --bucket my-bucket --key index.html
 ```
 
+
+### AWS EKS (Elastic Kubernetes service)
+
+It is a managed container service to run and scale Kubernetes applications in the cloud or on-premises.
+
+Amazon EKS automatically manages the availability and scalability of the Kubernetes control plane nodes responsible for scheduling containers, managing application availability, storing cluster data, and other key tasks.
+
+Amazon EKS lets you run your Kubernetes applications on both Amazon Elastic Compute Cloud `(Amazon EC2)` and `AWS Fargate`
+
+
+### AWS ECS (EC2 container service)
+
+
+* Built around `docker`.
+* Manages a fleet of EC2 instances and orchestrates to run a set of containers on these instances.
+* Private docker image registry available
+
+* ECS cluster - group of instances, each running docker.
+* ECS task definition - how to launch docker containers on instances.
+
+
+### AWS Fargate
+
+AWS Fargate is a serverless, pay-as-you-go compute engine that lets you focus on building applications without managing servers. 
+AWS Fargate is compatible with both Amazon Elastic Container Service (ECS) and Amazon Elastic Kubernetes Service (EKS).
+
