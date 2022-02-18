@@ -6,6 +6,181 @@ call to `this.setState()` always results in a re-render, even if same state valu
 
 `hooks setstate`(https://reactjs.org/docs/hooks-reference.html#bailing-out-of-a-state-update): For a functional component using useState hook, the setter if called with the same state will not trigger a re-render. However for an occasional case if the setter is called immediately it does result in two renders instead of one
 
+
+`Same component at the same position in the UI tree preserves state`. (Reconciliation at props change level does not create a new component instance, just re-render same component instance with new props).
+Different components (by name) at the same position reset state. (Reconciliation destroys old component and creates new one.)
+if you want to preserve the state between re-renders, the structure of your tree needs to “match up” from one render to another.
+React preserves a component’s state for as long as it’s being rendered at its position in the UI tree. If it gets removed, or a different component gets rendered at the same position, React discards its state.
+
+### Why not nest component definitions ?
+This is why you should not nest component function definitions.
+IN example below,
+**Every time you click the button, the input state disappears!**
+
+This is because a `different MyTextField` function is `created for every render of MyComponent`. 
+`You’re rendering a different component in the same position, so React resets all state below`. This leads to bugs and performance problems. To avoid this problem, always declare component functions at the top level, and don’t nest their definitions.
+
+```js
+// add example here
+// https://beta.reactjs.org/learn/preserving-and-resetting-state
+import { useState } from 'react';
+
+export default function MyComponent() {
+  const [counter, setCounter] = useState(0);
+
+  // each Run of MyComponent creates a new component named MyTextField
+  function MyTextField() {
+    const [text, setText] = useState('');
+
+    return (
+      <input
+        value={text}
+        onChange={e => setText(e.target.value)}
+      />
+    );
+  }
+
+  return (
+    <>
+      <MyTextField />
+      <button onClick={() => {
+        setCounter(counter + 1)
+      }}>Clicked {counter} times</button>
+    </>
+  );
+}
+```
+
+### How to reset state, when similar component rendered at same place in UI tree?
+By default react will call render on the same instance,if only props changed.
+
+Two ways to reset state when switching between them:
+1. Render components in different positions (you can use if/conditionals)
+e.g.
+```js
+  // isPlayer=true will render: (<Counter />, false)
+  // isPlayer=false will render: (false, <Counter />)
+  return (
+    <div>
+      {isPlayerA &&  
+        <Counter person="Taylor" />
+      }
+      {!isPlayerA &&
+        <Counter person="Sarah" />
+      }
+      <button onClick={() => {
+        setIsPlayerA(!isPlayerA);
+      }}>
+        Next player!
+      </button>
+    </div>
+  );
+```
+2. Give each component an explicit identity with key - keys let you tell React that this is not just a first counter, or a second counter, but a specific counter—for example, Taylor’s counter. This way, React will know Taylor’s counter wherever it appears in the tree!
+```js
+  return (
+    <div>
+      {isPlayerA ? (
+        <Counter key="Taylor" person="Taylor" />
+      ) : (
+        <Counter key="Sarah" person="Sarah" />
+      )}
+      <button onClick={() => {
+        setIsPlayerA(!isPlayerA);
+      }}>
+        Next player!
+      </button>
+    </div>
+  );
+```
+
+
+example case:
+state should reset when different player take turns, because each player has a different score:
+```js
+import { useState } from 'react';
+
+export default function Scoreboard() {
+  const [isPlayerA, setIsPlayerA] = useState(true);
+  return (
+    <div>
+      {isPlayerA ? (
+        <Counter person="Taylor" />
+      ) : (
+        <Counter person="Sarah" />
+      )}
+      <button onClick={() => {
+        setIsPlayerA(!isPlayerA);
+      }}>
+        Next player!
+      </button>
+    </div>
+  );
+}
+
+function Counter({ person }) {
+  const [score, setScore] = useState(0);
+  const [hover, setHover] = useState(false);
+
+  let className = 'counter';
+  if (hover) {
+    className += ' hover';
+  }
+
+  return (
+    <div
+      className={className}
+      onPointerEnter={() => setHover(true)}
+      onPointerLeave={() => setHover(false)}
+    >
+      <h1>{person}'s score: {score}</h1>
+      <button onClick={() => setScore(score + 1)}>
+        Add one
+      </button>
+    </div>
+  );
+}
+```
+### Resetting form with key
+
+One would want to reset form data when switching between different
+contacts to chat.
+```jsx
+<Chat key={to.id} contact={to} />
+```
+This ensures that when you select a different recipient, the Chat component will be recreated from scratch, including any state in the tree below it. React will also re-create the DOM elements instead of reusing them.
+
+Thinks of this as useful in reset in master-detail, where detail is a form to be filled.
+each `Detail` component would have a `key`, like in the `Chat` component above.e.g. `<Form key=idforwhichformisbeingfilled />`
+
+`key` on items, is also useful for swapping items within a list.
+
+
+### How to migrate from `useState` to `useReducer`
+
+1. Move from setting `state` to `dispatching actions`.
+2. Write a `reducer function` - React will set the state to what you return from the reducer.
+```js
+function yourReducer(state, action) {
+  // return next state for React to set
+}
+```
+3. Use the reducer from your component.
+```js
+const [tasks, dispatch] = useReducer(tasksReducer, initialTasks);
+```
+The useReducer Hook takes two arguments: 
+
+1. A reducer function
+2. An initial state
+
+And it returns:
+1. A stateful value
+2. A dispatch function (to “dispatch” user actions to the reducer)
+
+Each action describes a single user interaction, even if that leads to multiple changes in the data. For example, if a user presses “Reset” on a form with five fields managed by a reducer, it makes more sense to dispatch one reset_form action rather than five separate set_field actions. If you log every action in a reducer, that log should be clear enough for you to reconstruct what interactions or responses happened in what order.
+
+Use Immer if you want to write reducers in a mutating style.(https://github.com/immerjs/use-immer#useimmerreducer)
 ### special props
 
 there are two special props (ref and key) which are used by React, and are thus not forwarded to the component.
