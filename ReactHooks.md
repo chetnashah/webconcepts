@@ -7,6 +7,50 @@ After rendering is done and React updated the DOM, the browser will repaint the 
 
 **Note** - DO not mutate an existing state object or a ref object.
 
+### Internals
+
+Present in: react/packages/react-reconciler/src/ReactFiberHooks.old.js 
+
+Main important method: `renderWithHooks`.
+
+```js
+// Hooks are stored as a linked list on the fiber's memoizedState field. The
+// current hook list is the list that belongs to the current fiber. The
+// work-in-progress hook list is a new list that will be added to the
+// work-in-progress fiber.
+let currentHook: Hook | null = null;// points to the last hook
+let workInProgressHook: Hook | null = null;
+```
+
+`Hook` data structure:
+```js
+  const hook: Hook = {
+    memoizedState: null,
+
+    baseState: null,
+    baseQueue: null,
+    queue: null,
+
+    next: null,
+  };
+```
+
+each hook has same structure as above, but
+stores different stuff e.g. `useEffect` will store effect to be run in `memoizedState.
+`useState/useReducer` will store the update queue to run.
+
+get the latest/last hook in the hook list: `mountWorkInProgressHook()/updateWorkInProgressHook()`
+
+Three version of each hook:
+1. mount version: `mountRef`, `mountReducer`, `mountEffect`, `mountMemo`,`mountState`, `readContext`, `mountCallback`.
+
+2. update version: `updateRef`, `updateReducer`, `updateEffect`, `updateMemo`, `updateState`, `readContext`, `updateCallback`.
+
+3. Rerender version: `updateRef`, `rerenderReducer`,
+`updateEffect`, `updateMemo`, `rerenderState`, `readContext`,
+`updateCallback`.
+
+
 ### Idempotence (needed for concurrent rendering)
 
 Hook functions and component functions
@@ -248,4 +292,17 @@ function reducer(prevState, action){
 }
 
 const useState = (initialState) => useReducer(reducer, initialState);
+```
+
+### implementing useReducer using useState
+
+```js
+const useReducer = (reducer, initialState) => {
+  const [state, setState] = useState(initialState);
+
+  function dispatch(action) {
+    setState(prevState => reducer(prevState,action));
+  }
+  return [state, dispatch];
+}
 ```
