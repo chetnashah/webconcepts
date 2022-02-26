@@ -70,6 +70,8 @@ https://medium.com/@ryardley/react-hooks-not-magic-just-arrays-cd4f1857236e
 State is local to a component instance on the screen.
 Updating your component’s state automatically queues a render.
 
+`useState` is implemented using `useReducer` inside React.
+
 **Note** - `updater functions` i.e. `setNumber(n => n+1)` run during rendering, 
 so updater functions must be pure and only return the result.
 **Do not try to set state inside of updater functions or run other side effects**.
@@ -148,6 +150,10 @@ setPerson({
 
 ### useReducer
 
+useReducer takes a `reducer function`, and an `initial state`, and optional 
+lazy init function (which takes in inital state as argument and returns the first state used by render).
+
+
 1. must be pure, i.e should not make network request, schedule timeouts etc.
 2. same inputs always result in same output.
 3. Actions are queued until next render.
@@ -156,7 +162,7 @@ setPerson({
 
 In essence, reducers are queued pure functions that run on previousState+action during render to return updated state for render to proceed.
 
-Your reducers must return new state in order to re-render!
+Your reducers must return new state in order to re-render!, i.e it also relies on referential equality that is `Object.is` based comparision.
 
 * Each action describes a single user interaction, even if that leads to multiple changes in the data. For example, if a user presses “Reset” on a form with five fields managed by a reducer, it makes more sense to dispatch one `reset_form` action rather than five separate `set_field` actions
 
@@ -202,3 +208,44 @@ Use cases for context:
 #### Optimizing context children with memo
 
 https://kcd.im/optimize-context
+
+
+### Implementing useState using useReducer
+
+```js
+function simpleReducer(s, a) {
+  if (a.type === "replace") {
+    return a.newVal;
+  } else if (a.type === "apply") {
+    return a.fn(s);
+  }
+  return s;
+}
+const myUseState = function (initialState) {
+  const [x, dispatchX] = useReducer(simpleReducer, initialState);
+
+  function setterFn(val) {
+    if (typeof val === "function") {
+      dispatchX({
+        type: "apply",
+        fn: val
+      });
+    } else {
+      dispatchX({
+        type: "replace",
+        newVal: val
+      });
+    }
+  }
+  return [x, setterFn];
+};
+```
+
+even more simplified implementaiton:
+```js
+function reducer(prevState, action){
+  return typeof action === 'function' ? action(prevState) : action;
+}
+
+const useState = (initialState) => useReducer(reducer, initialState);
+```
