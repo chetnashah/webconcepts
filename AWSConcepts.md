@@ -3,6 +3,10 @@
 
 A 64 digit alphanumeric id for one's account.
 
+### Tagging resources
+
+Tagging resources is a good practice for future search/ filtering of resources.
+
 ### Policy
 
 Describes actions only, nothing about identity or user.
@@ -352,8 +356,55 @@ Amazon EKS lets you run your Kubernetes applications on both Amazon Elastic Comp
 * ECS task definition - how to launch docker containers on instances.
 
 
+### AWS elastic load balancing
+
+Distribute traffic across multiple targets like:
+1. EC2 instances
+2. containers
+3. ip addresses.
+
+#### Application load balancer
+
+For http & https.
+Supports path & hostname based routing.
+well suited to container applications.
+websockets supported.
+
+`Listener` : Port + protocol.
+`Rules`: map listeners to target groups.
+`Target group`: virtual group of targets which can be. Targets within a target
+group have to be homogeneous.
+1. group of ec2 instances
+2. group of ip addresses
+3. group of containers.
+
+Target level healthchecks used to decide routing by load balancer.
+
+Supports fixed response based on rule, used for error code/page. offloaded to load balancer.
+
+Cert management can be a part of loadbalancer, offloading them from target servers.
+ACM makes this even simpler.
+
+* It is possible to authenticate application users at the load balancer, offloading authentication from target servers, using AWS Cognito or other integrations.
+#### Network load balancer
+
+TCP workloads.
+High throughput, million req/s.
+
+
 ### AWS Fargate
 
 AWS Fargate is a serverless, pay-as-you-go compute engine that lets you focus on building applications without managing servers. 
 AWS Fargate is compatible with both Amazon Elastic Container Service (ECS) and Amazon Elastic Kubernetes Service (EKS).
 
+### AWS auto scaling group
+
+Logical group of instances for your service. 
+
+`Launch template` - this determines what will launch  
+e.g. ec2 instance type, AMI, ssh keys, IAM profile, user data.
+
+Approaches:
+* golden image - AMI prebaked with application code & libraries, instance is directly ready to get traffic.
+
+* Base AMI + install code & config using tools or CodeDeploy - puppet/chef/ansible

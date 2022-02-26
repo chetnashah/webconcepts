@@ -5,6 +5,30 @@ React only changes the DOM nodes if there’s a difference between renders.
 
 After rendering is done and React updated the DOM, the browser will repaint the screen. Although this process is known as “browser rendering”, we’ll refer to it as “painting”.
 
+**Note** - DO not mutate an existing state object or a ref object.
+
+### Idempotence (needed for concurrent rendering)
+
+Hook functions and component functions
+can be invoked multiple times.
+Hence those functions have to be pure enough
+so that they behave consistently, even if
+they are invoked several times.
+### Types of state in a react app
+
+1. server data cache - api data fetched for (Nouns) in your app like Posts, Comments etc.
+
+2. Form state - form filling intermediate input state before 
+putting it on the server.
+
+3. Navigation state - browser local navigation state like, currently visible tab, currently visible screen, currently visible modal, selected list-item in master-detail setup, Nth step in a step by step wizard (can also be considered part of form state).
+
+4. Auth state - although linked to server data/navigation state,
+this state decides other sub-states like navigation and server data.
+
+5. Editor state - Although a subset of a form i.e.an input state,
+a rich graphical editor can have a full fledged substates like
+selections, cursor positions, highlights etc.
 
 ### What happens during rendering?
 
@@ -21,7 +45,8 @@ A state variable’s value never changes within a render, even if its event hand
 
 React keeps the state values “fixed” within one render’s event handlers. You don’t need to worry whether the state has changed while the code is running.
 
-
+React uses `Object.is` on `state` in order
+to decide about re-rendering or bailout. Which means if state is referentially unchanged, it bails out and wont re-render. so it is recommended to treat `state` as immutable.
 
 Setting state only changes it for the next render.
 
@@ -78,6 +103,20 @@ Recap:
 4. You can mentally substitute state in event handlers, similarly to how you think about the rendered JSX.
 5. Event handlers created in the past have the state values from the render in which they were created.
 
+Always rendering:
+```js
+const Component = () => {
+  console.log(" component render");
+  const [state, setState] = useState({ count: 0 });
+  return (
+    <div>
+      {state.count}
+      <button onClick={() => setState({ count: 1 })}>Set count to 1</button>
+    </div>
+  );
+};
+```
+
 #### Why mutating state is not recommended?
 
 * `Common React optimization strategies rely on skipping work if previous props or state are the same as the next ones`. If you never mutate state, it is very fast to check whether there were any changes. If `prevObj === obj`, you can be sure that nothing could have changed inside of it.
@@ -112,6 +151,54 @@ setPerson({
 1. must be pure, i.e should not make network request, schedule timeouts etc.
 2. same inputs always result in same output.
 3. Actions are queued until next render.
-4. **reducers run during rendering**.
+4. **reducers run during rendering**, but they can also be run eagerly outside of render(maybe first action dispatch) for bail out optimizations that do not trigger render (no state change).(e.g https://github.com/facebook/react/blob/17.0.1/packages/react-reconciler/src/ReactFiberHooks.new.js#L1749) e.g. https://codesandbox.io/s/brave-worker-listdc?file=/src/App.js
 5. Reducers should `update objects and arrays without mutations`.
 
+In essence, reducers are queued pure functions that run on previousState+action during render to return updated state for render to proceed.
+
+Your reducers must return new state in order to re-render!
+
+* Each action describes a single user interaction, even if that leads to multiple changes in the data. For example, if a user presses “Reset” on a form with five fields managed by a reducer, it makes more sense to dispatch one `reset_form` action rather than five separate `set_field` actions
+
+`useReducer` implementation using `useState`:
+```js
+import { useState } from 'react';
+
+export function useReducer(reducer, initialState) {
+	const [state, setState] = useState(initialState);
+
+	function dispatch(action) {
+  		setState(s => reducer(s, action));
+	}
+
+	return [state, dispatch];
+}
+```
+
+### Context
+
+Context lets you write components that adapt to their 
+surroundings and display themselves differently depending on where or in which context they are being rendered.
+
+* Different React contexts don't override each other.
+
+* overriding - Only way to override some context coming from above is to wrap children into a context provider with different value.
+
+Context has to be created once, but different `values` can 
+be exposed via different `Provider copmponents` of the same context (created via React.createContext).
+
+Steps to using context:
+1. Create a context. (usually in separate file exported as singleton - why?)
+2. Use that context from component that needs the data.
+3. Provide that context from component that specifies data.
+
+Use cases for context:
+1. theming/language selection
+2. Current account/logged in user
+3. Routing - global knowledge of current active route
+4. Managing state - 
+
+
+#### Optimizing context children with memo
+
+https://kcd.im/optimize-context
