@@ -505,6 +505,27 @@ export default function(WrappedComponent) {
 HOCs are used typically by all state management libraries to create containers with data,
 like redux's connect, or relay's createContainer to inject props of data into our dumb-components. 
 
+### rendering and `children` prop
+
+Whenever a `children` prop is used i na `GivenComponent`.
+the `render`ing of `children` components, has already happened inside of parent of `GivenComponent`, and we are
+given reference of those. 
+so `re-render` of `GivenComponent`, will not cause
+a re-render of `children`, as they are used by reference.
+
+https://www.youtube.com/watch?v=3XaXKiXtNjw
+
+
+### When to reach out for global state?
+If you need state in two components that
+are far away in the component tree, and probably
+both of them can change it, it would
+not be desirable to pass it all the way down
+to the two components via prop drilling.
+Intermediate components might not need the un-necessary props.
+
+
+
 ### React Context
 
 #### Legacy React Context (pre-16.3)
@@ -1229,4 +1250,98 @@ Why the hook restrictions, because hooks form a linkedlist/queue like below:
     }
   }
 }
+```
+
+
+### Pattern - lifting elements up to prevent re-renders (children pattern also applies)
+
+
+Case where `AdditionalInfo` component re-renders always
+
+```js
+
+const AdditionalInfo = () => {
+  console.log("additional info re=render!");
+  return <p>Some Information</p>;
+};
+
+const Component1 = ({ count, setCount }) => {
+  return (
+    <div>
+      {count}
+      <button onClick={() => setCount((c) => c + 1)}>Inc</button>
+      <AdditionalInfo />
+    </div>
+  );
+};
+
+const Component2 = ({ count, setCount }) => {
+  return (
+    <div>
+      {count}
+      <button onClick={() => setCount((c) => c + 1)}>Inc</button>
+    </div>
+  );
+};
+
+const Parent = () => {
+  const [count, setCount] = useState(0);
+  return (
+    <>
+      <Component1 count={count} setCount={setCount} />
+      <Component2 count={count} setCount={setCount} />
+    </>
+  );
+};
+```
+
+`<AdditionalInfo >` component can be lifted up to prevent re-renders. It is created when `GrandParent` was asked to render. 
+`Parent` and other deeper components just refer to `AdditionalInfo Element` by prop reference and do not ask to render it.
+
+```js
+export default function App() {
+  return <GrandParent />;
+}
+
+const AdditionalInfo = () => {
+  console.log("additional info re=render!");
+  return <p>Some Information</p>;
+};
+
+const Component1 = ({ count, setCount, additionalInfo }) => {
+  return (
+    <div>
+      {count}
+      <button onClick={() => setCount((c) => c + 1)}>Inc</button>
+      {additionalInfo}
+    </div>
+  );
+};
+
+const Component2 = ({ count, setCount }) => {
+  return (
+    <div>
+      {count}
+      <button onClick={() => setCount((c) => c + 1)}>Inc</button>
+    </div>
+  );
+};
+
+const Parent = ({ additionalInfo }) => {
+  const [count, setCount] = useState(0);
+  return (
+    <>
+      <Component1
+        additionalInfo={additionalInfo}
+        count={count}
+        setCount={setCount}
+      />
+      <Component2 count={count} setCount={setCount} />
+    </>
+  );
+};
+
+const GrandParent = () => {
+  return <Parent additionalInfo={<AdditionalInfo />} />;
+};
 ```
