@@ -662,6 +662,23 @@ type ThreeStringProps2 = {prop1: string, prop2: string, prop3: string}
 
 ``` 
 
+### Specifying type parameters in function call
+
+Normally typescript will infer type-parameter automatically at function call site,
+but in case it is not able to, one can explicitly specify type parameter at callsite as well.
+
+```ts
+function combine<Type>(arr1: Type[], arr2: Type[]): Type[] {
+  return arr1.concat(arr2);
+}
+
+const arr = combine([1, 2, 3], ["hello"]);
+// Error: Type 'string' is not assignable to type 'number'.
+
+
+// Fix: explicitly specify type parameter at callsite
+const arr = combine<number | string>([1, 2, 3], ["hello"]);
+```
 
 ### Conditional types
 

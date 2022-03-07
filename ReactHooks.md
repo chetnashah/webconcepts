@@ -248,6 +248,76 @@ Use cases for context:
 3. Routing - global knowledge of current active route
 4. Managing state - 
 
+**ContextName.Provider** is a `react component` that has a `value` prop
+and `children` 
+
+**Whenever a Context provider has a new Context value, all context consumers must receive the new value and re-render**.
+
+**Memo** will not stop internal context consumer from re-rendering.
+#### Nested providers
+
+Nearest provider in the hierarchy tree is picked up,
+In below example:
+`red` and `blue` are picked by respective `Component` that uses `useContext`.
+```jsx
+      <ColorContext.Provider value="red">
+        <Component />
+      </ColorContext.Provider>
+      <ColorContext.Provider value="yellow">
+        <ColorContext.Provider value="blue">
+          <Component />
+        </ColorContext.Provider>
+      </ColorContext.Provider>
+```
+
+#### Multiple providers
+
+We can have multiple providers with different values each.
+
+#### Usage of `useContext` without a provider in the parents
+
+In case a context is used/consumed without any parent in the
+tree hierarchy, the value provided in the `createContext` factory serves
+as the default value.
+The defaultValue argument is only used when a component does not have a matching Provider above it in the tree. This default value can be helpful for testing components in isolation without wrapping them.
+e.g.
+```js
+const ColorContext = React.createContext("green");// default value in case of no providers
+
+export default function App() {
+  const color = useContext(ColorContext);// color is green
+  return (
+    <div className="App">
+      <h1>Hello CodeSandbox contextval: {color}</h1>
+    </div>
+  );
+}
+```
+
+#### Common Pattern: Combine state with Context.Provider into a single component 
+
+e.g.
+```js
+const CommonProvider = ({ children })=> {
+  const [state, setState] = useState(0);
+  return (
+    <Context.Provider value={state}>
+      {children}
+    </Context.Provider>
+  )
+}
+
+// usage site
+const App() {
+  return (
+    <div>
+      <CommonProvider>
+        <ComponentThatConsumesContext />
+      </CommonProvider>
+    </div>
+  )
+}
+```
 
 #### Optimizing context children with memo
 
@@ -306,3 +376,140 @@ const useReducer = (reducer, initialState) => {
   return [state, dispatch];
 }
 ```
+
+### Counting number of renders using useRef and useEffect
+
+`useRef` to have a independent mutable storage counting renders.
+`useEffect` to synchronize the post render count via effect.
+
+```js
+
+function ComponentWithRenderCount() {
+  const renderCountRef = React.useRef(1);
+  React.useEffect(() => {
+    renderCountRef.current++;// update rendercount to be used in next render
+  });
+  return <div>{`Rendered ${renderCountRef.current} times`}</div>;
+}
+```
+
+Extracting that logic to a hook:
+```js
+function useRenderCount() {
+  const renderCountRef = React.useRef(1);
+  React.useEffect(() => {
+    renderCountRef.current++;
+  });
+  return renderCountRef.current;
+}
+
+function ComponentUsingRenderCountHook() {
+  const renderCount = useRenderCount();
+  return <div>{`Rendered ${renderCount} times`}</div>;
+}
+```
+
+
+### Using context via custom hooks
+
+1. create context with `null` default value. Which indicates default is not usable,
+and a provider is always required.
+
+2. Do checking for null value in custom hook, so that to verify if it is present under atleast one provider.
+
+```tsx
+type CountContextType = [number, Dispatch<SetStateAction<number>>];
+
+const Count1Context = React.createContext<CountContextType | null>(null);
+
+export const Count1Provider = ({ children }: { children: ReactNode }) => {
+  return (
+    <Count1Context.Provider value={useState(0)}>
+      {children}
+    </Count1Context.Provider>
+  );
+};
+
+// custom hook instead of direct usage of useContext
+function useCount1() {
+  const value = React.useContext(Count1Context);
+  if (value === null) {
+    throw new Error("Empty Providers above!");
+  }
+  return value;
+}
+```
+
+### Common pattern for storing state in Context, expose state and state setters
+
+Provide both state, and state setter methods via `Provider value prop`.
+e.g. 
+```tsx
+// [state, setState] available as value to descendants of context
+return (
+  <Context.Provider value={useState(0)}>
+    {children}
+  </Context.Provider>
+);
+```
+
+### A factory for setting up state context and custom hook
+
+We would create a function `createStateContext` that has:
+
+1. input - a function `useValue` that takes in a initfn and returns state, `useValue: init => State`.
+2. output - a tuple of `[ProviderComponent, customHookToGetState]`.
+
+* We will need to give inital value to state provider from outside
+* We will need to give state holder/manager i.e state setter/getter mechanism from outside via `useValue`.
+
+```tsx
+const createStateContext = (useValue: any) => {
+  const StateContext = React.createContext(null);
+  const StateProvider = ({
+    children,
+    initialValue
+  }: {
+    initialValue: any;
+    children: ReactNode;
+  }) => {
+    return (
+      <StateContext.Provider value={useValue(initialValue)}>
+        {children}
+      </StateContext.Provider>
+    );
+  };
+  const useContextState = () => {
+    const state = React.useContext(StateContext);
+    if (state === null) {
+      throw new Error("Missing Provider above!");
+    }
+    return state;
+  };
+  return [StateProvider, useContextState];
+};
+
+const useNumberState = (init: any) => useState(0 || init);
+
+const [Count1StateProvider, useCount1State] = createStateContext(
+  useNumberState
+);
+const [Count2StateProvider, useCount2State] = createStateContext(
+  useNumberState
+);
+
+export default function App() {
+  return (
+    <div className="App">
+      <Count1StateProvider initialValue={0}>
+        <Count2StateProvider initialValue={0}>
+          <Parent />
+        </Count2StateProvider>
+      </Count1StateProvider>
+    </div>
+  );
+}
+```
+
+### Avoid Provider nesting with `reduceRight`
+
