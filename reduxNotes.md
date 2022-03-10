@@ -74,3 +74,38 @@ Useful functions provided by redux-actions library
 * createAction(type, payloadCreator = Identity) : create actions using this function
 * handleAction(type, reducer, defaultState) : wraps reducers so that it handles actions of only a certain type
 
+### redux using hooks
+
+React Redux includes its own custom hook APIs, 
+which allow your React components to subscribe to the Redux store and dispatch actions.
+
+edge cases: https://react-redux.js.org/api/hooks#usage-warnings
+
+#### `useSelector`
+
+```js
+const result: any = useSelector(selector: Function, equalityFn?: Function)
+```
+Allows you to extract data from the Redux store state, using a selector function.
+
+**The selector function should be pure since it is potentially executed multiple times and at arbitrary points in time.**
+example:
+```jsx
+import React from 'react'
+import { useSelector } from 'react-redux'
+
+export const TodoListItem = (props) => {
+  const todo = useSelector((state) => state.todos[props.id])
+  return <div>{todo.text}</div>
+}
+```
+
+#### `useDispatch`
+
+This hook returns a reference to the dispatch function from the Redux store. You may use it to dispatch actions as needed.
+
+
+```js
+const dispatch = useDispatch();
+```
+
