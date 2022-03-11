@@ -225,6 +225,20 @@ export function useReducer(reducer, initialState) {
 }
 ```
 
+
+### How to run useEffect hook code only on update (not on mount)?
+
+```jsx
+cnst isInitialMount = useRef(true);
+useEffect(() => {
+  if(isInitialMount.current){
+    isInitialMount.current = false;
+  } else {
+    // run the effect code here!
+  }
+});
+```
+
 ### Context
 
 Context lets you write components that adapt to their 

@@ -308,6 +308,10 @@ interface SquareConfig {
 }
 ```
 
+### Covariance and Contravariance
+
+https://dmitripavlutin.com/typescript-covariance-contravariance/
+
 ### Exhaustive checking with `never` type
 
 `never` type represents something which is unreachable.
