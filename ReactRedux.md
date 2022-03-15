@@ -18,3 +18,8 @@ Normally, you can’t use a connected component unless it is nested inside of a 
 
 ### mapDispatchToProps
 
+### redux-loop
+
+### redux-saga
+
+https://redux-loop.js.org/docs/tutorial/Tutorial.html
