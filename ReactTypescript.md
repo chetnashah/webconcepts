@@ -75,3 +75,26 @@ const Context2 = React.createContext<null | { name: string }>({ name: "hey" });
 ```tsx
 const [count, setCount] = useState<null | number>(null);
 ```
+
+
+### Using subobject type of a given object type
+
+I have something like:
+```ts
+interface Person {
+  name: string,
+  address: { // need to access the type of this suboject in a type expression
+    street: string,
+    pincode: string
+  }
+}
+```
+and how do I use `Person.address` in a type expression?
+e.g. 
+```tsx
+const [address, setAddress] = useState<null | Person.address>(null);
+```
+Answer:
+```tsx
+const [address, setAddress] = useState<null | Person["address"]>(null);
+```
