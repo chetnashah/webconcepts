@@ -146,6 +146,8 @@ If you need to run some JavaScript before the form is submitted (validation, dat
 
 When a form is sent using Enter on an input field, a click event triggers on the `<input type="submit">`.
 
+`<input type="submit">` renders a `button`, and the text shown in the button is given by `value` attribute, i.e. `<input type="submit" value="Sign Up">` renders a button with text `Sign Up`.
+
 #### Explicit form submit on clicks
 
 Each formElement has a `submit()` method that should be called in order to

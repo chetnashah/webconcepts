@@ -1,6 +1,15 @@
 
 https://github.com/typescript-cheatsheets/react
 
+###
+
+* `JSX.element` - return value of `React.createElement`, i.e of object like shape.
+* `React.ReactNode` - all possible return value of a component, can be `null`, `false` etc along with `JSX.element` type.
+
+Usually the inferred return type from your components will be-> You can check them
+on hovering, will be `JSX.element | null`.
+
+
 ### Working with children prop, what is the type of children prop?
 
 Use `ReactNode` type for children prop
@@ -78,7 +87,7 @@ const [count, setCount] = useState<null | number>(null);
 
 
 ### Using subobject type of a given object type
-
+https://www.typescriptlang.org/docs/handbook/2/indexed-access-types.html
 I have something like:
 ```ts
 interface Person {

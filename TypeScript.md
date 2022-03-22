@@ -403,6 +403,21 @@ function testSomething(el: Paddable | string) {
 }
 ```
 
+### Sum types and sub-type constraints (extends)
+
+A sumtype with a smaller list in union is a sub-type of a sumtype with larger 
+list.
+
+e.g. 
+```ts
+type sometype = "a"|"b"|"c"|"d";
+type subtype = "a"|"b";
+
+// then subtype extends sometype
+// or subtype <: sometype
+// or subtype is assignable to sometype
+```
+
 ### Postfix exclamation operator (`identifier!`)
 
 removes `null` and `undefined` from the type of identifier.
