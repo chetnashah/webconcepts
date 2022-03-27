@@ -113,6 +113,26 @@ Used pre-2.0 typescript
 
 They start with values/atoms like numbers, strings booleans  etc. and operations like *, + etc. and flow the types into variables in such a way that a constraint satisfaction problem is solved, and the most general type is given to variables that are not directly connected to values.
 
+
+### You can think of generic types as function in the type-level
+
+Because generic types take a type parameter and return a different type,
+they are typically referred to as type-constructors or type-level functions.
+
+
+### Looping at type level using mapped types
+
+A mapped type produces an object by looping over a collection of keys – for example:
+```ts
+// %inferred-type: { a: number; b: number; c: number; }
+type Result = {
+  [K in 'a' | 'b' | 'c']: number
+};
+```
+The operator `in` is a crucial part of a mapped type: 
+It specifies where the keys for the new object literal type come from.
+
+
 ### Function types
 
 All function types require parameter names instead of just
@@ -282,10 +302,58 @@ interface ReadonlyArray<T> {
 ```
 3. we can make our own immutable objects/classes using technique above
 
+
+### How to bypass excess property checks with object literals?
+
+1. One option is to assign the object literal to an intermediate variable:
+```ts
+const obj = { x: 1, y: 2, z: 3 };
+computeDistance1(obj);
+```
+2. A second option is to use a type assertion, using `as`:
+```ts
+computeDistance1({ x: 1, y: 2, z: 3 } as Point); // OK
+```
+3. A third option is to rewrite computeDistance1() so that it uses a type parameter:
+```ts
+function computeDistance2<P extends Point>(point: P) { /*...*/ }
+computeDistance2({ x: 1, y: 2, z: 3 }); // OK
+```
+4. A fourth option is to extend interface Point so that it allows excess properties:
+```ts
+interface PointEtc extends Point {
+  [key: string]: any;
+}
+
+function computeDistance3(point: PointEtc) { /*...*/ }
+
+computeDistance3({ x: 1, y: 2, z: 3 }); // OK
+```
+
 ### Gotchas
 
 * excess property checks with object literals
 Object literals get special treatment and undergo excess property checking when assigning them to other variables, or passing them as arguments. If an object literal has any properties that the “target type” doesn’t have, you’ll get an error(object literal may specify only known properties)
+
+Why are excess properties forbidden in object literals?
+The open interpretation that allows excess properties is reasonably safe when the data comes from somewhere else. However, if we create the data ourselves, then we profit from the extra protection against typos that the closed interpretation gives us.
+```ts
+interface Point {
+  x: number;
+  y: number;
+}
+
+function computeDistance(point: Point) { /*...*/ }
+
+const obj = { x: 1, y: 2, z: 3 };
+computeDistance(obj); // OK
+
+// Type error, excess property in literal
+computeDistance({ x: 1, y: 2, z: 3 });
+
+// exact type object is fine for literal
+computeDistance({ x: 1, y: 2});
+```
 
 * All things are structurally typed
 
@@ -311,6 +379,32 @@ interface SquareConfig {
 ### Covariance and Contravariance
 
 https://dmitripavlutin.com/typescript-covariance-contravariance/
+
+### empty interfaces
+
+If an interface is empty (or the object type literal {} is used), excess properties are always allowed:
+```ts
+interface Empty { }
+interface OneProp {
+  myProp: number;
+}
+
+// @ts-ignore: Type '{ myProp: number; anotherProp: number; }' is not assignable to type 'OneProp'.
+//   Object literal may only specify known properties, and 'anotherProp' does not exist in type 'OneProp'.(2322)
+const a: OneProp = { myProp: 1, anotherProp: 2 };
+const b: Empty = {myProp: 1, anotherProp: 2}; // OK
+```
+
+### Enforcing objects with no properties
+
+If we want to enforce that objects have no properties, we can use the following trick (credit: Geoff Goodman):
+```ts
+interface WithoutProperties {
+  [key: string]: never;
+}
+```
+
+
 
 ### Exhaustive checking with `never` type
 
@@ -576,6 +670,8 @@ function calculateArea(s: shape) {
 
 ### `keyof` and Lookup Types
 
+Think of `keyof` as `Object.keys` but at the type level.
+
 `keyof SomeType` returns all property names of `SomeType` joined together as a union type.
 e.g.
 ```ts
@@ -701,5 +797,60 @@ const arr = combine<number | string>([1, 2, 3], ["hello"]);
 
 ### Conditional types
 
+#### Conditional types are distributive over union types
+
+Conditional types are distributive: 
+Applying a conditional type `C` to a union type `U` is the same as the union of applying C to each component of U. This is an example:
+```ts
+type Wrap<T> = T extends { length: number } ? [T] : T;
+
+// %inferred-type: boolean | [string] | [number[]]
+type C1 = Wrap<boolean | string | number[]>;
+
+// Equivalent:
+type C2 = Wrap<boolean> | Wrap<string> | Wrap<number[]>;
+```
+If the `T` type parameter is a union, it distributes over.
+
+```ts
+//we can use never to ignore components of a union type:
+type DropNumbers<T> = T extends number ? never : T;
+
+// %inferred-type: "a" | "b"
+type Result1 = DropNumbers<1 | 'a' | 2 | 'b'>;
+```
 ### `infer` keyword
 
+Allows indirectly introducing a type variable which depends on/deduced from original type variables.
+**only used in conditional types, Using the infer keyword is often described as unwrapping a type**
+
+```ts
+// unwrapping array type
+type GetMeArrayType<T> = T extends (infer R)[] ? R : never;
+type SomeType = GetMeArrayType<number[]>;// SomeType is number
+
+//unwrapping promise return type
+type PromiseReturnType<T> = T extends Promise<infer Return> ? Return : T
+type t = PromiseReturnType<Promise<string>> // string 
+
+
+```
+
+allows you to deduce a type from another type within a conditional type.
+`infer R` is like declaring a type variable R instead of actually declaring a type variable, if `R` depends on/or gets inferred from `T` then `infer` is the right way to go.
+
+same inference algorithm as type inference for generic functions' type variables.
+
+#### ReturnType
+Take the built-in TypeScript ReturnType utility, for example. It takes a function type and gives you its return type:
+```ts
+type a = ReturnType<() => void> // void
+type b = ReturnType<() => string | number> // string | number
+type c = ReturnType<() => any> // any
+```
+
+HOw it works?
+type parameter to ReturnType must be a function.
+```ts
+type ReturnType<T extends (...args:any) => any> = T extends (args: any) => infer R ? R : any;
+```
