@@ -2,7 +2,7 @@
 ## Origin
 
 "Origin" is a combination of a scheme (also known as the protocol, for example HTTP or HTTPS), hostname, and port (if specified).
-
+   
 For example, given a URL of `https://www.example.com:443/foo` , the "origin" is `https://www.example.com:443`
 
 **Note** - path does not matter, ports, domain name, scheme matters.
