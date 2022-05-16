@@ -36,6 +36,20 @@ An isolate may be spun down and evicted for a number of reasons:
 
 Key value storage
 
+#### Wrangler cli
+
+Wrangler cli needs to be installed on laptop and needs to be logged in
+```sh
+wrangler login
+# generate project from template
+wrangler generate my-app https://github.com/cloudflare/worker-typescript-template
+```
+
+Development and deployment
+```
+wrangler dev
+wrangler publish
+```
 
 ### R2 storage
 

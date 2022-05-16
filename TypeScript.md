@@ -854,3 +854,53 @@ type parameter to ReturnType must be a function.
 ```ts
 type ReturnType<T extends (...args:any) => any> = T extends (args: any) => infer R ? R : any;
 ```
+
+### Callback types
+
+Do not use `any` for callback types whose value will be ignored
+
+```ts
+function doSomething(cb: () => any) { // bad practice to use any
+    // calling back
+    cb();
+}
+```
+
+Use `void` instead so that the caller of the callback will not use the return value in an unexpected way with `any`.
+
+```ts
+function doSomething(cb: () => void) {
+    // calling back
+    cb();
+}
+```
+
+`Why`: Using void is safer because it prevents you from accidentally using the return value of x in an unchecked way:
+```ts
+function fn(cb: () => void) {
+  var k = cb(); // oops! meant to do something else
+  k.doSomething(); // error, but would be OK if the return type had been 'any'
+}
+```
+
+### `unknwon` type vs any
+
+`unknown` is a typesafe counterpart of `any`.
+
+Anything is assignable to `unkown`, but `unknown` is not assignable to other types, only itself and `any`.
+No operations are allowed on `unkown` type without first asserting or narrowing type.
+
+conceptually `type unknown = string | number | boolean | object | undefined | null ... `
+useful example:
+```ts
+function doSomething(a: unknown) {
+    if(typeof a === 'string'){// narrowing from unknown to string
+        // do string related operations
+        console.log(a.toUpperCase())
+    }
+    if(typeof a === 'number') {// narrowing from unkown to number
+        console.log(a.toFixed(2));
+    }
+}
+```
+
