@@ -89,3 +89,9 @@ https://jakearchibald.com/2018/third-party-css-is-not-safe/
 ### Server security
 
 https://www.digitalocean.com/community/questions/best-practices-for-hardening-new-sever-in-2017
+
+## Active vs passive attacks
+
+`Active attack` -  attacker tries to break into the application directly.
+
+`Passive attack` - With a passive attack, the attacker tries to collect or learn information from the application but does not affect the application itself.
