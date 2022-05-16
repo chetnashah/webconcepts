@@ -19,3 +19,9 @@ Two actors in the web platform that share an origin are assumed to trust each ot
 | | https://www.example.com:443 | same-origin: exact match
 | | https://www.example.com | same-origin: implicit port number (443) matches
 
+## Site
+
+`site` is the combination of the TLD and the part of the domain just before it. For example, given a URL of `https://www.example.com:443/foo` , the "site" is `example.com`.
+
+**In essence site is effective TLD + 1**
+For example, given a URL of `https://my-project.github.io` , the eTLD is .github.io and the eTLD+1 is `my-project.github.io`, which is considered a "site"
