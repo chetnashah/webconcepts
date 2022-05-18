@@ -330,3 +330,46 @@ would output `Hello, foo!`
 
 Same with React's dangerouslySetInnerHTML where `<div dangerouslySetInnerHTML={{__html: '<b>foo</b>'}} />` would output `Hello, foo!` while `<div>{'<b>foo</b>'}</div>` would be escaped.
 
+## Table element
+
+The `<table>` HTML element represents tabular data — that is, information presented in a two-dimensional table comprised of rows and columns of cells containing data.
+
+The `<td>` HTML element defines a cell of a table that contains data. It participates in the table model.
+
+The `<tr>` HTML element defines a row of cells in a table. The row's cells can then be established using a mix of `<td>` (data cell) and `<th>` (header cell) elements.
+
+The `<thead>` HTML element defines a set of rows defining the head of the columns of the table.
+
+
+The `<tbody>` HTML element encapsulates a set of table rows (`<tr>` elements), indicating that they comprise the body of the table (`<table>`).
+
+The `<col>` HTML element defines a column within a table and is used for defining common semantics on all common cells. It is generally found within a `<colgroup>` element. (Rarely used)
+
+The `<caption>` HTML element specifies the caption (or title) of a table.
+
+
+```html
+<table>
+    <caption>Alien football stars</caption>
+    <tr>
+        <th scope="col">Player</th>
+        <th scope="col">Gloobles</th>
+        <th scope="col">Za'taak</th>
+    </tr>
+    <tr>
+        <th scope="row">TR-7</th>
+        <td>7</td>
+        <td>4,569</td>
+    </tr>
+    <tr>
+        <th scope="row">Khiresh Odo</th>
+        <td>7</td>
+        <td>7,223</td>
+    </tr>
+    <tr>
+        <th scope="row">Mia Oolong</th>
+        <td>9</td>
+        <td>6,219</td>
+    </tr>
+</table>
+```

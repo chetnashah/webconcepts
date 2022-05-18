@@ -40,3 +40,16 @@ filters, striking off
 
 ## perf timeline
 
+## Notification/toasts
+
+## Dialogs/modals
+
+## Infinite scroller with pagination/virtualization
+
+## Gallery app
+
+## Poll widget
+
+## Carousel widget
+
+## Wysiwig editor
