@@ -1,3 +1,42 @@
 
 ## Live update of long list (thoussands of rows)
 
+## Google type ahead/suggestions
+
+## Day calendar
+
+## Google sheets (Grid of inputs) + formula/observer
+
+## Config driven forms
+
+can have validations and dependent fields
+
+## Progress bar implementation
+
+## Nested comment
+
+## Star rating widget
+
+## Custom post widget (social media)
+
+Can have auto complete, charachter counter.
+add links.
+
+## Todo application
+
+filters, striking off
+
+## Cart page
+
+## Credit card submission form
+
+## date picker
+
+## Product listing with filters/pagination
+
+## Tic-tac-toe game
+
+## Snake game
+
+## perf timeline
+
