@@ -98,7 +98,7 @@ A form element is a form tag that just behaves like a container e.g. div
 ```
 The two important attributes here are:
   * action : defines location URL where the form's collected data
-  should be sent when it is submitted. If action is empty string, the form data will be sent to same location as current URL.
+  should be sent when it is submitted. If action is empty string, the form data will be sent to same location as current URL. This attributes results in navigation with URL specified in this attribute.
 
   * method : the HTTP method used to send the data with.
 

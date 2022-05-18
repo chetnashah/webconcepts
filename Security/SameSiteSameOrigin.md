@@ -1,11 +1,11 @@
 
 ## Origin
 
-"Origin" is a combination of a scheme (also known as the protocol, for example HTTP or HTTPS), hostname, and port (if specified).
+"Origin" is a combination of a scheme (also known as the protocol, for example HTTP or HTTPS), hostname i.e. domain including subdomains, and port (if specified).
    
 For example, given a URL of `https://www.example.com:443/foo` , the "origin" is `https://www.example.com:443`
 
-**Note** - path does not matter, ports, domain name, scheme matters.
+**Note** - path does not matter, ports, domain name(including subdomains), scheme matters.
 
 Two actors in the web platform that share an origin are assumed to trust each other and to have the same authority. Actors with differing origins are considered potentially hostile versus each other, and are isolated from each other to varying degrees.
 
