@@ -53,3 +53,6 @@ filters, striking off
 ## Carousel widget
 
 ## Wysiwig editor
+
+## EventEmitter implementation
+
