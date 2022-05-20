@@ -13,14 +13,14 @@ can have validations and dependent fields
 
 ## Progress bar implementation
 
-## Nested comment
+## Nested comment widget
 
 ## Star rating widget
 
 ## Custom post widget (social media)
 
 Can have auto complete, charachter counter.
-add links.
+links and preview support.
 
 ## Todo application
 
