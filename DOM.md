@@ -604,5 +604,7 @@ Elements have the following geometry properties:
 * `scrollWidth/scrollHeight` – the width/height of the content, just like clientWidth/clientHeight, but also include scrolled-out, invisible part of the element.
 * `scrollLeft/scrollTop` – width/height of the scrolled out upper part of the element, starting from its upper-left corner.
 
+* `Element.getBoundingClientRect()` method returns a DOMRect object providing information about the size of an element and its position relative to the visible viewport.
+
 All properties are read-only except `scrollLeft/scrollTop` that make the browser scroll the element if changed.
 

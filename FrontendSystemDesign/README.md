@@ -59,4 +59,12 @@ e.g.
 1. error handling.
 2. large payloads possibility in POST/GET.
 3. A login with too many entities mapped.
-4. 
+   
+
+## Optimization
+
+You can break it into three parts:
+1. network optimization - Typical choices are debounce, cancellation, caching, zipping.
+2. Rendering optimization - smaller/incremental DOM. flatter hierarchy. limited listeners.
+3. Javascript optimization - small assets, lazy loaded assets/code. limited listeners.
+
