@@ -65,6 +65,8 @@ e.g.
 
 You can break it into three parts:
 1. network optimization - Typical choices are debounce, cancellation, caching, zipping.
-2. Rendering optimization - smaller/incremental DOM. flatter hierarchy. limited listeners.
-3. Javascript optimization - small assets, lazy loaded assets/code. limited listeners.
+2. Rendering optimization - smaller/incremental DOM (virtualization), flatter hierarchy. limited listeners. learn about animation/reflow/repaints.
+3. Javascript optimization - small assets, lazy loaded assets/code. limited listeners, keep main thread free, use workers for heavy stuff.
+
+
 

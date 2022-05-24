@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Holy Grail</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      main {
+        display: grid;
+        height: 100vh;
+        grid-template-areas: "header header header"
+                             "leftaside cont rightaside"
+                             "footer footer footer";
+        grid-template-columns: 1fr 4fr 1fr;
+        grid-template-rows: 1fr 6fr 1fr;
+      }
+      header {
+        grid-area: header;
+        border: 1px solid green;
+      }
+      footer {
+        grid-area: footer;
+        border: 1px solid orange;
+      }
+      .cont {
+        grid-area: cont;
+        border: 1px solid red;
+      }
+      .leftaside {
+        grid-area: leftaside;
+        border: 1px solid blue;
+      }
+      .rightaside {
+        grid-area: rightaside;
+        border: 1px solid black;
+      }
+      
+    /* --------------------
+     Add your styling here
+     -------------------- */
+    </style>
+</head>
+<body>
+    <!----------------------
+    Add your markup here
+    ------------------------>
+  <main>
+    <header>Header</header>
+    <aside class="leftaside">Menu items</aside>
+    <div class="cont">Content lorem ipsum</div>
+    <aside class="rightaside">Ad Ad</aside>
+    <footer>Footer</footer>
+  </main>
+<script>
+    /* --------------------
+     Add your code here
+    --------------------- */
+</script>
+</body>
+</html>

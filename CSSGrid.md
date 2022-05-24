@@ -1,4 +1,10 @@
 
+## Resources
+
+https://www.youtube.com/watch?v=9zBsdzdE4sM
+
+##
+
 Declaring `display: grid` gives you a one column grid, 
 so your items will continue to display one below the other 
 as they do in normal flow.
@@ -145,7 +151,7 @@ https://developer.mozilla.org/en-US/docs/Web/CSS/grid-template-areas
 ### Container spec
 
 Specify `display: grid` in container selector.
-Grid shape can be specified in container selector using `grid-template-columns` and `grid-template-rows`.
+Grid shape can be specified in container selector using `grid-template-columns` and `grid-template-rows`. column dimension usually specifies colum width, and row dimension specifies row height
 e.g.
 ```css
 #garden {

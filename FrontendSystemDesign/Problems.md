@@ -56,3 +56,4 @@ filters, striking off
 
 ## EventEmitter implementation
 
+## Holy grail layout
