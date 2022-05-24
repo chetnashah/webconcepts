@@ -184,3 +184,23 @@ console.log(myMockFn(), myMockFn(), myMockFn(), myMockFn());
 // > 'first call', 'second call', 'default', 'default'
 ```
 
+
+## babel-jest (is a code transformer of your source)
+
+Jest ships with one transformer out of the box – `babel-jest`.
+
+It will load your project's Babel configuration and transform any file matching the /\.[jt]sx?$/ RegExp (in other words, any .js, .jsx, .ts or .tsx file). In addition, babel-jest will inject the Babel plugin necessary for mock hoisting talked about in ES Module mocking.
+
+
+## Ignore transpiling node modules with babel
+
+An array of regexp pattern strings that are matched against all source file paths before transformation. If the file path matches any of the patterns, it will not be transformed.
+
+Providing regexp patterns that overlap with each other may result in files not being transformed that you expected to be transformed. For example:
+```js
+// jest.config.js
+{
+  "transformIgnorePatterns": ["/node_modules/(?!(foo|bar)/)", "/bar/"]
+}
+```
+
