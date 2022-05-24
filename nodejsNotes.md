@@ -1,4 +1,6 @@
 
+Default timeout of a node http server is 120 seconds.
+
 ### node package resolution via require
 
 Use `require.resolve(modulename)` in node REPL to quickly see

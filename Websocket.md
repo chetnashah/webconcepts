@@ -1,4 +1,14 @@
 
+## Hard to load balance on the server
+
+## Ping/pong keep alive control message has to be a part of sub-protocol
+
+## issues with firewall
+
+WebSocket connections generally work even if a proxy or firewall is in place. This is because they use ports 80 and 443 which are also used by HTTP connections.
+
+
+
 ### client side websocket API:
 
 Create a `Websocket` using `new` that takes a `wss://` url.

@@ -1,4 +1,14 @@
 
+## Why use FCM
+
+It's the messaging infrastructure provided by the device. 
+
+For Android, the message get routed through Google Play services, which runs as a privileged process in the background. For iOS, messges go through Apple's APNS. 
+
+These components maintain an open socket to their respective services, and they're more effective than the app managing the socket on its own, because the app can't manage a socket in the background indefinitely - the OS will shut it down after some time. 
+
+This means the app can wake up and receive messages soon after they're sent.
+
 ### Tag
 
 Tag
