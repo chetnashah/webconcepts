@@ -608,3 +608,5 @@ Elements have the following geometry properties:
 
 All properties are read-only except `scrollLeft/scrollTop` that make the browser scroll the element if changed.
 
+## Submitting Forms with FormData
+

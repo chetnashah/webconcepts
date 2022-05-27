@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Sign up form</title>
+    <style>
+ 
+    </style>
+  </head>
+  <body>
+    <div class="sign-up-form">
+      <form id="form">
+        <input
+          id="firstname"
+          name="firstname"
+          placeholder="First Name"
+          type="text"
+          required
+        />
+        <input
+          id="lastname"
+          name="lastname"
+          placeholder="Last Name"
+          type="text"
+          required
+        />
+        <input
+          id="email"
+          name="email"
+          placeholder="Email"
+          type="email"
+          required
+        />
+        <input
+          id="password"
+          name="password"
+          placeholder="Password"
+          type="password"
+          required
+        />
+        <input
+          id="confirmpassword"
+          name="confirmpassword"
+          placeholder="Confirm Password"
+          type="password"
+          required
+        />
+        <div id="form-field-messages"></div>
+        <button type="submit">Submit</button>
+      </form>
+      <!----------------------
+    Add your markup here
+    ------------------------>
+    </div>
+    <script>
+      /* --------------------
+         Add your code here
+
+         let me try to verify some of this in codepen/codesandbox
+         ok
+        --------------------- */
+
+      var form = document.getElementById("form");
+      console.log(form);
+      // console.log('form  = ', form);
+      form.addEventListener("submit", submitForm);
+
+      function submitForm(ev) {
+        console.log("ev = ", ev);
+        ev.preventDefault(); // prevent navigation on form submit
+        let errorMsg = validateFields();
+        console.log("error msg = ", errorMsg);
+        if (errorMsg === "") {
+          // POST data to server
+          fetch("serverurl", {
+            method: "POST",
+            body: new FormData(form)
+          });
+        } else {
+          let formFieldMessages = document.getElementById(
+            "form-field-messages"
+          );
+          formFieldMessages.innerText = errorMsg;
+          form.reset();
+        }
+      }
+
+      function validateFields() {
+        let allValues = new FormData(form);
+
+        let errorMsg = "";
+        errorMsg += validateEmail(allValues.get("email"));
+        let confirmPasswordErr = validatePasswordAndConfirmPassword(
+          allValues.get("password"),
+          allValues.get("confirmpassword")
+        );
+        let nameSurnameError = validateNameAndSurname(
+          allValues.get("firstname"),
+          allValues.get("lastname")
+        );
+
+        if (confirmPasswordErr) {
+          errorMsg += ", " + confirmPasswordErr;
+        }
+        if (nameSurnameError) {
+          errorMsg += ", " + nameSurnameError;
+        }
+        return errorMsg;
+      }
+
+      function validateEmail(email) {
+        if (!email) {
+          return "Email is empty";
+        }
+        if (!email.includes("@")) {
+          return "Missing email domain";
+        }
+        return "";
+      }
+
+      function validatePasswordAndConfirmPassword(password, confirmPassword) {
+        if (!password || !confirmPassword) {
+          return "Missing password or confirm password";
+        }
+        if (password.length != confirmPassword.length) {
+          return "Password and confirmPassword do not match";
+        }
+
+        if (password === confirmPassword) {
+          return "";
+        }
+        return "Password and Confirm password do not match";
+      }
+
+      function validateNameAndSurname(firstname, lastname) {
+        if (!firstname || !lastname) {
+          return "Missing value for firstname or lastname";
+        }
+        return "";
+      }
+    </script>
+  </body>
+</html>
