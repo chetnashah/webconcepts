@@ -204,3 +204,9 @@ Providing regexp patterns that overlap with each other may result in files not b
 }
 ```
 
+## How to test `this` inside jest mock functions?
+
+```js
+// The function was called with a certain `this` context: the `element` object.
+expect(someMockFunction.mock.contexts[0]).toBe(element);
+```
