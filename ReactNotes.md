@@ -3,6 +3,70 @@
 
 Whenever a render function is called, it will recursively call render function of all the children (all levels - nothing skipped), unless there is some memo in between.
 
+render function call of a component will, by default, cause all to call render function of components inside of it!
+
+React does not care whether "props changed" - it will call render child function components unconditionally just because the parent render function got called!
+
+### child render function call order
+
+if we create some react elements but dont use them, their render function is never called.
+
+**Note** - react element creation is not the same as calling that component's render function.
+
+e.g.
+```js
+return (
+  <div>
+    <A>
+      <B />
+    </A>
+  </div>
+)
+// is equivalent to
+return (
+  <div>
+    <A children={<B />} />
+  </div>
+);
+// is equivalent to:
+return _react2.default.createElement(
+    "div", null,
+    _react2.default.createElement(A, null,// A's render function decides what to do with child B's element
+        _react2.default.createElement(B, null)),
+    _react2.default.createElement(D, null));
+```
+
+B's reactElement is created before A's reactElement, but B's render function is called after A's render function.
+
+B is kind of like an opaque object/reactElement till A decides to actually make use of it via its render function.
+
+Equivalent JS modeling of the same idea:
+```js
+function B() {
+    console.log("B got called");
+}
+  
+function A({
+    children /* i could do something with this argument, but not gonna */,
+}) {
+    console.log("A got called");
+}
+  
+function createWhatever(Thingy, argsies) {
+    return () => Thingy(argsies);
+}
+  
+const whatever = createWhatever(A, { children: createWhatever(B) });
+  
+whatever(); // log in A gets called, but the log in B doesn't
+```
+
+### Same element reference returned as render function output, (will skip child/children render)
+
+if a React component returns the **exact same element reference** e.g. `children prop` in its render output as it did the last time, React will skip re-rendering that particular child.
+
+e.g.
+see [Gotcha](ReactGotchas.md)
 
 ### hooks setState vs API setState
 
@@ -457,7 +521,7 @@ which we usually write in jsx as following
 
 #### ReactElement
 
-ReactElements form a lightweight vDom which just contains
+ReactElements form a lightweight vDom/json description which just contains
 types and props.
 
 ``` jsx
@@ -476,6 +540,10 @@ is sugar for
   }
 }
 ```
+
+If recursively evaluated completely, the element tree will only contain host elements e.g. h1/div etc for DOM or View/Text etc for native.
+
+A React component usually returns react elements given props.
 
 ### shouldComponentUpdate
 
@@ -1350,3 +1418,123 @@ const GrandParent = () => {
   return <Parent additionalInfo={<AdditionalInfo />} />;
 };
 ```
+
+## Implementation notes
+
+https://reactjs.org/docs/implementation-notes.html
+
+### React elements, components and Mounting
+
+* React elements are plain objects representing the component type (e.g. App) and the props.
+* User-defined components (e.g. App) can be classes or functions but they all “render to” elements.
+* `Mounting` is a recursive process that takes an element and creates a DOM or `Native tree` given the top-level React element (e.g. `<App />`).
+
+```js
+function isClass(type) {
+  // React.Component subclasses have this flag
+  return (
+    Boolean(type.prototype) &&
+    Boolean(type.prototype.isReactComponent)
+  );
+}
+
+// This function only handles elements with a composite type.
+// For example, it handles <App /> and <Button />, but not a <div />.
+function mountComposite(element) {
+  var type = element.type;
+  var props = element.props;
+
+  var renderedElement;
+  if (isClass(type)) {
+    // Component class
+    var publicInstance = new type(props);
+    // Set the props
+    publicInstance.props = props;
+    // Call the lifecycle if necessary
+    if (publicInstance.componentWillMount) {
+      publicInstance.componentWillMount();
+    }
+    renderedElement = publicInstance.render();
+  } else if (typeof type === 'function') {
+    // Component function
+    renderedElement = type(props);
+  }
+
+  // This is recursive but we'll eventually reach the bottom of recursion when
+  // the element is host (e.g. <div />) rather than composite (e.g. <App />):
+  return mount(renderedElement);
+}
+
+// This function only handles elements with a host type.
+// For example, it handles <div /> and <p /> but not an <App />.
+function mountHost(element) {
+  var type = element.type;
+  var props = element.props;
+  var children = props.children || [];
+  if (!Array.isArray(children)) {
+    children = [children];
+  }
+  children = children.filter(Boolean);
+
+  // This block of code shouldn't be in the reconciler.
+  // Different renderers might initialize nodes differently.
+  // For example, React Native would create iOS or Android views.
+  var node = document.createElement(type);
+  Object.keys(props).forEach(propName => {
+    if (propName !== 'children') {
+      node.setAttribute(propName, props[propName]);
+    }
+  });
+
+  // Mount the children
+  children.forEach(childElement => {
+    // Children may be host (e.g. <div />) or composite (e.g. <Button />).
+    // We will also mount them recursively:
+    var childNode = mount(childElement);
+
+    // This line of code is also renderer-specific.
+    // It would be different depending on the renderer:
+    node.appendChild(childNode);
+  });
+
+  // Return the DOM node as mount result.
+  // This is where the recursion ends.
+  return node;
+}
+
+function mount(element) {
+  var type = element.type;
+  if (typeof type === 'function') {
+    // User-defined components
+    return mountComposite(element);
+  } else if (typeof type === 'string') {
+    // Platform-specific components
+    return mountHost(element);
+  }
+}
+
+var rootEl = document.getElementById('root');
+var node = mount(<App />);
+rootEl.appendChild(node);
+
+```
+
+### Internal instances
+
+instance of the user-defined class a “public instance”. 
+The public instance is what you see as `this` in the `render()` and other methods of your custom components.
+
+will call instances of CompositeComponent and DOMComponent “internal instances”. They exist so we can associate some long-lived data with them. Only the renderer and the reconciler are aware that they exist.
+
+The composite internal instances need to store:
+
+* The current element.
+* The public instance if element type is a class.
+* The single rendered internal instance. It can be either a DOMComponent or a CompositeComponent.
+
+The host internal instances need to store:
+
+* The current element.
+* The DOM node.
+* All the child internal instances. Each of them can be either a DOMComponent or a CompositeComponent.
+

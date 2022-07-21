@@ -1,3 +1,38 @@
+
+### Why do react elemnts have `$$typeof` property?
+
+https://overreacted.io/why-do-react-elements-have-typeof-property/
+
+```jsx
+<marquee bgcolor="#ffa7c4">hi</marquee>
+```
+
+gets converted to:
+React elements are plain objects by design, with `element.$$typeof` also
+```js
+{
+  type: 'marquee',
+  props: {
+    bgcolor: '#ffa7c4',
+    children: 'hi',
+  },
+  key: null,
+  ref: null,
+  $$typeof: Symbol.for('react.element'), // 🧐 Who dis
+}
+```
+
+It is used by library to verify if a given object is a valid react element:
+```js
+export function isValidElement(object) {
+  return (
+    typeof object === 'object' &&
+    object !== null &&
+    object.$$typeof === REACT_ELEMENT_TYPE
+  );
+}
+```
+
 ### React internals code flow
 
 A `fiber` is a JavaScript object that contains information about a component, its input, and its output.
