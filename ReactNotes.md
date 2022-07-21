@@ -1,4 +1,9 @@
 
+### Render function calling
+
+Whenever a render function is called, it will recursively call render function of all the children (all levels - nothing skipped), unless there is some memo in between.
+
+
 ### hooks setState vs API setState
 
 API setState for class components:
