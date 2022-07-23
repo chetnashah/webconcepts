@@ -583,3 +583,36 @@ Triangle arrow is hosted by `after` pseudo element.
 ### Matching media queries in javascript
 
 Use `window.matchMedia(query)` to check media query matching.
+
+
+## box model border-box
+
+### Default box model is `content-box`
+
+In `content-box` model, `border` is not a part of the width.
+The `width` and `height` properties include the content, but **does not include the padding, border, or margin**
+
+### Border-box
+
+In this model `border width` is considered part of the width.
+**The `width` and `height` properties include the `content`, `padding`, and `border`, but do not include the `margin`.**
+
+## Remove bullets from li items
+
+`list-style: none`
+
+## Change cursor to hand on hover
+
+```css
+li:hover {
+    cursor: pointer;
+}
+```
+
+## Creating separators/dividers using css
+
+```css
+li:not(:first-child){ /* apply css on everything except the first child */
+  border-left:2px solid white;
+}
+```
