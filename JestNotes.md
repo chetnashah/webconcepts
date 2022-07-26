@@ -10,7 +10,7 @@ Good collection of testing talks: https://www.youtube.com/c/Okgrow/videos
 ## Summary
 
 `jest.fn`: Mock a function (possibly with arbitrary implementation), useful for callback verification etc.
-`jest.mock`: Mock a module.
+`jest.mock`: Mock a module by specifying its path.
 `jest.spyOn`: Spy/mock a function, for tracing, preserving original function behavior.
 
 ### Basics
@@ -292,4 +292,17 @@ test('plays video', () => {
   console.log(spy.mock === video.play.mock); // true
   console.log(spy === video.play);// true
 });
+```
+
+
+## Partially mocking a module
+
+https://github.com/facebook/jest/issues/936
+
+Try:
+```js
+jest.unmock('./myModule.js');
+
+const myModule = require('myModule');
+myModule.foo = jest.fn();
 ```
