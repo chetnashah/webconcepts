@@ -1,0 +1,47 @@
+/*  Write your code here. */
+
+/* Delete this ruleset. */
+body {
+    background-color: black;
+  }
+  
+  * {
+    box-sizing: border-box;
+  }
+  
+  
+  #outer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #ffa500;
+    border: 25px solid #ff0000;
+    border-radius: 50%;
+    height: 300px;
+    width: 300px;
+  }
+  
+  #middle {
+    display: flex;
+    align-items: center;
+    align-self: center;
+    justify-content: center;
+    background-color: #008000;
+    border: 25px solid #ff0000;
+    border-radius: 50%;
+    border-color: #ffff00;
+    height: 200px;
+    width: 200px;
+  }
+  
+  #inner {
+    display: flex;
+    align-items: center;
+    align-self: center;
+    background-color: #800080;
+    border: 25px solid #ff0000;
+    border-radius: 50%;
+    border-color: #0000ff;
+    height: 100px;
+    width: 100px;
+  }

@@ -21,6 +21,14 @@ Also need to specify Resources that this policy applies to.
 A `policy` is an alias for permission.
 
 
+### Availability zone
+
+Availability Zones are multiple, isolated locations within each Region.
+
+The code for Availability Zone is its Region code followed by a letter identifier. For example, `us-east-1a`.
+
+![availability zones](img/availabilityzones.png)
+
 ### CloudTrail vs CloudWatch
 
 Both do Logging.

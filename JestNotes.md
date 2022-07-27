@@ -3,6 +3,16 @@
 Jest is all in one testing framework for testing in javascript.
 https://jestjs.io/blog/
 
+https://medium.com/@rickhanlonii/understanding-jest-mocks-f0046c68e53c
+
+Good collection of testing talks: https://www.youtube.com/c/Okgrow/videos
+
+## Summary
+
+`jest.fn`: Mock a function (possibly with arbitrary implementation), useful for callback verification etc.
+`jest.mock`: Mock a module by specifying its path.
+`jest.spyOn`: Spy/mock a function, for tracing, preserving original function behavior.
+
 ### Basics
 
 One special thing we do in Jest is reset the entire module registry after every single test (call to it) to make sure tests don't depend on each other.
@@ -101,6 +111,21 @@ expect(someMockFunction.mock.instances[0].name).toEqual('test');
 
 ### Mocks
 
+### Interview question: writing your own implementation of `jest.fn(impl)`
+
+Below is an equivalent of `jest.fn(impl)`
+
+```js
+function myFn(impl) {
+  const mockFn = (...args) => {
+    mockFn.mock.calls.push(args);// capture call site info in a dedicated calls array
+    return impl(...args);// forward the call
+  };
+  mockFn.mock.calls = [];// static property object `.mock` on mock fn, tracing/spying all interaction happend with this Fn
+  return mockFn;// return a decorated version of original impl function with spy/tracking code
+}
+```
+
 #### Automatic mocks
 
 This option tells Jest that all imported modules in your tests should be mocked automatically. All modules used in your tests will have a replacement implementation (always returning undefined), keeping the API surface.
@@ -189,10 +214,12 @@ console.log(myMockFn(), myMockFn(), myMockFn(), myMockFn());
 
 Jest ships with one transformer out of the box – `babel-jest`.
 
-It will load your project's Babel configuration and transform any file matching the /\.[jt]sx?$/ RegExp (in other words, any .js, .jsx, .ts or .tsx file). In addition, babel-jest will inject the Babel plugin necessary for mock hoisting talked about in ES Module mocking.
+It will load your project's Babel configuration and transform any file matching the `/\.[jt]sx?$/` RegExp (in other words, any `.js`, `.jsx`, `.ts` or `.tsx` file). In addition, babel-jest will inject the Babel plugin necessary for mock hoisting talked about in ES Module mocking.
 
 
 ## Ignore transpiling node modules with babel
+
+**By default jest will transpile everything**. skip transpiling some source by specifying `transformIgnorePatterns`.
 
 An array of regexp pattern strings that are matched against all source file paths before transformation. If the file path matches any of the patterns, it will not be transformed.
 
@@ -200,7 +227,82 @@ Providing regexp patterns that overlap with each other may result in files not b
 ```js
 // jest.config.js
 {
-  "transformIgnorePatterns": ["/node_modules/(?!(foo|bar)/)", "/bar/"]
+  "transformIgnorePatterns": ["/node_modules/(?!(foo|bar)/)"] // skip node_modules, but transpile /node_modules/foo and /node_modules/bar
 }
 ```
 
+## How to test `this` inside jest mock functions?
+
+```js
+// The function was called with a certain `this` context: the `element` object.
+expect(someMockFunction.mock.contexts[0]).toBe(element);
+```
+
+## Checking/spying on a module or class method without chanign its behavior
+
+**Sometimes you only want to watch a method be called, but keep the original implementation. This is useful in a number of scenarios where you want to assert that certain side-effects happen without actually replacing them.**.
+
+**By default `spyOn(obj, methodName)` monkeypatches given `object.methodName` with a mock fn, which also calls the original spied method.**
+
+Semantically it is equivalent to:
+```js
+const spy = jest.spyOn(math, 'add');
+// semantically equivalent to ------->>>
+
+// store the original implementation
+const originalAdd = math.add;
+// mock add with the original implementation
+math.add = jest.fn(originalAdd);
+```
+You can see the implementation details here: https://github.com/facebook/jest/blob/e9aa321e0587d0990bd2b5ca5065e84a1aecb2fa/packages/jest-mock/src/index.js#L674-L708
+
+Since `jest.spyOn` is a mock. You could restore the initial state calling `jest.restoreAllMocks` on `afterEach` method.
+
+Use `const spy = jest.spyOn(obj, methodName)`
+and then use 
+`expect(spy).toHaveBeenCalledWith(xyz)`
+e.g.
+```js
+const video = {
+  play() {
+    return true;
+  },
+};
+
+module.exports = video;
+```
+Testing the module:
+```js
+const video = require('./video');
+
+afterEach(() => {
+  // restore the spy created with spyOn
+  jest.restoreAllMocks();
+});
+
+test('plays video', () => {
+  const spy = jest.spyOn(video, 'play');// spy is now a mock function which forwards to original impl video.play method, also monkeypatches given object method
+  const isPlaying = video.play();
+
+  expect(spy).toHaveBeenCalled();
+  expect(isPlaying).toBe(true);
+
+  console.log(video.play.mock);// { calls: [],contexts: [],instances: [],invocationCallOrder: [],results: [] }
+  console.log(spy.mock);//  { calls: [],contexts: [],instances: [],invocationCallOrder: [],results: [] }
+  console.log(spy.mock === video.play.mock); // true
+  console.log(spy === video.play);// true
+});
+```
+
+
+## Partially mocking a module
+
+https://github.com/facebook/jest/issues/936
+
+Try:
+```js
+jest.unmock('./myModule.js');
+
+const myModule = require('myModule');
+myModule.foo = jest.fn();
+```

@@ -60,7 +60,7 @@ They are set using custom property notation (e.g., `--main-color: black;`) and a
 (e.g., `color: var(--main-color);`).
 
 
-* A common best practice is to define custom properties on the `:root` pseudo-class, so that it can be applied globally across your HTML document:
+* A common best practice is to **define custom properties on the `:root` pseudo-class**, so that it can be applied globally across your HTML document:
 
 ```css
 :root {
@@ -583,3 +583,66 @@ Triangle arrow is hosted by `after` pseudo element.
 ### Matching media queries in javascript
 
 Use `window.matchMedia(query)` to check media query matching.
+
+
+## box model border-box
+
+### Default box model is `content-box`
+
+In `content-box` model, `border` is not a part of the width.
+The `width` and `height` properties include the content, but **does not include the padding, border, or margin**
+
+### Border-box
+
+In this model `border width` is considered part of the width.
+**The `width` and `height` properties include the `content`, `padding`, and `border`, but do not include the `margin`.**
+
+## Remove bullets from li items
+
+`list-style: none`
+
+## Change cursor to hand on hover
+
+```css
+li:hover {
+    cursor: pointer;
+}
+```
+
+## Creating separators/dividers using css
+
+```css
+li:not(:first-child){ /* apply css on everything except the first child */
+  border-left:2px solid white;
+}
+```
+
+
+## nth-of-type vs nth-child
+
+`xyz:nth-of-type(n)` : In a group of siblings of same type `xyz`, select nth one. This is normally preferred.
+
+`xyz:nth-child(n)`: if `n`th child of parent of `xyz`,  is actually of type `xyz`, select it.
+
+Example in given html:
+```html
+<ul>
+    <p>hi</p>
+    <p>hey</p>
+    <li>one</li>
+    <li>two</li>
+    <li>three</li>
+</ul>
+```
+How following css reacts:
+```css
+li:nth-child(2) { /* selects nothing because 2nd child of ul is not li */
+
+}
+
+li:nth-of-type(2) { /* selects "two" li item */
+
+}
+```
+
+e.g. in 

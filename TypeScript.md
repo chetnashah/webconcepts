@@ -904,3 +904,44 @@ function doSomething(a: unknown) {
 }
 ```
 
+## Error interface
+
+The error interface looks like following:
+
+```ts
+interface Error {
+    name: string;
+    message: string;
+    stack?: string;
+}
+```
+
+Trying to use this interface type annotation in `catch` block **does not work**.
+And fails with error:
+`Catch clause variable type annotation must be 'any' or 'unknown' if specified.ts(1196)`
+
+Why so?
+
+Because a third party library can monkey-patch error constructor like following:
+```ts
+let Error = function () {
+  throw 'Flowers'
+} as any
+```
+
+## Catch block
+
+In TypeScript 4.0, support was added to allow changing the type of the variable in a catch clause from `any` to `unknown`. Allowing for code like:
+
+```ts
+try {
+  // ...
+} catch (err) {
+  // We have to verify err is an
+  // error before using it as one.
+  if (err instanceof Error) {
+    console.log(err.message);
+  }
+}
+```
+This pattern ensures that error handling code becomes more comprehensive because you cannot guarantee that the object being thrown is a Error subclass ahead of time
