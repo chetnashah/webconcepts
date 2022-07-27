@@ -18,6 +18,8 @@ It's long been common practice to use the `alert()` function for this purpose be
 
 As an alternate : use `print()` which will open print dialog.
 
+Another common XSS trick is to use `<img src onerror="alert('hi')">` in input text box.
+
 ## Reflected XSS
 
 Reflected cross-site scripting (or XSS) arises when an application receives data in an HTTP request and includes that data within the immediate response in an unsafe way.

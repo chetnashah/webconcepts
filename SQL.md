@@ -309,6 +309,37 @@ parametrized query would not be vulnerable and would instead look
 for a username which literally matched entire string `tom' or '1'='1`
 
 
+## Distinct
+
+The SELECT DISTINCT statement is used to return only distinct (different) values. t's semantically equivalent to a GROUP BY where all returned fields are in the GROUP BY clause.
+E.g.
+`select city from PARK group by city;` is equivalent to `select distinct city from PARK`;
+
+Inside a table, a column often contains many duplicate values; and sometimes you only want to list the different (distinct) values.
+
+**NULL is considered a unique value, meaning it will get returned when using the DISTINCT keyword**
+
+Syntax:
+```
+SELECT DISTINCT column_name1, column_name2,... // this will find unique rows with given column combination
+FROM table_name;
+```
+
+**DISTINCT can be used with aggregated functions and can be applied on only one field in that case**
+
+Count distinct is a common and useful operation
+e.g. `SELECT COUNT(DISTINCT id) FROM sql_distinct;`
+
+Another one:
+`SELECT MAX(DISTNCT ID), Roles, FirstName, LastName FROM UserNames, LastName`
+
+
+HOw it works:
+* A SELECT DISTINCT statement first builds our overall result set with all records, i.e including duplicate values based on FROM, JOIN, WHERE, HAVING, etc statements.
+* Next, it sorts the result set based on the column_name or field with which DISTINCT has been used.
+* Then it performs de-duplication (i.e. removes any duplicate values) on the overall result set which was prepared in the first step.
+
+
 ### mysql> DISTINCT col_name / DISTINCT(col_name)
 
 Used in `SELECT` clause.
@@ -389,10 +420,14 @@ for given columns etc.
 
 `COUNT(*)` is somewhat different in that it returns a count of the number of rows retrieved, whether or not they contain NULL values.
 
-#### GROUP BY
+### GROUP BY
 
 It summarizes aggregates almost(some) identical data into single rows.
-combine/summarize mostly same rows into mega-rows.
+combine/summarize mostly same rows into mega-rows (optionally using aggregation functions).
+The SQL GROUP BY clause lets us group records based on data in a given column (or columns).
+
+https://learnsql.com/blog/how-does-sql-group-by-work/
+https://learnsql.com/blog/getting-hang-group-clause/
 
 `GROUP BY` is a useful part where we want to combine rows `per` entry,
 or `for each` entry.
@@ -400,6 +435,8 @@ E.g.
 * no. of books `per` author
 * avg height `per` birth contry.
 * Total sales `per` product.
+
+**Like any other value, NULL values have their own group; if we have a NULL in any of the columns in GROUP BY, an extra group of records is created for those records**
 
 Once we've decided how to group our data, we can then perform aggregations on the remaining columns.
 
@@ -471,6 +508,29 @@ GROUP BY author_fname, author_lname;
 | Raymond Carver                          |        2 |
 +-----------------------------------------+----------+
 ```
+
+### Group by gotchas
+
+#### Select column should either be in group-by clause or be aggregated
+
+1. All select columns must either be in Group-by clause column list or be used in aggregate functions(so they return a single value in the summarized-mega-row).
+Following is invalid query:
+```
+SELECT Gender, Height
+FROM People
+GROUP BY Gender;
+```
+Here we see that `Height` is not in group-by column list, and it is also not aggregated using an aggregation function. Hence the error.
+Error:
+```
+(MYSQL) ERROR 1055 (42000): Expression #2 of SELECT list is not in GROUP BY clause and contains 
+nonaggregated column 'vertabelo.People.Height' which is not functionally dependent on columns 
+in GROUP BY clause;
+```
+
+#### Using Where instead of Having
+
+When you need to filter based on aggregate values, move them from where to `Having` clause, which is executed after grouping by group by.
 
 ### The problem with MIN/MAX
 

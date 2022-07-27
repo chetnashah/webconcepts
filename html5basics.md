@@ -175,9 +175,9 @@ The `submit` event is raised when the user clicks a submit button in a form (`<i
 
 The submit event is not raised when the user calls `form.submit()` function directly.
 
-The default action of submit event is to post form according to `action` attribute. This behaviour can be prevented in onSubmit listener.
+The default action of submit event is to post form according to `action` attribute and reload the page. This behaviour can be prevented in onSubmit listener.
 
-Practical use case: The handler can check the data, and if there are errors, show them and call `event.preventDefault()`, then the form won’t be sent to the server.
+Practical use case: The handler can check the data, and if there are errors, show them and call `event.preventDefault()`, then the form won’t be sent to the server and page will not be reloaded.
 
 
 Inline listener in form element:
@@ -372,4 +372,28 @@ The `<caption>` HTML element specifies the caption (or title) of a table.
         <td>6,219</td>
     </tr>
 </table>
+```
+
+
+## append(antyhing) vs appendChild(node)
+
+`node.appendChild(node)` is a method on `Node` class.
+`el.append(anything)` is a method on `Element` class.
+
+| append(anything) | appendChild(node) |
+|:---: | :---: |
+| Accepts both nodes and DOMStrings | Only accepts Node object|
+| Does not have a return value      | returns the appended node object |
+| Allows to add multiple nodes and strings (comma separated)      | Only allows a single item (rest are ignored) |
+
+
+## Finding HTML elements within a particular HTMLElement/View
+
+e.g. lets say we want to find a button with class `btn-id` inside a view named `container`.
+
+we use `containerView.querySelector(queryString)`.
+e.g. here we will do
+
+```js
+let button = containerView.querySelector('#btn-id');
 ```

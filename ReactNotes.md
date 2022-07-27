@@ -347,12 +347,16 @@ const Example = () => {
 
 #### React setState signatures
 
-Think of setState as a request rather than a mutation.
-never mutate this.state directly. Use this.setState,
-also you can optionally pass callback to this.setState which will be fired once state is applied.
+Think of setState as a request for state change rather than a mutation.
+never mutate `this.state` directly. Use `this.setState`,
+also you can optionally pass callback to `this.setState` which will be fired once state is applied.
 Another option is to use componentDidUpdate.
 
-this.setState(updater, [callback]) and signature of updater is (prevState, props) => stateChangeObj
+Why use updater function style of setState?
+React batches state changes for performance reasons, so the state may not change immediately after `setState()` is called. That means you should not rely on the current state when calling `setState() ` since you can't be sure what that state will be. **The solution is to pass a function to setState(), with the previous state as an argument**.
+
+
+`this.setState(updater, [callback])` and signature of updater is `(prevState, props) => stateChangeObj`
 // dont change prevState, make a new object instead.
 e.g.
 ``` javascript
@@ -362,7 +366,7 @@ this.setState((prevState, props) => {
 ```
 
 or
-this.setState(stateObj, [callback])  // perform shallow merge of stateObj into current this.state
+`this.setState(stateObj, [callback])`  // perform shallow merge of `stateObj` into current `this.state`
 e.g.
 ``` javascript
 this.setState({quantity: 2})

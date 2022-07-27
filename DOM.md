@@ -107,11 +107,11 @@ or `console.dir(document)`
 
 ### Manipulating the DOM
 
-#### innerText
+#### innerText (usually this is what you want, text post rendering)
 
-The `innerText` property of the `HTMLElement` interface represents the `rendered text content` of a node and its descendants.
+The `innerText` property of the `HTMLElement` interface represents the `rendered text content` of a node and its descendants i.e. post CSS/renderer processing
 
-#### textContent
+#### textContent (source file as is)
 
 `textContent` differs from `innerText` as `textContent` means the text content before the rendering, which is present in source.
 
@@ -132,6 +132,19 @@ Hey hi how are
 console.log('Hey hi');
 ```
 
+Another example:
+```html
+<div>
+  <span>Hello</span>
+  <span style="display: none;">bye</span>
+</div>
+```
+Here the `innerText` ie. rendered text is `Hello`, but `textContent` is 
+```
+Hello
+bye
+``` 
+
 #### innerHTML
 
 `innerHTML` differs from `innerText`, because `innerHTML` also understands `HTML`
@@ -140,6 +153,14 @@ e.g. setting `innerHTML` will parse HTML and setup corresponding `HTMLElement` o
 in the dom.
 Similarly getting `innerHTML` property will return the html including the element tags.
 
+Think `abc.innerHTML = <div>xyz</div>`of it as alternative to `createElement` + `append`.
+```js
+const el = createElement('div');
+el.innerText = 'xyz';
+abc.append(el);
+``` 
+
+This has security implications if innerHTML is set to a string that is user generated. see https://www.youtube.com/watch?v=ns1LX6mEvyM
 
 ### Attributes
 
@@ -270,10 +291,10 @@ d1.insertAdjacentHTML('afterend', '<div id="two">two</div>');
 ### `Element.remove` and `Node.removeChild`
 
 Case 1:
-`var oldChild = node.removeChild(child);`
+`var oldChild = parentNode.removeChild(child);`
 
 `child` is the child node to be removed from the DOM.
-`node` is the parent node of child.
+`parentNode` is the parent node of child.
 `oldChild` holds a reference to the removed child node, i.e., oldChild === child.
 
 The removed child node still exists in memory, but is no longer part of the DOM. With the first syntax form shown, you may reuse the removed node later in your code, via the oldChild object reference.
@@ -283,7 +304,7 @@ Case 2:
 `node.removeChild(child);`
 no oldChild reference kept, so assuming your code has not kept any other reference to the node elsewhere, it will immediately become unusable and irretrievable, and will usually be automatically deleted from memory after a short time.
 
-`node.remove()` automatically removes itself from DOM tree.
+`node.remove()` automatically removes itself from DOM tree, does not return anything.
 
 
 ### window.innerHeight and window.innerWidth
@@ -610,3 +631,7 @@ All properties are read-only except `scrollLeft/scrollTop` that make the browser
 
 ## Submitting Forms with FormData
 
+
+## DOM best practices
+
+Scoped DOM for better reusability - https://www.youtube.com/watch?v=UP0gr5LTAQ8
