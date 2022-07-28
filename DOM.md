@@ -635,3 +635,160 @@ All properties are read-only except `scrollLeft/scrollTop` that make the browser
 ## DOM best practices
 
 Scoped DOM for better reusability - https://www.youtube.com/watch?v=UP0gr5LTAQ8
+
+## input vs change event
+
+`input` fires any time value changes. (This is mostly what you want for text inputs). it triggers on any value change, even those that does not involve keyboard actions: pasting with a mouse.
+
+`change` event fires when user changed value is commited. the value by losing focus. this is more common with files. The change event triggers when the element has finished changing.
+
+For text inputs that means that the event occurs when it loses focus
+
+Note there is no `onchange` event, only `change` event. In general we have `xyz` events, but not `onxyz` events.
+
+### Cannot prevent anything in input event
+
+The `input` event occurs after the value is modified.
+
+So we can’t use `event.preventDefault()` there – it’s just too late, there would be no effect.
+
+
+## Toggle Boolean attributes on DOM elements like `disabled`
+
+To set/unset boolean attributes like `disabled`: using `setAttribute` with `true/false` **does not work**.
+
+e.g.
+```js
+function updateAddBtnState(text){
+  if(text && text.length > 0) {
+    addBtn.setAttribute("disabled", false); // !! does not work
+  } else {
+    addBtn.setAttribute("disabled", true);
+  }
+}
+```
+
+For boolean attributes, we must instead use `removeAttribute/setAttribute`
+
+e.g.
+```js
+function updateAddBtnState(text){
+  if(text && text.length > 0) {
+    addBtn.setAttribute("disabled", ""); // !! does not work
+  } else {
+    addBtn.removeAttribute("disabled");
+  }
+}
+```
+
+## Relation between dom attribute vs property
+
+attribute-property mapping is not one-one!
+
+**DOM nodes are regular JS objects**
+
+```js
+document.body.myData = {
+  name: 'ceaser',
+  title: "abcd"
+};
+```
+
+IN, html Tags may have attributes.
+
+HTML recognizes standard attributes, and creates DOM properties from them.
+
+**For non standard attribute, no DOM js property gets created, you must only rely on getAttribute/setAttribute methods on node/element**.
+
+e.g.
+```html
+<body id="test" something="non-standard">
+  <script>
+    alert(document.body.id); // test
+    // non-standard attribute does not yield a property
+    alert(document.body.something); // undefined
+  </script>
+</body>
+```
+
+`Note`: note that a standard attribute for one element can be unknown for another one. For instance, "type" is standard for `<input>` (HTMLInputElement), but not for `<body>` (HTMLBodyElement). Standard attributes are described in the specification for the corresponding element class. Which means the standard attributes of a given node reference depend on the node type/class.
+
+```html
+<body something="non-standard">
+  <script>
+    alert(document.body.getAttribute('something')); // non-standard
+  </script>
+</body>
+```
+
+HTML attributes have the following features:
+
+* Their name is case-insensitive (**`id` is same as `ID`**), but dom js properties are case sensitive.
+* **Their values are always strings.**
+
+Iterate over all attributes using iterable `elem.attributes`:
+```js
+    for (let attr of elem.attributes) { // (4) list all
+      alert( `${attr.name} = ${attr.value}` );
+    }
+```
+
+### property <-> attribute synchronization
+
+When a standard attribute changes, the corresponding property is auto-updated, and (with some exceptions) vice versa.
+
+`Exceptions`: 
+`input.value` synchronizes only from attribute → to property, but not back.
+
+e.g.
+```html
+<input>
+
+<script>
+  let input = document.querySelector('input');
+
+  // attribute => property
+  input.setAttribute('value', 'text');
+  alert(input.value); // text
+
+  // NOT property => attribute
+  input.value = 'newValue';
+  alert(input.getAttribute('value')); // text (not updated!)
+</script>
+```
+
+The style attribute is a string, but the style property is an object.
+
+Quite rarely, even if a DOM property type is a string, it may differ from the attribute. For instance, the href DOM property is always a full URL, even if the attribute contains a relative URL or just a `#hash`.
+
+```html
+<a id="a" href="#hello">link</a>
+<script>
+  // attribute
+  alert(a.getAttribute('href')); // #hello
+
+  // property
+  alert(a.href ); // full URL in the form http://site.com/page#hello
+</script>
+```
+
+### dataSet property
+
+All attributes starting with “data-” are reserved for programmers’ use. They are available in the dataset property.
+
+all `data-*` attributes, go in `elem.dataSet.*` in dom JS.
+
+```html
+<body data-about="Elephants">
+<script>
+  alert(document.body.dataset.about); // Elephants
+</script>
+```
+
+## Clear/remove all child elements of a node/element
+
+Use `innerHTML`.
+
+```js
+document.getElementById('yourdivid').innerHTML = '';
+```

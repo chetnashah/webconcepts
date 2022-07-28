@@ -599,24 +599,33 @@ function(e) {
 
 #### Throttling and debouncing of events.
 
-Throttle(function, durationms) returns a a function that will called
+`Throttle(function, durationms)`: returns a a function that will called
 at most once per duration ms.
 e.g. you want a function to be called only once per 250 ms, use throttle.
 
-debounce(fn, waitms)
+`debounce(fn, waitms)`:
 Debounce is used to know when some repeated event stopped happening.
 It will keep delaying the call to given function until waitms elapsed,
 if the call was received within waitms, the countdown timer is reset.
 
 
 #### How to use Drag and drop in HTML5?
-Steps on draggable element:
-1. declare an element to be dragabble by specifying draggable="true" attribute on element.
-2. add a ondragstart implementation to draggable element.
-3. set drag data transfer data in the ondragstart method defined above
 
-* Drag data - All DragEvent hold a property named as dataTransfer which is instance of
-DataTransfer and contains data that the drop receiving element might need
+Important Events associated with drag and drop:
+1. `dragstart` - user starts dragging item  
+2. `dragover` - dragged item dragging over valid drop target (every 100 ms).
+3. `drop` - Fires when an item is dropped on valid drop target.
+4. `dragenter` - fires when dragged item enters valid drop target. 
+5. `drag` - Fires when an element is dragged. (every 100ms)
+6. `dragleave` - fires when dragged item leaves valid drop target.
+
+Steps on draggable element:
+1. declare an element to be dragabble by specifying `draggable="true"` attribute on element.
+2. add a `ondragstart` implementation to draggable element.
+3. set drag data transfer data in the `ondragstart` method defined above
+
+* Drag data - All `DragEvent` hold a property named as `dataTransfer` which is instance of
+`DataTransfer` and contains data that the drop receiving element might need
 
 All drag events have data to be transferred to the drop site. This is often referred to as drag data.
 
@@ -624,12 +633,35 @@ Drag data consists of two peices:
 1. type of data
 2. drag data itself
 
-During drag start above data is added to DragEvent by draggable element.
+During drag start above data is added to `DragEvent` by draggable element.
 On drop site receiver listener, the data is received and decided whether and what to drop
 i.e. act upon data as per listeners wish.
 
+`Specify drop targets`: A listener for both the `dragenter` and `dragover`  events are used to indicate valid drop targets, that is, places where dragged items may be dropped. **Calling the `preventDefault()` method during both a dragenter and dragover event will indicate that a drop is allowed at that location**
+
+Thus, the default handling of these events is not to allow a drop.
+
+If you want to allow a drop, you must prevent the default handling by cancelling both the `dragenter` and `dragover` events. You can do this either by returning false from attribute-defined event listeners, or by calling the event's `preventDefault()` method. The latter may be more feasible in a function defined in a separate script.
+
+```html
+<script>
+function dragover_handler(ev) {
+ ev.preventDefault();
+ ev.dataTransfer.dropEffect = "move";
+}
+function drop_handler(ev) {
+ ev.preventDefault();
+ // Get the id of the target and add the moved element to the target's DOM
+ const data = ev.dataTransfer.getData("text/plain");
+ ev.target.appendChild(document.getElementById(data));
+}
+</script>
+
+<p id="target" ondrop="drop_handler(event)" ondragover="dragover_handler(event)">Drop Zone</p>
+```
+
 Steps on drop receiving element:
-1. specify drop element by returning ev.preventDefault() in ondragover method of drop receiving element.
+1. specify drop element by returning `ev.preventDefault()` in `ondragover` method of drop receiving element.
 
 ### `id` vs `name` in input tag
 
@@ -714,7 +746,7 @@ There are four main APIs used for user based scheduling:
 
 The `window.requestIdleCallback()` method queues a function to be called during a browser's idle periods. This enables developers to perform background and low priority work on the main event loop, without impacting latency-critical events such as animation and input response. Functions are generally called in first-in-first-out order; however, callbacks which have a timeout specified may be called out-of-order if necessary in order to run them before the timeout elapses.
 
-You can call requestIdleCallback() within an idle callback function to schedule another callback to take place no sooner than the next pass through the event loop.
+You can call `requestIdleCallback()` within an idle callback function to schedule another callback to take place no sooner than the next pass through the event loop.
 
 Ideally don't do dom mutations in idlecallbacks. Use it for stuff that has less priority. Your idle callback should avoid doing anything that could take an unpredictable amount of time
 
@@ -725,7 +757,7 @@ The `window.requestAnimationFrame()` method tells the browser that you wish to p
 
 `callback`:     The function to call when it's time to update your animation for the next repaint. The callback function is passed one single argument, a `DOMHighResTimeStamp` similar to the one returned by `performance.now()`, indicating the point in time when `requestAnimationFrame()` starts to execute callback functions.
 
-Return: A long integer value, the request id, that uniquely identifies the entry in the callback list. This is a non-zero value, but you may not make any other assumptions about its value. You can pass this value to window.cancelAnimationFrame() to cancel the refresh callback request.
+Return: A long integer value, the request id, that uniquely identifies the entry in the callback list. This is a non-zero value, but you may not make any other assumptions about its value. You can pass this value to `window.cancelAnimationFrame()` to cancel the refresh callback request.
 
 ```js
 // two second animation - check elapsed variable
@@ -768,11 +800,11 @@ You must cancel the default action for `ondragenter` and `ondragover` in order f
 
 To accept a drop, the drop target has to listen to the following events:
 
-1. The `dragenter` event handler reports whether or not the drop target is potentially willing to accept the drop, by canceling the event.
+1. The `dragenter` event handler reports whether or not the drop target is potentially willing to accept the drop, by canceling the event. Use `ev.preventDefault()`.
 
-2. The `dragover` event handler specifies what feedback will be shown to the user, by setting the dropEffect attribute of the DataTransfer associated with the event. This event also needs to be canceled.
+2. The `dragover` event handler specifies what feedback will be shown to the user, by setting the dropEffect attribute of the DataTransfer associated with the event. This event also needs to be canceled. Use `ev.preventDefault()`.
 
-3. The `drop` event handler has a final chance to accept or reject the drop. If the drop is accepted, the event handler must perform the drop operation on the target. This event needs to be canceled, so that the dropEffect attribute's value can be used by the source. Otherwise, the drop operation is rejected.
+3. The `drop` event handler has a final chance to accept or reject the drop. If the drop is accepted, the event handler must perform the drop operation on the target. This event needs to be canceled, so that the dropEffect attribute's value can be used by the source. Otherwise, the drop operation is rejected. Use `ev.preventDefault()`.
 
 #### dropEffect
 

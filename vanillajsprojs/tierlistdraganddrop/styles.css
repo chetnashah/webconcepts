@@ -1,0 +1,58 @@
+h1 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-basis: 150px;
+    padding: 12px;
+    border-right: 5px solid black;
+    margin: 0;
+    font-size: 24px;
+    user-select: none;
+    background-color: #082969;
+    color: white;
+}
+
+.tier-section {
+    display: flex;
+    border: 5px solid black;
+    min-height: 50px;
+}
+
+.tier-section:not(:first-of-type,:last-of-type) {
+    border-top: none;
+}
+
+.drop-zone {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    flex-basis: 100%;
+    background-color: lightgray;
+}
+
+.item {
+    display: inline-block;
+    width: 40px;
+    height: 40px;
+    border: 2px solid black;
+    border-radius: 8px;
+    margin: 0 8px;
+    opacity: 0.999;
+}
+
+#unranked-section {
+    margin-top: 18px;
+}
+
+#blue {
+    background-color: blue;
+}
+
+#red  {
+    background-color: red;
+
+}
+
+#green {
+    background-color: green;
+}
