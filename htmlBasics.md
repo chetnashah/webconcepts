@@ -624,8 +624,12 @@ Steps on draggable element:
 2. add a `ondragstart` implementation to draggable element.
 3. set drag data transfer data in the `ondragstart` method defined above
 
+`Note` - This `draggable` attribute is enumerated and not Boolean. A value of true or false is mandatory, and shorthand like `<img draggable>` is forbidden. The correct usage is `<img draggable="false">`.
+
+
+
 * Drag data - All `DragEvent` hold a property named as `dataTransfer` which is instance of
-`DataTransfer` and contains data that the drop receiving element might need
+`DataTransfer` and contains data that the drop receiving element might need. the drag data `ev.dataTransfer` must be set in `dragstart` listener using `event.dataTransfer.setData(type,data)`.
 
 All drag events have data to be transferred to the drop site. This is often referred to as drag data.
 
@@ -954,3 +958,40 @@ If it is an `<input />`: change + lose focus
 If it is a `<select>`: change option
 
 React, for some reason, attaches listeners for `Component.onChange` to the DOM `element.oninput`
+
+
+## Selecting all elements with a given class
+
+Use `querySelectorAll` instead of `querySelector`.
+
+```js
+    var messages = document.querySelectorAll(".message");
+    for (var i = 0; i < messages.length; i++) {
+        var str = messages[i].innerHTML.replace(":smile:", "<i class='em em-smile'></i>");
+        messages[i].innerHTML = str;
+    }
+```
+
+## How to drag and drop elements (use `id` as text in dataTransfer)
+
+In `ev.dataTransfer`, set type `text/plain` and value as id of the element to be moved,
+
+In the drop site, `dropNode.appendChild(getElementById(ev.dataTransfer.getData("text/plain")))` should append the dragged child by moving from old parent to this new one i.e. dropNode.
+
+### Side note: prevent any behavior when dropped in same drop zone where it was dragged from
+
+Ans: check dragged item parent is same as event target then ignore 
+```js
+function onDropOverDropZone(ev) {
+  if(ev.target !== draggedItem.parentNode) {// drop zone is not same as dragged item's parent
+    ev.target.appendChild(draggedItem);
+  } 
+}
+```
+
+
+
+## How to setup double click listener in javascript?
+
+There is a dedicated event named `dblclick` which should be used.
+
