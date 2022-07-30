@@ -995,3 +995,48 @@ function onDropOverDropZone(ev) {
 
 There is a dedicated event named `dblclick` which should be used.
 
+## How to use radio buttons and radio group ?
+
+Only one radio button in a given group can be selected at the same time.
+
+### How is a radio group defined?
+
+**A radio group is defined by giving each of radio buttons in the group the same name.** Once a radio group is established, selecting any radio button in that group `automatically deselects any currently-selected radio button in the same group`.
+
+You can have as many radio groups on a page as you like, as long as each has its own unique name.
+
+`Note`: if you observe carefully there is no explicit definition for radio-group, but it is implicitly derviced from common name attribute on radio input elements.
+
+### Usage with and without forms
+
+With forms:
+
+When the above form is submitted with a radio button selected, the form's data includes an entry in the form `contact=value`. where `contact` is the `name` attribute in all the radio buttons.
+
+If no radio button is selected when the form is submitted, the radio group is not included in the submitted form data at all, since there is no value to report.
+
+
+
+Without forms:
+
+```js
+// this only selects input radio with name contact, and state checked, so other radio buttons with unchecked state are ignored
+const val = document.querySelector('input[name="contact"]:checked').value;
+
+```
+
+
+
+### Each option is a `input` element with type="radio"
+
+Radio button/element is an `input` element with `type` radio. 
+
+**Having a `name` attribute value is mandatory with same name as other radio buttons/elements**, we should also add a `id` attribute.
+
+Radio button by itself does not render any text, you need to add a `<label>` along side radio input to show up label correctly.
+
+`NOte`: **`value` attribute value is different than label text.**. value is what your javascript code will get when querying values from the DOM.
+
+
+
+

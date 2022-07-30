@@ -397,3 +397,8 @@ e.g. here we will do
 ```js
 let button = containerView.querySelector('#btn-id');
 ```
+
+## What is `active` element?
+
+Active Elements are the HTML elements that have recently been **focused on by the user**. If a user clicks on a button that means the button was focused or it was active.
+
