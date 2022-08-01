@@ -1,0 +1,102 @@
+body {
+    display: flex;
+    justify-content: space-between;
+}
+
+button, textarea, input {
+    font-size: 16px;
+}
+
+textarea {
+    font-size: 16px;
+}
+
+input {
+    font-size: 16px;
+}
+
+#inputs {
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    flex-basis: 60%;
+    align-self: flex-start;
+    background-color: lightgray;
+    border: 2px solid black;
+    padding: 12px;
+    gap: 8px;
+    font-size: 18px;
+}
+
+#toasts {
+    flex-basis: 25%;
+}
+
+label {
+    margin-right: 4px;
+}
+
+input[type="radio"] {
+    margin-left: 0;
+    margin-right: 12px;
+}
+
+.input {
+    display: flex;
+    align-items: center;
+}
+
+.toast {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 12px;
+    border: 1px solid black;
+    padding: 12px;
+    border-radius: 8px;
+    animation: fade-in 0.5s linear;
+    font-size: 18px;
+}
+
+.message {
+    flex-grow: 1;
+    color: white;
+    margin: 0;
+    overflow-wrap: break-word;
+}
+
+.cancel-button {
+    flex-shrink: 0;
+    background: none;
+    color: white;
+    border: 1px solid transparent;
+    border-radius: 100%;
+    height: 18px;
+    width: 18px;
+    font-size: 14px;
+    font-weight: bold;
+    padding: 0;
+    margin-left: 4px;
+    transition: 0.5s;
+    cursor: pointer;
+}
+
+.cancel-button:hover {
+    border-color: white;
+}
+
+.error-toast {
+    background-color: red;
+}
+
+.success-toast {
+    background-color: green;
+}
+
+@keyframes fade-in {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}

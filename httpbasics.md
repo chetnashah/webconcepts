@@ -150,3 +150,6 @@ connection.onmessage = function (e) {
 Find more at: https://www.html5rocks.com/en/tutorials/websockets/basics/
 
 
+## Referer header
+
+contains the url of the page that made the request.
