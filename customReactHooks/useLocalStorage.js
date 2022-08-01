@@ -46,6 +46,7 @@ export function useLocalStorage(key,initialValue) {
         return getSavedValue(key, initialValue);
     });
 
+    // save to storage after render
     useEffect(() => {
       saveToLocalStorage(key, value);
     
@@ -54,5 +55,7 @@ export function useLocalStorage(key,initialValue) {
       }
     }, [value]);
 
+    // value returned from useState directly, saving to localstorage happens in effect after render
+    // for normal running everything happens through useState only.
     return [value, setValue];
 }
