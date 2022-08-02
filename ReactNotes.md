@@ -309,6 +309,11 @@ return (
 
 ref updates happen before componentDidMount or componentDidUpdate lifecycle methods
 
+
+#### setState on unmounted components
+
+https://github.com/facebook/react/pull/22114
+
 #### callback refs
 
 Provide a callack where argument is access to the node directly, no `current` involvement.
