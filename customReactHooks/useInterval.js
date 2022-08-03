@@ -1,25 +1,39 @@
 /**
  * Use cases:
+ * After mount, regularly call callbackFn every delayMs.
  */
 
 
 /**
  * Interface design aspects:
  * 
- * inputs:
+ * inputs: 
+ * 1. callbackfn 
+ * 2. optional delay in millis
  * 
- * outputs:
+ * outputs: No output needed
  * 
  */
 
 /**
  * Behavior aspects:
  * 
- * causes re-render?
+ * causes re-render? No, only calls callback every delay ms
  * 
  * Has internal state/storage?
+ * 
+ * 
+ * Cleanup: on unmount, cancel the interval
+ * 
+ * If delay/duration changes, interval should reset, 
+ * not executing the function until new delay completes
+ * 
+ * If delay is set to null/undefined, cancel interval
+ * 
+ * If callback fn changes, interval should be updated to call most reset
+ * version of the function, not reset the interval
  */
 
-export default function useInterval(){
+export default function useInterval(callbackFn, delayMs){
     
 }
