@@ -34,6 +34,24 @@
  * version of the function, not reset the interval
  */
 
-export default function useInterval(callbackFn, delayMs){
-    
+
+function useInterval(callback, delay) {
+  // Write your code here.
+    let timerId = null;
+    let innerCbRef = useRef();
+    // we put callback in ref, because we want constant identity across renders
+    innerCbRef.current = callback;
+    useEffect(() => {
+      clearInterval(timerId);
+      if(delay) {
+        timerId = setInterval(() => innerCbRef.current(), delay);
+      }
+      return () => {
+        clearInterval(timerId);
+      };
+  }, [ delay]);
+
 }
+
+// Do not edit the line below.
+exports.useInterval = useInterval;

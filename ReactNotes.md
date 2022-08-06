@@ -61,6 +61,10 @@ const whatever = createWhatever(A, { children: createWhatever(B) });
 whatever(); // log in A gets called, but the log in B doesn't
 ```
 
+### When do we get too many re-renders error?
+
+problem lies in the fact that you are calling your `state setter immediately inside the function component body`, which forces React to re-invoke your function again, with the same props, which ends up calling the state setter again.
+
 ### Same element reference returned as render function output, (will skip child/children render)
 
 if a React component returns the **exact same element reference** e.g. `children prop` in its render output as it did the last time, React will skip re-rendering that particular child.
