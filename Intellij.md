@@ -36,3 +36,9 @@ Opt-f7 -> find usages
 `lst` to get last element of an array
 
 `inn` -> if not null
+
+## Useful plugins
+
+1. run actions on save
+
+2. 
