@@ -1,0 +1,44 @@
+* {
+    box-sizing: border-box;
+}
+.column {
+    height: 100%;
+    padding: 16;
+    width: 10%;
+    background-color: #f0f0f0;
+    border: 1px solid grey;
+    display: flex;
+    flex-direction: column;
+}
+
+.container {
+    width: 100vw;
+    height: 100vh;
+    background-color: antiquewhite;
+    display: flex;
+    flex-direction: row;
+}
+
+.card {
+    height: 40px;
+    background-color: tomato;
+    margin: 4px;
+    margin-top: 12px;
+    margin-bottom: 12px;
+    border: 2px solid honeydew;
+}
+
+.cardsList {
+    flex-grow: 1;
+    width: 100%;
+    background-color: aquamarine;
+}
+
+body {
+    height: 100vh;
+    width: 100vw;
+}
+
+.dragged-over {
+    border: 2px solid royalblue;
+}

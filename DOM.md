@@ -792,3 +792,9 @@ Use `innerHTML`.
 ```js
 document.getElementById('yourdivid').innerHTML = '';
 ```
+
+## positional insert
+
+```js
+parentEl.insertBefore(newNode, referenceNode);
+```
