@@ -646,3 +646,55 @@ li:nth-of-type(2) { /* selects "two" li item */
 ```
 
 e.g. in 
+
+
+### nth-child with class restriction is hard
+
+There's no way to filter by class in CSS because there's no `:nth-of-class()`.
+
+You can try putting all children of given class in separate div. and then do on top of that.
+
+## css counters
+
+CSS counters let you adjust the appearance of content based on its location in a document.
+
+For example, `you can use counters to automatically number the headings in a webpage, or to change the numbering on ordered lists`
+
+Counters are, in essence, **variables maintained by CSS whose values may be incremented or decremented by CSS rules that track how many times they're used**.
+
+### How to use css counters
+
+1. Initialize with `counter-reset` propertiey
+2. Increase/decrease value with `counter-increment`
+3. Current value displayed using `counter()` function
+
+
+**Note** - **calc cannot be used with counter**: The calc function does not permit the use of counter functions as its components.
+
+## How to update css variables from javascript
+
+Use `cssElement.style.setProperty('--varname', value)`.
+
+e.g.
+in css
+```css
+:root {
+  --mouse-x: 0px;
+  --mouse-y: 0px;
+}
+
+.mover {
+  left: var(--mouse-x);
+  top: var(--mouse-y);
+}
+```
+
+in js:
+```js
+let root = document.documentElement;
+
+root.addEventListener("mousemove", e => {
+  root.style.setProperty('--mouse-x', e.clientX + "px");
+  root.style.setProperty('--mouse-y', e.clientY + "px");
+});
+```
