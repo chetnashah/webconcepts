@@ -798,3 +798,18 @@ document.getElementById('yourdivid').innerHTML = '';
 ```js
 parentEl.insertBefore(newNode, referenceNode);
 ```
+
+## DOM vs BOM
+
+The `DOM` is the `Document Object Model`, which deals with the document, the HTML elements themselves, e.g. document and all traversal you would do in it, events, etc.
+
+The `BOM` is the `Browser Object Model`, which deals with browser components aside from the document, like `history`, `location`, `navigator` and `screen` (as well as some others that vary by browser).
+
+* window
+* screen
+* location
+* history
+* navigator
+* popup alert
+* timing
+* cookies
