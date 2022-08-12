@@ -23,6 +23,14 @@ Opt-Cmd-M -> extract to a method
 
 Opt-f7 -> find usages
 
+Some useful postfix completions:
+`exp.nn` - if exp not null
+`exp.null` - if exp equals null
+`exp.var` - create a variable with value equal to exp
+`exp.try` - wrap expression in try catch block
+`exp.soutv` - print on std out
+
+
 ## Useful live templates
 
 `fori` for a for loop with iteration
