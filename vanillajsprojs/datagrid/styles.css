@@ -1,0 +1,17 @@
+* {
+    box-sizing: border-box;
+}
+
+#gridcontainer {
+    overflow: auto;
+    height: 100vh;
+}
+
+.cell {
+    padding: 8px;
+    border: 1px solid black;
+}
+
+.row {
+    padding: 8px;
+}

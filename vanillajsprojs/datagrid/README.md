@@ -56,3 +56,24 @@ Nested row grouping
 
 ### Additional feature: live streaming data updating grid
 
+## Observations
+
+on deleting elements from top, onScroll is automatically triggered, `scrollTop` changes automatically and stays in sync.
+
+### Since scrollTop is unreliable on removing/adding elements, we can use getBoundlingClientRect
+
+
+
+```js
+findFirstVisibleChild() {
+     const children = this.container.children;
+     for (let i = 0; i < children.length; i++) {
+         const rect = children[i].getBoundingClientRect();
+         // console.log('child bounding rect = ', rect);
+         if (rect.top > 0) {
+             return children[i];
+             // console.log('top gtr than 0 child: ', children[i]);
+         }
+     }
+ }
+```
