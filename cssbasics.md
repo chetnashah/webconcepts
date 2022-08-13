@@ -698,3 +698,9 @@ root.addEventListener("mousemove", e => {
   root.style.setProperty('--mouse-y', e.clientY + "px");
 });
 ```
+
+
+## Can we select an element in css based on content/text inside an element?
+
+NO.
+read more at: https://stackoverflow.com/questions/1520429/is-there-a-css-selector-for-elements-containing-certain-text
