@@ -306,3 +306,16 @@ jest.unmock('./myModule.js');
 const myModule = require('myModule');
 myModule.foo = jest.fn();
 ```
+
+## Testing observables (RxJs)
+
+https://www.youtube.com/watch?v=lb48sk5EDdo
+
+1. use `of` for single sync objects
+2. use `of`+`delay` for single async value
+3. use `from` for multiple sync objects
+4. use `interval` + `take`? for multiple async values
+5. use custom `Subject` for most flexibility.
+   
+
+use `done` callback given in tests if necessary, or `complete` callback of observer.
