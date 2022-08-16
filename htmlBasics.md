@@ -364,16 +364,22 @@ save times in
 * Make TCP connection
 * Do TLS handshake
 
-### Prefetch
+### Prefetch 
 
-* download the resource
+* download the resource (for next page - so low priority)
 * Do not execute the resource
 
 `prefetch` is intended for prefetching resources that will be used in the next navigation/page load (e.g. when you go to the next page). This is fine, but isn't useful for the current page! In addition, browsers will give prefetch resources a lower priority than preload ones — the current page is more important than the next
 
 ### Preload
 
-In it's most basic form it sets the link that has `rel="preload"` to a high priority
+In it's most basic form it sets the link that has `rel="preload"` to a high priority.
+`preload` can be useful to load JavaScript bundles (or chunks) that are necessary for interactivity (e.g. lets say emoji lib). Keep in mind that great care is needed when using preload as you want to avoid improving interactivity at the cost of delaying resources 
+
+`preload` – when you’re going to need a resource in a few seconds (browser treats this with high priority!).
+`prefetch` – when you need a resource for the next page (browser almost treats this with low priority)
+
+**Note - The browser doesn’t do anything with the resource after downloading it. Scripts aren’t executed, stylesheets aren’t applied. It’s just cached – so that when something else needs it, it’s available immediately.**
 
 The preload keyword on link elements provides a declarative fetch primitive that addresses the above use case of initiating an early fetch and separating fetching from resource execution. As such, preload keyword serves as a low-level primitive that enables applications to build custom resource loading and execution behaviors without hiding resources from the user agent and incurring delayed resource fetching penalties.
 

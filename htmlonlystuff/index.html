@@ -13,6 +13,7 @@
                 width: 350;
             }
         </style>
+        <link rel="preload" as="script" href="js/sample.js">
         <script>
             function dragover_handler(ev) {
                 console.log('dragoverhandler');
@@ -72,5 +73,6 @@
             ondrop="drop_handler(event);"
             ondragover="dragover_handler(event);">
         </div>
+        <script src="js/sample.js"></script>
     </body>
 </html>
