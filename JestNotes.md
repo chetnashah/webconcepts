@@ -307,6 +307,38 @@ const myModule = require('myModule');
 myModule.foo = jest.fn();
 ```
 
+## Error testing
+
+**You must wrap the error throwing code in a function, otherwise the error will not be caught, and assertion will not work**
+
+```js
+test('throws on octopus', () => {
+  expect(() => {
+    drinkFlavor('octopus');
+  }).toThrow();
+});
+```
+
+### Testing by error message or error instance:
+```js
+test('throws on octopus', () => {
+  function drinkOctopus() {
+    drinkFlavor('octopus');
+  }
+
+  // Test that the error message says "yuck" somewhere: these are equivalent
+  expect(drinkOctopus).toThrowError(/yuck/);
+  expect(drinkOctopus).toThrowError('yuck');
+
+  // Test the exact error message
+  expect(drinkOctopus).toThrowError(/^yuck, octopus flavor$/);
+  expect(drinkOctopus).toThrowError(new Error('yuck, octopus flavor'));
+
+  // Test that we get a DisgustingFlavorError
+  expect(drinkOctopus).toThrowError(DisgustingFlavorError);
+});
+```
+
 ## Testing observables (RxJs)
 
 https://www.youtube.com/watch?v=lb48sk5EDdo
