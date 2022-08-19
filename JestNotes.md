@@ -339,6 +339,12 @@ test('throws on octopus', () => {
 });
 ```
 
+## Managing Time and Timers.
+
+The native timer functions (i.e., `setTimeout()`, `setInterval()`, `clearTimeout()`, `clearInterval()`) are less than ideal for a testing environment since they depend on real time to elapse. Jest can **swap out timers with functions that allow you to control the passage of time.**
+
+The implemnentation is backed by sinonJs fake timers: https://github.com/sinonjs/fake-timers
+
 ## Testing observables (RxJs)
 
 https://www.youtube.com/watch?v=lb48sk5EDdo
