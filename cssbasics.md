@@ -704,3 +704,18 @@ root.addEventListener("mousemove", e => {
 
 NO.
 read more at: https://stackoverflow.com/questions/1520429/is-there-a-css-selector-for-elements-containing-certain-text
+
+
+## vmin and vmax
+
+When you have different values of viewport height and viewport width, 100vmin will pick the smaller one,
+similarly 100vmax will pick the larger one
+
+example usage:
+```css
+#game-board {
+  /** always have square of the size: shorter side of view port **/
+  height: 100vmin;
+  width: 100vmin; 
+}
+```

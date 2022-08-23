@@ -790,6 +790,30 @@ function step(timestamp) {
 window.requestAnimationFrame(step);
 ```
 
+Writing a game loop based on `requestAnimationFrame`:
+```js
+let lastRenderTime = 0;
+const FRAMES_PER_SECOND = 1;
+
+function gameLoop(currentTime) {
+  requestAnimationFrame(gameLoop);
+  if ((currentTime - lastRenderTime) / 1000 < 1 / FRAMES_PER_SECOND) {
+    return;
+  }
+  console.log(" running gameLoop at time: ", currentTime);
+
+  lastRenderTime = currentTime;
+  update();
+  draw();
+}
+
+window.requestAnimationFrame(gameLoop);
+
+function draw() {}
+function update() {}
+```
+
+
 ### HTML events
 
 #### e.target vs e.currentTarget

@@ -1,9 +1,10 @@
-https://www.youtube.com/watch?v=QTcIXok9wNY&list=PLZlA0Gpn_vH8DWL14Wud_m8NeNNbYKOkj&index=15
+let boardSize = getComputedStyle(document.body).getPropertyValue(
+  "--board-size"
+);
+console.log("board size = ", boardSize);
 
+const board = document.getElementById("game-board");
 
-## Having a game loop based on requestAnimationFrame
-
-```js
 let lastRenderTime = 0;
 const FRAMES_PER_SECOND = 1;
 
@@ -23,14 +24,3 @@ window.requestAnimationFrame(gameLoop);
 
 function draw() {}
 function update() {}
-```
-
-## Grid based layout
-
-lets say we can store grid size in a variable: n.
-
-the grid template rows and columns will have `n` fr.
-
-### Snake peice and food peice styled with css classes
-
-
