@@ -153,3 +153,21 @@ Find more at: https://www.html5rocks.com/en/tutorials/websockets/basics/
 ## Referer header
 
 contains the url of the page that made the request.
+
+## Http and connection closing
+
+When using HTTP/2, browsers typically open only one connection per domain. (requests are multiplexed over this single connection)
+
+In your example, `index2.html` will be sent on the same TCP connection that was used for `index.html`, `a.css` and `a.js`.
+
+In HTTP/2 requests are multiplexed on the same TCP connection, so that the browser can send them concurrently, without waiting for a previous request to be responded to.
+
+Both browsers and servers have an idle timeout for TCP connections. If the connection is idle for long enough, it will be closed by either party - the one that has the shorter idle timeout, to save resources. For example, you may open a connection to a wikipedia.org, perform a few requests, and then leave that tab and work on something else. After a while (typically 30 seconds) the browser will close the TCP connection to wikipedia.org.
+
+On the server side, the server will keep the connections from various clients open, until they are either closed by the client or until the server-side idle timeout fires, at which point it's the server that initiated the close of the TCP connection.
+
+With HTTP/2, the number of connections that a server has to maintain is vastly less than it was with HTTP/1.1. With HTTP/2, a server has to maintain just 1 TCP connection per client; with HTTP/1.1, the server had to maintain typically 2-8 TCP connections per client.
+
+## http2 vs 3
+
+![http2 and 3](img/http2and3.png)
