@@ -3,10 +3,18 @@ let boardSize = getComputedStyle(document.body).getPropertyValue(
 );
 console.log("board size = ", boardSize);
 
+import {
+  draw as gameDraw,
+  update as gameUpdate,
+  setup as gameSetup,
+} from "./game.js";
+
 const board = document.getElementById("game-board");
 
 let lastRenderTime = 0;
-const FRAMES_PER_SECOND = 1;
+const FRAMES_PER_SECOND = 30;
+
+gameSetup(board);
 
 function gameLoop(currentTime) {
   requestAnimationFrame(gameLoop);
@@ -22,5 +30,9 @@ function gameLoop(currentTime) {
 
 window.requestAnimationFrame(gameLoop);
 
-function draw() {}
-function update() {}
+function draw() {
+  gameDraw(board);
+}
+function update() {
+  gameUpdate(board);
+}
