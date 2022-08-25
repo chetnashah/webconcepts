@@ -16,3 +16,9 @@ Content important for indexability
 `Backlinks` - other companies, websites have links to your site so you get more traffic. This is usually based on credebility.
 
 `Ads` - ads setup links to your site.
+
+## Check if google knows about your site
+
+e.g. `site:wikipedia.org` 
+
+type `site:yoursitename` in URL bar.
