@@ -1,7 +1,17 @@
 
+https://drafts.csswg.org/css-grid/
+
 ## Resources
 
 https://www.youtube.com/watch?v=9zBsdzdE4sM
+
+##
+
+## Spec stuff
+
+Grid enforces 2-dimensional alignment, uses a `top-down approach to layout`, `allows explicit overlapping of items`, and has more powerful spanning capabilities.
+
+
 
 ##
 

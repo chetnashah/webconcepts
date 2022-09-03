@@ -357,3 +357,14 @@ https://www.youtube.com/watch?v=lb48sk5EDdo
    
 
 use `done` callback given in tests if necessary, or `complete` callback of observer.
+
+
+## Usage with webpack
+
+Webpack also lets you import css/images/less/sass files, which are not much relevant in tests.
+These can be mocked out in jest tests using following config of jest: 
+```js
+  "moduleNameMapper": {
+    "^.*[.](jpg|JPG|gif|GIF|png|PNG|less|LESS|css|CSS)$": "EmptyModule"
+  },
+```
