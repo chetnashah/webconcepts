@@ -159,3 +159,16 @@ Rendering steps —————————>
     );
     setIsRendering(false);
 
+## Effect type/shape
+
+An `Effect` is a reference to a linkedlist of effects, where each node has its own `create` fn, `deps` arr and `destroy` fn, as well as flags.
+
+```ts
+export type Effect = {|
+  tag: HookFlags,
+  create: () => (() => void) | void,
+  destroy: (() => void) | void,
+  deps: Array<mixed> | null,
+  next: Effect,
+|};
+```

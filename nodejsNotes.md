@@ -20,7 +20,7 @@ The module that gets loaded first via the cli is the main module.
 
 ### closing server from code
 
-`httpServer.close(cb)` - close the server, graceful shutdown to no longer accept connections, frees up event loop from listening to file I/O and gets the process ready for shutdown.
+`httpServer.close(cb)` - close the server, graceful shutdown to no longer accept connections, frees up event loop from listening to file I/O.
 The optional cb will be called once the 'close' event occurs
 
 ### Process monitoring

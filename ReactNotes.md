@@ -72,6 +72,19 @@ if a React component returns the **exact same element reference** e.g. `children
 e.g.
 see [Gotcha](ReactGotchas.md)
 
+## render and commit phases and lifecycles
+
+* The "Render phase" contains all the work of rendering components and calculating changes
+* The "Commit phase" is the process of applying those changes to the DOM
+
+1. After React has updated the DOM in the commit phase, it `updates all refs` accordingly to point to the requested DOM nodes and component instances. 
+
+2. It then synchronously runs the `componentDidMount` and `componentDidUpdate` class lifecycle methods, and the `useLayoutEffect` hooks.
+
+3. React then sets a short timeout, and when it expires, **runs all the useEffect hooks**. This step is also known as the "Passive Effects" phase.
+
+What's unique about a `passive effect` is, it waits for all UI (render and commit) to settle down before invoking them in another time slice. So the callback happens in a Javascript time slice similar to an event handler
+
 ## setState and batching
 
 
@@ -273,6 +286,32 @@ onDragLeave onDragOver onDragStart onDrop onMouseDown onMouseEnter onMouseLeave
 onMouseMove onMouseOut onMouseOver onMouseUp
 ```
 
+### useImperativeHandle
+
+Why? **functional components cannot be given refs**.
+
+Let's say we have a custom input component `CustomInput` which is a functional component, but we need to focus on the CustomInput.
+
+Steps to fix:
+1. update functional component `CustomInput`, to take one more parameter `ref` after `props`, apply that ref to DOM input, and wrap functional component `CustomInput` in `React.forwardRef`, 
+e.g.
+```jsx
+function CustomInput({someProp}, ref) {
+  return (
+    <input 
+      ref={ref}
+      someProp={someProp}
+    />
+  )
+}
+
+export default React.forwardRef(CustomInput)
+```
+
+Why useImperativeHandle?
+
+To have children Override ref functionality (ref which was forwarded by parent).
+
 ### React Refs
 it can be inconvenient for highly reusable “leaf” components like FancyButton or MyTextInput. These components tend to be used throughout the application in a similar manner as a regular DOM button and input, and accessing their DOM nodes may be unavoidable for managing focus, selection, or animations
 
@@ -293,6 +332,8 @@ What is attached to ref.current?
 1. In case of ref being used on html element, current points to dom node.
 2. In case of ref being used on a custom class component, current points to mounted instance of the component.
 3. **You may not use ref attribute on function components** because they do not have instances.
+
+**Avoid reading and updating refs during rendering because this makes your component’s behavior difficult to predict and understand.**
 
 NOte: however you can use ref attribute **inside** a function as long as you refer to a dom
 or class component via `useRef`:
@@ -320,6 +361,34 @@ return (
 
 ref updates happen before componentDidMount or componentDidUpdate lifecycle methods
 
+
+`refs` can help you preserve identity across renders - If you intentionally want to read the latest state from some asynchronous callback (because usually it will capture state from the render where the async callback was created), you could keep it in a ref, mutate it.
+
+e.g. following example reads stale state because async callback captured count from render when it was clicked.
+
+```jsx
+function Example() {
+  const [count, setCount] = useState(0);
+
+  function handleAlertClick() {
+    setTimeout(() => {
+      alert('You clicked on: ' + count);
+    }, 3000);
+  }
+
+  return (
+    <div>
+      <p>You clicked {count} times</p>
+      <button onClick={() => setCount(count + 1)}>
+        Click me
+      </button>
+      <button onClick={handleAlertClick}>
+        Show alert
+      </button>
+    </div>
+  );
+}
+```
 
 #### setState on unmounted components
 
@@ -618,6 +687,16 @@ to the two components via prop drilling.
 Intermediate components might not need the un-necessary props.
 
 
+### forceUpdate in functional components
+
+always return different value in setstate/dispatch, but ignore its usage
+```jsx
+  const [ignored, forceUpdate] = useReducer(x => x + 1, 0);
+
+  function handleClick() {
+    forceUpdate();
+  }
+```
 
 ### React Context
 
@@ -893,6 +972,38 @@ function Example(props) {
   }, []); // This effect never re-runs
   }
 ```
+
+### getDerivedStateFromProps
+
+Main use case - change component state, in response to props update.
+
+Read https://reactjs.org/blog/2018/06/07/you-probably-dont-need-derived-state.html
+
+this is mostly a replacement for `componentWillReceiveProps` but `gdsp` is always triggered, unlike `cwrp` which only triggers on prop update.
+
+**for any piece of data, you need to pick a single component that owns it as the source of truth, and avoid duplicating it in other components**
+
+```
+static getDerivedStateFromProps(newProps, prevState)
+// props are new props, state is old state to refer
+// you must return newstate that will be used in the render method
+```
+
+**Note that this method is fired on every render, regardless of the cause**
+
+`getDerivedStateFromProps` is invoked right before calling the render method, both on the initial mount and on subsequent updates. 
+It should return an object to update the state, or `null` to update nothing.
+
+Simple alternatives:
+
+* If you need to **perform a side effect** (for example, data fetching or an animation) in response to a change in props, `use componentDidUpdate` lifecycle instead.
+* If you want to `re-compute some data only when a prop changes`, use a `memoization helper` instead.
+* If you want to `“reset” some state when a prop changes`, consider either making a component `fully controlled` or `fully uncontrolled` with a key instead.
+
+#### gdsp alternative in react functional components
+
+you can update the state right during rendering (as long as guarded by if, otherwise infinite re-renders). React will re-run the component with updated state immediately after exiting the first render so it wouldn’t be expensive.
+
 
 ### useState hook
 
