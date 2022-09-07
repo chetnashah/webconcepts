@@ -72,6 +72,13 @@ if a React component returns the **exact same element reference** e.g. `children
 e.g.
 see [Gotcha](ReactGotchas.md)
 
+## setState and batching
+
+
+React wraps your **event handlers** in a call to `unstable_batchedUpdates()`, so that your handler runs inside a callback. Any state updates triggered inside that callback will be batched. Any state updates triggered outside that callback will not be batched. Timeouts, promises, and async functions will end up executing outside that callback, and therefore not be batched.
+
+
+
 ### hooks setState vs API setState
 
 API setState for class components:

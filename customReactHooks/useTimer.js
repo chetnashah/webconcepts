@@ -36,11 +36,11 @@ export default function useTimer(totalTime) {
   let [secsRemaining, setSecsRemaining] = useState(totalTime);
 
   let stopFn = () => {
-    setIsRunning(false);
+    setIsRunning(false); // we rely on effect to clear the timer
   };
 
   let startFn = () => {
-    setIsRunning(true);
+    setIsRunning(true); // here we wait 1 frame to run effect which will then run timr via setInterval
   };
 
   let resetFn = () => {
