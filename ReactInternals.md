@@ -1,4 +1,19 @@
 
+### Fiber objects
+
+these "fiber" objects store the real component props and state values.
+They are facade over component instances, also used in comparision etc during diffing phase.
+When you use props and state in your components, React is actually giving you access to the values that were stored on the fiber objects
+
+
+Infact react copies props from fiber object to class Instance object before calling render on the class:
+https://github.com/facebook/react/blob/v17.0.0/packages/react-reconciler/src/ReactFiberClassComponent.new.js#L1038-L1042
+
+Similarly for function components, hook info of a component is stored in corresponding fiber object as a linked list. 
+React hooks work because React stores all of the hooks for a component as a linked list attached to that component's fiber object.
+
+
+
 ### Why do react elemnts have `$$typeof` property?
 
 https://overreacted.io/why-do-react-elements-have-typeof-property/
@@ -171,4 +186,101 @@ export type Effect = {|
   deps: Array<mixed> | null,
   next: Effect,
 |};
+```
+
+## Hook structure is actually a reference node containing linkedlist of hooks
+
+```js
+export type Hook = {|
+  memoizedState: any,
+  baseState: any,
+  baseQueue: Update<any, any> | null,
+  queue: UpdateQueue<any, any> | null,
+  next: Hook | null,
+|};
+```
+
+Where are hooks stored?
+
+**Hooks are stored as a linked list on the fiber's memoizedState field.**
+
+Here is a proof of how it is constructed for the first time for a function component:
+```js
+function mountWorkInProgressHook(): Hook {
+  const hook: Hook = {
+    memoizedState: null,
+    baseState: null,
+    baseQueue: null,
+    queue: null,
+    next: null,
+  };
+
+  if (workInProgressHook === null) {
+    // This is the first hook in the list
+    currentlyRenderingFiber.memoizedState = workInProgressHook = hook;
+  } else {
+    // Append to the end of the list
+    workInProgressHook = workInProgressHook.next = hook;
+  }
+  return workInProgressHook;
+}
+```
+
+## Function component update q
+
+```ts
+export type FunctionComponentUpdateQueue = {|lastEffect: Effect | null|};
+```
+
+## Where are the DOM mutation code functions located?
+
+In `ReactDOMHostConfig.js` for web, and `ReactNativeHostConfig.js` for mobile.
+
+An example function is `commitTextUpdate()` which update text in native text view.
+
+All These functions are considered mutation effects and usually run as a part of `commitMutationEffects()`.
+
+Note how layout effects, effects and componentDidUpdate all are run after these DOM mutations.
+
+![DOM mutation/commit](img/ReactDOMMutationcommit.png)
+
+## Scheduling for concurrent mode
+
+https://www.telerik.com/react-wednesdays/making-sense-of-concurrent-mode-and-the-react-scheduler-with-matan-borenkraout
+
+https://philippspiess.com/scheduling-in-react/
+
+https://github.com/facebook/react/tree/main/packages/scheduler
+
+https://dev.to/nielsen-tlv/the-hidden-magic-of-main-thread-scheduling-16i9
+
+
+## Class component construction
+
+https://github.com/facebook/react/blob/v17.0.0/packages/react-reconciler/src/ReactFiberClassComponent.new.js#L653
+
+Happens inside:
+
+```js
+function constructClassInstance(
+  workInProgress: Fiber,
+  ctor: any,
+  props: any,
+): any {
+  ///
+  // ...
+    const instance = new ctor(props, context);
+  const state = (workInProgress.memoizedState =
+    instance.state !== null && instance.state !== undefined
+      ? instance.state
+      : null);
+  adoptClassInstance(workInProgress, instance);
+}
+
+function adoptClassInstance(workInProgress: Fiber, instance: any): void {
+  instance.updater = classComponentUpdater;
+  workInProgress.stateNode = instance;
+  // The instance needs access to the fiber so that it can schedule updates
+  setInstance(instance, workInProgress);
+}
 ```

@@ -527,3 +527,71 @@ export default function App() {
 
 ### Avoid Provider nesting with `reduceRight`
 
+## React 18 hooks
+
+### useDeferredValue
+
+https://www.youtube.com/watch?v=jCGMedd6IWA
+
+Returns a deferred version of value that may lag behind the original. This might be useful in chunking down large updates.
+
+mostly , deferred value would be propogated with newer changes whenevr application is not busy doing work.
+
+this late/deferred propogation can cause components to re-render.
+```jsx
+function App() {
+  const [text, setText] = useState("hello");
+  const deferredText = useDeferredValue(text); 
+
+  return (
+    <div className="App">
+      {/* Keep passing the current text to the input */}
+      <input value={text} onChange={handleChange} />
+      ...
+      {/* But the list is allowed to "lag behind" when necessary */}
+      <MySlowList text={deferredText} />
+    </div>
+  );
+ }
+
+```
+
+### useTransition
+
+allows components to avoid undesirable loading states by waiting for content to load before transitioning to the next screen.
+
+```jsx
+const [isPending, startTransition] = useTransition();
+/**
+startTransition is a function that takes a callback. We can use it to tell React which state we want to defer
+
+isPending is a boolean. It’s React’s way of informing us whether we’re waiting for the transition to finish
+*/
+```
+
+example
+```jsx
+function App() {
+  const [resource, setResource] = useState(initialResource);
+  const [isPending, startTransition] = useTransition();
+  return (
+    <>
+      <button
+        disabled={isPending}
+        onClick={() => {
+          startTransition(() => {
+            const nextUserId = getNextId(resource.userId);
+            setResource(fetchProfileData(nextUserId));
+          });
+        }}
+      >
+        Next
+      </button>
+      {isPending ? " Loading..." : null}
+      <Suspense fallback={<Spinner />}>
+        <ProfilePage resource={resource} />
+      </Suspense>
+    </>
+  );
+}
+```

@@ -85,6 +85,18 @@ see [Gotcha](ReactGotchas.md)
 
 What's unique about a `passive effect` is, it waits for all UI (render and commit) to settle down before invoking them in another time slice. So the callback happens in a Javascript time slice similar to an event handler
 
+
+See two types of effect tags deciding when to fire.
+```js
+// HookEffectTags.js
+// Represents whether effect should fire.
+export const HasEffect = /* */ 0b001;
+
+// Represents the phase in which the effect (not the clean-up) fires.
+export const Layout = /*    */ 0b010;
+export const Passive = /*   */ 0b100;
+```
+
 ## setState and batching
 
 
@@ -542,13 +554,34 @@ this.setState((prevState, props) => {
 
 ### componentDidUpdate
 
-Called after updating/render.
+Called after updating/render. use cases can be auto-save to server after update, or analytics.
+
+
 You can call setstate, but wrap inside an if condition to prevent infinte recursion
 ```js
-componentDidUpdate(prevProps) {
+componentDidUpdate(prevProps, prevState) {
   // Typical usage (don't forget to compare props):
-  if (this.props.userID !== prevProps.userID) {
+  if (this.props.userID !== prevProps.userID) {// this.props is the most recent render props just before this didupdate fn, prevProps is from previous render
     this.fetchData(this.props.userID);
+  }
+}
+```
+
+**You may call setState() immediately in componentDidUpdate() but note that it must be wrapped in a condition**
+
+sample usage:
+```tsx
+import React from 'react';
+
+export class SampleClassComponent extends React.Component {
+  props: any;
+  render() {
+    console.log('class component render cnt: ', this.props.cnt);
+    return <div>SampleClassComponent: {this.props.cnt}</div>;
+  }
+
+  componentDidUpdate(prevProps) {
+    console.log('this.props = ', this.props, ' prevProps = ', prevProps);// this.props is same in render and componentDidUpdate
   }
 }
 ```
@@ -697,6 +730,11 @@ always return different value in setstate/dispatch, but ignore its usage
     forceUpdate();
   }
 ```
+
+### useLayoutEffect
+
+useful when you want to measure something and change state, but before painting happens.
+e.g. positioning popups based on some other elements etc.
 
 ### React Context
 
