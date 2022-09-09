@@ -192,11 +192,49 @@ setPerson({
 });
 ```
 
+### useCallback
+
+Pass an inline callback and an array of dependencies. `useCallback` will return a memoized version of the callback that only changes if one of the dependencies has changed.
+
+Signature:
+```js
+const memoizedCb = useCallback(fn, [deps]);
+```
+
+usage:
+```js
+const memoizedCallback = useCallback(
+  () => {// we want to memoize the function represented by this arrow literal
+    doSomething(a, b);
+  },
+  [a, b],
+);
+```
+
+Relationship with `useMemo` (the more fundamental one):
+`useCallback(fn, deps)` is equivalent to `useMemo(() => fn, deps)`.
+
+### useMemo
+
+USage/signature
+```js
+const memoizedValue = useMemo(() => computeExpensiveValue(a, b), [a, b]);
+```
+
+Pass a **create function** and relevant dependencies.
+
+`useMemo` will only recompute the memoized value when one of the dependencies has changed.
+
+
 ### useReducer
 
 useReducer takes a `reducer function`, and an `initial state`, and optional 
 lazy init function (which takes in inital state as argument and returns the first state used by render).
 
+Signature:
+```js
+const [state, dispatch] = useReducer(reducer, initialState);
+```
 
 1. must be pure, i.e should not make network request, schedule timeouts etc.
 2. same inputs always result in same output.
