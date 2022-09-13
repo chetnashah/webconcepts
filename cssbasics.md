@@ -1,6 +1,8 @@
 
 #### What are block and inline elements?
 
+A block-level element always starts on a new line and takes up the full width available(think 100% width) of the parent.
+
 Block elements take up full space of parent, examples of block elements are
 * div,
 * p,
@@ -594,8 +596,10 @@ The `width` and `height` properties include the content, but **does not include 
 
 ### Border-box
 
-In this model `border width` is considered part of the width.
+In this model `border width` is considered part of the element width.
 **The `width` and `height` properties include the `content`, `padding`, and `border`, but do not include the `margin`.**
+
+any padding or border specified on the element is laid out and drawn inside this specified width and height. The content width and height are calculated by subtracting the border and padding widths.
 
 ## Remove bullets from li items
 
