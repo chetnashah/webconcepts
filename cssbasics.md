@@ -52,6 +52,12 @@ e.g.
 ```
 
 
+### Margin collapsing
+
+The spec explains that margins between block elements collapse. This means that if you have an element with a top margin immediately after an element with a bottom margin, rather than the total space being the sum of these two margins, the margin collapses, and so **will essentially become as large as the larger of the two margins.**
+
+
+
 ### css variables
 
 Custom properties (sometimes referred to as CSS variables or cascading variables) are entities defined by CSS authors that contain specific values to be reused throughout a document. 
@@ -600,6 +606,10 @@ In this model `border width` is considered part of the element width.
 **The `width` and `height` properties include the `content`, `padding`, and `border`, but do not include the `margin`.**
 
 any padding or border specified on the element is laid out and drawn inside this specified width and height. The content width and height are calculated by subtracting the border and padding widths.
+
+Here is a visualization of both cases:
+
+![box sizing](img/boxsizing.png)
 
 ## Remove bullets from li items
 
