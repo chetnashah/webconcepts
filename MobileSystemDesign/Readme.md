@@ -11,12 +11,13 @@ Flows/usecases help drive api and schema
 2. Background processing strategy. (batching/backgrounding?)
 3. What happens we abruptly go offline?
 4. Is there some kind of (content/file) download?
+5. Caching strategy (Imp at a large scale ~1B users if the app is very chatty)
 
 ## Common non-functional requirements
 
 Offline support.
 Real-time notifications.
-Optimal bandwidth and CPU/Battery usage.
+Optimal bandwidth and CPU/Battery/network usage.
 Security & privacy of sensitive data.
 
 
@@ -47,3 +48,10 @@ Data model on rest/storage vs data model in communication
 5. Data model in local disk/sqlite (denormalized) -> object database like Realm.
 6. Data model in memory (normalized) -> redux like setup of entity hashmaps with ids for reference.
 7. Data model in memory -> usually an object graph (denormalized) 
+
+## Offline first
+
+While designing caching strategy, we must also design, **when and how to evict data**, or else it will keep growing indefinitely.
+
+
+
