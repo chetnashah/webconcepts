@@ -237,3 +237,7 @@ RubyGems monkeypatches Kernel#require, so that it will try to find a gem which c
 In other words, when you call require, you will not call the require from the core library, you will instead call the require from RubyGems which overwrites the one from the core library. And the require from RubyGems knows how to search through gems.
 
 https://www.justinweiss.com/articles/how-do-gems-work/
+
+### bundle exec command
+
+This command executes the command, making all gems specified in the Gemfile(5) available to require in Ruby programs.
