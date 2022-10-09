@@ -31,6 +31,8 @@ test.txt.gpg: data
 
 ## Create public private key pair
 
+**Need a name/user-id and an email to create a key, which would be used as identifiers with the key, search the key etc.**
+
 ```
 gpg --full-generate-key
 ```
