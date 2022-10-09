@@ -1,4 +1,9 @@
 
+### Where is it executed?
+
+top level is executed on master/controller.
+Stages might be executed on agents.
+
 ### Where is the code/artifacts for the build job?
 
 At the start of the build job you will see something like...
@@ -17,6 +22,63 @@ PWD	/var/lib/jenkins
 PATH	/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
 
 ```
+
+### Linting jenkins file
+
+check vscode extension jenkins linter connector
+
+### Writing test cases for your jenkins pipeline
+
+https://github.com/jenkinsci/JenkinsPipelineUnit
+
+### Best practices
+
+https://www.jenkins.io/doc/book/pipeline/pipeline-best-practices/
+
+
+## Why use docker containers as build agents?
+
+So that we are not constrained by laptop/desktop tooling, and can create env from scratch needed for build.
+i.e. we do not need static/global versions of tools installed in the machine.
+
+https://www.youtube.com/watch?v=ymI02j-hqpU
+
+We can also have a per-stage level docker container to run the stage in:
+We use maven container for backend build, we use node-alpine container for frontend build.
+```
+pipeline {
+  agent none
+  stages {
+    stage('Back-end') {
+      agent {
+        docker { image 'maven:3.8.1-adoptopenjdk-11' }
+      }
+      steps {
+        sh 'mvn --version'
+      }
+    }
+    stage('Front-end') {
+      agent {
+        docker { image 'node:16-alpine' }
+      }
+      steps {
+        sh 'node --version'
+      }
+    }
+  }
+}
+```
+
+### Build docker-image on the fly which should be used as a base environment for stage
+
+https://github.com/darinpope/jenkins-example-docker/blob/main/Jenkinsfile-3
+
+## How to use docker for state/steps?
+
+Build and use Docker containers from pipelines
+Install -> Docker plugin and Docker Pipeline.
+
+### Use timeouts at stage level
 
 ### Jenkins ports
 
@@ -157,4 +219,36 @@ pipeline {
 https://github.com/jenkinsci/docker/blob/master/README.md
 ```sh
 docker run -d -v jenkins_home:/var/jenkins_home -p 8080:8080 -p 50000:50000 jenkins/jenkins:lts
+```
+
+### Docker path setup for mac users
+
+Note you should update homebrew file `(HOMEBREW_PREFIX/Cellar/jenkins-lts...jenkins-lts.plist)` file which overrides the `~/Library/LaunchAgents/...jenkins-lts.plist` file.
+
+```
+The /usr/local/bin directory is not included in the macOS PATH for Docker images by default. If executables from /usr/local/bin need to be called from within Jenkins, then the PATH needs to be extended to include /usr/local/bin. Add a path node in the file "/usr/local/Cellar/jenkins-lts/XXX/homebrew.mxcl.jenkins-lts.plist" like this:
+
+Contents of homebrew.mxcl.jenkins-lts.plist
+<key>EnvironmentVariables</key>
+<dict>
+<key>PATH</key
+<string><!-- insert revised path here --></string>
+</dict>
+The revised PATH string should be a colon separated list of directories in the same format as the PATH environment variable and should include:
+
+/usr/local/bin
+
+/usr/bin
+
+/bin
+
+/usr/sbin
+
+/sbin
+
+/Applications/Docker.app/Contents/Resources/bin/
+
+/Users/XXX/Library/Group\ Containers/group.com.docker/Applications/Docker.app/Contents/Resources/bin (where XXX is replaced by your user name)
+
+Now restart jenkins using "brew services restart jenkins-lts"
 ```

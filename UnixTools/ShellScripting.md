@@ -46,3 +46,21 @@ done
 read name
 echo "Welcome $name"
 ```
+
+### Echo without expanding variables/substitution
+
+Use single quotes i.e. `'` to echo without substituting any variables, i.e. treated as a raw stirng!
+
+e.g. 
+
+```
+echo 'export PATH=$PATH:/my/path' >> somefile.txt
+```
+
+will have somefile with exact contents i.e.
+```
+// somefile.txt
+export PATH=$PATH:/my/path
+```
+
+`Note`: If you use double quotes i.e. `"` with `echo`, it will expand/susbtitute variables.

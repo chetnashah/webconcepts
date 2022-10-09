@@ -57,9 +57,13 @@ location of identity keys is configured using the `IdentityFile`
 
 ### ssh-agent
 
+**The ssh-agent is a helper program that keeps track of user's identity/private keys and their passphrases.** The agent can then use the keys to log into other servers without having the user type in a password or passphrase again.
+
 The agent initially does not have any private keys. Keys are added using `ssh(1)` (see `AddKeysToAgent` in `ssh_config(5)` for details) or `ssh-add(1)`. Multiple identities may be stored in `ssh-agent` concurrently and `ssh(1)` will automatically use them if present. `ssh-add(1)` is also used to remove keys from ssh-agent and to query the keys that are held in one.
 
 `Agent Forwarding`: Your private key never leaves your local computer. That's right. By design, the agent never ever discloses your private key, it never ever hands it over to a remote ssh or similar. Instead, ssh is designed such as when an agent is detected, the information that needs to be encrypted or verified through the agent is forwarded to the agent. That's why it is called agent forwarding, and that's why it is considered a safer option.
+
+agent and forwarding: ssh-agent is a program that can hold a user's private key, so that the private key passphrase only needs to be supplied once. A connection to the agent can also be forwarded when logging into a server, allowing SSH commands on the server to use the agent running on the user's desktop.
 
 ### ssh-add
 
@@ -121,5 +125,54 @@ X11Forwarding no
 OpenSSH is a `program` depending on OpenSSL the `library`, specifically OpenSSH uses the `libcrypto` part of OpenSSL.
 It's worth mentioning that OpenSSH does not use the TLS protocol thats used for HTTPS etc. OpenSSH uses some of the OpenSSL cryptographic primatives.
 
+### Remote host reflashed.
+
+WE will get message like:
+```
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@    WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED!     @
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+IT IS POSSIBLE THAT SOMEONE IS DOING SOMETHING NASTY!
+```
+
+Reset known_hosts file for that particular host via:
+```
+ssh-keygen -R 192.168.3.10
+```
+
+After that you will be reprompted for host identification via:
+```
+ja@ja-MacBook-Pro ~ % ssh linaro@192.168.0.104
+The authenticity of host '192.168.0.104 (192.168.0.104)' can't be established.
+ED25519 key fingerprint is SHA256:YDjOWSWLwukasdfadffm1FKOOT9NstxWS9nHfQOCM38.
+This key is not known by any other names
+Are you sure you want to continue connecting (yes/no/[fingerprint])? y
+Please type 'yes', 'no' or the fingerprint: yes
+Warning: Permanently added '192.168.0.104' (ED25519) to the list of known hosts.
+linaro@192.168.0.104's password:
+Linux linaro-alip 4.4.194 #75 SMP Thu Jun 24 14:03:34 UTC 2021 armv7l
+```
+
+
+## Key pair creation
+
+We use `ssh-keygen` command to create key pair
+
+### Select algorithm for keypair using `-t`
+
+### Select filename for keypair using `-f`
+
+e.g.
+
+```
+ssh-keygen -f ~/tatu-key-ecdsa -t ecdsa
+```
+
+
+## Copying public key to another server
+
+```
+ssh-copy-id -i ~/.ssh/tatu-key-ecdsa user@host
+```
 
 

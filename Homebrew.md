@@ -1,6 +1,9 @@
 Where is stuff stored?
 
 `/usr/local/Cellar`.
+or `/opt/homebrew/Cellar`.
+
+The correct prefix can be found using: `brew config`
 
 Get info of a package
 

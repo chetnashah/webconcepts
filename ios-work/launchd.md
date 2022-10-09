@@ -13,6 +13,8 @@ launchd differentiates between agents and daemons. The main difference is that a
 |System Agents	| /System/Library/LaunchAgents |	Currently logged in user
 |System Daemons	| /System/Library/LaunchDaemons	| root or the user specified with the key UserName
 
+Yes, LaunchAgents are only invoked when the user logs into a graphical session.
+LaunchDaemons are typically launched when the system boots and are run outside of a specific user session.
 
 The behavior of a daemon/agent is specified in a special XML file called a property list i.e. a `plist` file. Depending on where it is stored it will be treated as a daemon or an agent.
 
