@@ -22,6 +22,10 @@ To create a virtual environment, decide upon a directory where you want to place
 python3 -m venv tutorial-env
 ```
 
+```
+python3 -m venv .venv
+```
+
 **This will create the tutorial-env directory if it doesn’t exist, and also create directories inside it containing a copy of the Python interpreter and various supporting files**
 
 A common directory location for a virtual environment is .venv. This name keeps the directory typically hidden in your shell and thus out of the way while giving it a name that explains why the directory exists
@@ -35,6 +39,11 @@ tutorial-env\Scripts\activate.bat
 On **Unix or MacOS**, run:
 ```
 source tutorial-env/bin/activate
+```
+
+or 
+```
+source .venv/bin/activate
 ```
 
 **Activating the virtual environment will change your shell’s prompt to show what virtual environment you’re using, and modify the environment so that running python will get you that particular version and installation of Python. For example**
