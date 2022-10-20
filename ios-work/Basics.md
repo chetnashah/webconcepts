@@ -199,3 +199,17 @@ DispatchQueue.global().async {
 ```
 
 
+## App extensions
+
+**App extensions let you extend custom functionality and content beyond your app and make it available to users while they’re interacting with other apps or the system**. 
+
+For example, 
+1. your app can appear as a widget on the Home screen, 
+2. add new buttons in the action sheet, 
+3. offer photo filters within the Photos app, or 
+4. automatically upgrade users’ accounts to use strong passwords or Sign in with Apple. 
+
+Use extensions to place the power of your app wherever your users need it most.
+full list: https://developer.apple.com/app-extensions/
+
+

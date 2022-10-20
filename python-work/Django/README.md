@@ -100,17 +100,69 @@ class Question(models.Model):
     question_text = models.CharField(max_length=200)
     pub_date = models.DateTimeField('date published')
 
+    def __str__(self):
+        return self.question_text
+
 class Choice(models.Model):
     question = models.ForeignKey(Question, on_delete=CASCADE)
     choice_text = models.CharField(max_length=200)
     votes = models.IntegerField(default=0)
+
+    def __str__(self):
+        return "q:"+self.question.question_text+" choice:"+self.choice_text
 ```
 
 `ModelName.objects` returns a Model Manager, which has methods like `.all()` etc which return a `QuerySet`.
 
+### Methods on the `ModelName.objects` manager
+
+```
+>>> Question.objects.
+Question.objects.aaggregate(           Question.objects.defer(
+Question.objects.abulk_create(         Question.objects.difference(
+Question.objects.abulk_update(         Question.objects.distinct(
+Question.objects.acontains(            Question.objects.earliest(
+Question.objects.acount(               Question.objects.exclude(
+Question.objects.acreate(              Question.objects.exists(
+Question.objects.aearliest(            Question.objects.explain(
+Question.objects.aexists(              Question.objects.extra(
+Question.objects.aexplain(             Question.objects.filter(
+Question.objects.afirst(               Question.objects.first(
+Question.objects.aget(                 Question.objects.from_queryset(
+Question.objects.aget_or_create(       Question.objects.get(
+Question.objects.aggregate(            Question.objects.get_or_create(
+Question.objects.ain_bulk(             Question.objects.get_queryset()
+Question.objects.aiterator(            Question.objects.in_bulk(
+Question.objects.alast(                Question.objects.intersection(
+Question.objects.alatest(              Question.objects.iterator(
+Question.objects.alias(                Question.objects.last(
+Question.objects.all()                 Question.objects.latest(
+Question.objects.annotate(             Question.objects.model(
+Question.objects.aupdate(              Question.objects.name
+Question.objects.aupdate_or_create(    Question.objects.none(
+Question.objects.auto_created          Question.objects.only(
+Question.objects.bulk_create(          Question.objects.order_by(
+Question.objects.bulk_update(          Question.objects.prefetch_related(
+Question.objects.check(                Question.objects.raw(
+Question.objects.complex_filter(       Question.objects.reverse(
+Question.objects.contains(             Question.objects.select_for_update(
+Question.objects.contribute_to_class(  Question.objects.select_related(
+Question.objects.count(                Question.objects.union(
+Question.objects.create(               Question.objects.update(
+Question.objects.creation_counter      Question.objects.update_or_create(
+Question.objects.dates(                Question.objects.use_in_migrations
+Question.objects.datetimes(            Question.objects.using(
+Question.objects.db                    Question.objects.values(
+Question.objects.db_manager(           Question.objects.values_list(
+Question.objects.deconstruct()         
+```
+
 ### Saving model with `ModelName.save()`
 
 ### QuerySet
+
+Query set is just like a set of model instances, commonly returned by objects manager methods like `ModelName.objects.all()` or `ModelName.objects.filter()`
+
 
 ### Migrations
 
@@ -125,6 +177,55 @@ As a result of this command, migration logic/files are auto generated in `appnam
 By running **makemigrations**, you’re telling Django that you’ve made some changes to your models (in this case, you’ve made new ones) and that you’d like the changes to be stored as a migration.
 
 Migrations are how Django stores changes to your models (and thus your database schema) - they’re files on disk. You can read the migration for your new model if you like; it’s the file polls/migrations/0001_initial.py. Don’t worry, you’re not expected to read them every time Django makes one, but they’re designed to be human-editable in case you want to manually tweak how Django changes things.
+
+## Inspecting SQL migration changes(dry run)
+
+The `sqlmigrate` command doesn’t actually run the migration on your database - instead, it prints it to the screen so that you can see what SQL Django thinks is required. It’s useful for checking what Django is going to do or if you have database administrators who require SQL scripts for changes.
+
+```
+python manage.py sqlmigrate polls 0001
+```
+
+```SQL
+BEGIN;
+--
+-- Create model Question
+-- polls is the name of the app, question is the name of the table
+CREATE TABLE "polls_question" ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "question_text" varchar(200) NOT NULL, "pub_date" datetime NOT NULL);
+--
+-- Create model Choice
+-- polls is the name of app, choice is name of the table
+CREATE TABLE "polls_choice" ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "choice_text" varchar(200) NOT NULL, "votes" integer NOT NULL, "question_id" bigint NOT NULL REFERENCES "polls_question" ("id") DEFERRABLE INITIALLY DEFERRED);
+CREATE INDEX "polls_choice_question_id_c5b4b260" ON "polls_choice" ("question_id");
+COMMIT;
+```
+
+
+### Applying migrations
+
+```
+(.venv) jayshah@jays-MacBook-Pro django_project % python manage.py migrate              
+Operations to perform:
+  Apply all migrations: admin, auth, contenttypes, polls, sessions
+Running migrations:
+  Applying polls.0001_initial... OK
+```
+
+Primary keys (IDs) are added automatically.
+On observing closesly, we see tables generated with `appname_modelname` convention:
+```SQL
+BEGIN;
+--
+-- Create model Question
+-- polls is the name of the app, question is the name of the table
+CREATE TABLE "polls_question" ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "question_text" varchar(200) NOT NULL, "pub_date" datetime NOT NULL);
+--
+-- Create model Choice
+-- polls is the name of app, choice is name of the table
+CREATE TABLE "polls_choice" ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "choice_text" varchar(200) NOT NULL, "votes" integer NOT NULL, "question_id" bigint NOT NULL REFERENCES "polls_question" ("id") DEFERRABLE INITIALLY DEFERRED);
+CREATE INDEX "polls_choice_question_id_c5b4b260" ON "polls_choice" ("question_id");
+COMMIT;
+```
 
 ### 3 step guide to model migration changes
 
