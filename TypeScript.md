@@ -502,14 +502,32 @@ function testSomething(el: Paddable | string) {
 A sumtype with a smaller list in union is a sub-type of a sumtype with larger 
 list.
 
+subtype remember: 
+1. small union lists are subtypes.
+2. more object properties types are subtypes of objects wth smaller properties.
+
 e.g. 
 ```ts
 type sometype = "a"|"b"|"c"|"d";
 type subtype = "a"|"b";
+// "a"|"b" <: "a"|"b"|"c"|"d"
 
 // then subtype extends sometype
 // or subtype <: sometype
 // or subtype is assignable to sometype
+```
+
+A good example of this is 
+```
+'a' | 'b' | 'c' <: number | string | symbol
+```
+
+Which is also useful in defining `Record` type, which only allows: `number`s or `string`s or `symbol`s as keys:
+```ts
+// 'a' | 'b' | 'c' <: number | string | symbol
+type MyRecord<K extends number | string | symbol, V> = {
+    [K1 in K]: V
+};
 ```
 
 ### Postfix exclamation operator (`identifier!`)
@@ -777,6 +795,18 @@ type ThreeStringProps2 = {prop1: string, prop2: string, prop3: string}
 
 ``` 
 
+### Omit implementation
+
+```ts
+// type union set substraction helper!
+type DropKeys<T, K> = T extends K ? never : T;// extends maps internally over union/sum type individual elemnts
+type tt = DropKeys<'a' | 'b' | 'c', 'a' | 'b'>; // 'c'
+
+type MyOmit<T, K extends string | number> = {
+    [K1 in DropKeys<keyof T, K>]: T[K1]
+};
+```
+
 ### Specifying type parameters in function call
 
 Normally typescript will infer type-parameter automatically at function call site,
@@ -800,7 +830,7 @@ const arr = combine<number | string>([1, 2, 3], ["hello"]);
 #### Conditional types are distributive over union types
 
 Conditional types are distributive: 
-Applying a conditional type `C` to a union type `U` is the same as the union of applying C to each component of U. This is an example:
+**Applying a conditional type `C` to a union type `U` is the same as the union of applying C to each component of U.** This is an example:
 ```ts
 type Wrap<T> = T extends { length: number } ? [T] : T;
 
@@ -819,6 +849,19 @@ type DropNumbers<T> = T extends number ? never : T;
 // %inferred-type: "a" | "b"
 type Result1 = DropNumbers<1 | 'a' | 2 | 'b'>;
 ```
+`Note`: extends maps over union/sum type individual elemnts of **left argument**, distributes over left side Union set, i.e. expands left side union set to apply individual extends and them combine them. e.g. `T extends U`, will expand `T` to distribute.
+
+Here is another one more example demonstrating that idea:
+```ts
+type DropKeys<T, K> = T extends K ? never : T;// extends maps over union/sum type individual elemnts of left argument, distributes over left side union-or set, i.e. 
+// expands left side union-or set to apply individual extends and them combine them
+type tt = DropKeys<'a' | 'b' | 'c', 'a' | 'b'>; // 'c'
+// distribute by breaking left side union set
+// => ('a' extends 'a'|'b' ? never : 'a')  |   ('b' extends 'a'|'b' ? never : 'b')  |  ('c' extends 'a'|'b' ? never : 'c')
+// => never | never | 'c'
+// => 'c'
+```
+
 ### `infer` keyword
 
 Allows indirectly introducing a type variable which depends on/deduced from original type variables.
