@@ -64,3 +64,7 @@ export PATH=$PATH:/my/path
 ```
 
 `Note`: If you use double quotes i.e. `"` with `echo`, it will expand/susbtitute variables.
+
+
+## Print all files that contain a certain text pattern
+
