@@ -68,3 +68,7 @@ export PATH=$PATH:/my/path
 
 ## Print all files that contain a certain text pattern
 
+## Regex differences
+
+https://unix.stackexchange.com/questions/119905/why-does-my-regular-expression-work-in-x-but-not-in-y
+
