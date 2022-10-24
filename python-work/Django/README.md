@@ -84,6 +84,19 @@ urlpatterns = [
 The `include()` function allows referencing other URLconfs. Whenever Django encounters `include()`, it chops off whatever part of the URL matched up to that point and sends the remaining string to the included URLconf for further processing.
 
 
+`include` helps us include/nest an array of path<->view mappings.
+Thus help us create a tree of `path<->view` mappings by allowing nested paths.
+
+```py
+from django.urls import include, path
+
+urlpatterns = [
+    # ... snip ...
+    path('community/', include('aggregator.urls')), # nest in another array of aggregator urls/paths at /community/
+    path('contact/', include('contact.urls')),
+    # ... snip ...
+]
+```
 
 ## Models
 
@@ -166,7 +179,7 @@ Query set is just like a set of model instances, commonly returned by objects ma
 
 ### Migrations
 
-migrations are entirely derived from your models file, and are essentially a history that Django can roll through to update your database schema to match your current models.
+**migrations are entirely derived from your models file, and are essentially a history that Django can roll through to update your database schema to match your current models.**
 
 Migrating a particular app `polls` (Nothing will happen unless you install the app in apps.py):
 ```
@@ -177,6 +190,28 @@ As a result of this command, migration logic/files are auto generated in `appnam
 By running **makemigrations**, you’re telling Django that you’ve made some changes to your models (in this case, you’ve made new ones) and that you’d like the changes to be stored as a migration.
 
 Migrations are how Django stores changes to your models (and thus your database schema) - they’re files on disk. You can read the migration for your new model if you like; it’s the file polls/migrations/0001_initial.py. Don’t worry, you’re not expected to read them every time Django makes one, but they’re designed to be human-editable in case you want to manually tweak how Django changes things.
+
+`Note`: If you try to run `migrate` without running `makemigrations`, you will get following error:
+```
+  Your models in app(s): 'polls' have changes that are not yet reflected in a migration, and so won't be applied.
+  Run 'manage.py makemigrations' to make new migrations, and then re-run 'manage.py migrate' to apply them.
+```
+
+### Admin UI interface generated from a model
+
+![ui](images/admin04t.png)
+
+1. The form is automatically generated from the Question model.
+2. The different model field types (DateTimeField, CharField) correspond to the appropriate HTML input widget. Each type of field knows how to display itself in the Django admin.
+3. Each DateTimeField gets free JavaScript shortcuts. Dates get a “Today” shortcut and calendar popup, and times get a “Now” shortcut and a convenient popup that lists commonly entered times.
+The bottom part of the page gives you a couple of options:
+
+![ui2](images/admin05t.png)
+1. Save – Saves changes and returns to the change-list page for this type of object.
+2. Save and continue editing – Saves changes and reloads the admin page for this object.
+3. Save and add another – Saves changes and loads a new, blank form for this type of object.
+4. Delete – Displays a delete confirmation page.
+
 
 ## Inspecting SQL migration changes(dry run)
 
@@ -236,4 +271,12 @@ the three-step guide to making model changes:
 3. Run `python manage.py migrate` to apply those changes to the database.
 
 
+## Default installed apps
+
+`django.contrib.admin` – The admin site. You’ll use it shortly.
+`django.contrib.auth` – An authentication system.
+`django.contrib.contenttypes` – A framework for content types.
+`django.contrib.sessions` – A session framework.
+`django.contrib.messages` – A messaging framework.
+`django.contrib.staticfiles` – A framework for managing static files.
 
