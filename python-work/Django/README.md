@@ -1,4 +1,8 @@
 
+## Django 2 vs 3
+
+Difference in Serializers, Form.
+
 ## Core classes
 
 Django apps are “pluggable”: You can use an app in multiple projects, and you can distribute apps, because they don’t have to be tied to a given Django installation.
@@ -195,6 +199,23 @@ Migrations are how Django stores changes to your models (and thus your database 
 ```
   Your models in app(s): 'polls' have changes that are not yet reflected in a migration, and so won't be applied.
   Run 'manage.py makemigrations' to make new migrations, and then re-run 'manage.py migrate' to apply them.
+```
+
+### Creating admin superuser
+
+Create super user using `python manage.py createsuperuser`.
+
+```
+(.venv) jayshah@jays-MacBook-Pro pollsapi % python manage.py createsuperuser
+Username (leave blank to use 'jayshah'): admin
+Email address: admin@example.com
+Password: 
+Password (again): 
+The password is too similar to the username.
+This password is too short. It must contain at least 8 characters.
+This password is too common.
+Bypass password validation and create user anyway? [y/N]: y
+Superuser created successfully.
 ```
 
 ### Admin UI interface generated from a model
