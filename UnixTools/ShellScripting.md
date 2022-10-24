@@ -64,3 +64,11 @@ export PATH=$PATH:/my/path
 ```
 
 `Note`: If you use double quotes i.e. `"` with `echo`, it will expand/susbtitute variables.
+
+
+## Print all files that contain a certain text pattern
+
+## Regex differences
+
+https://unix.stackexchange.com/questions/119905/why-does-my-regular-expression-work-in-x-but-not-in-y
+
