@@ -67,7 +67,7 @@ serializer = ExampleSerializer(data=dataDict) # Validated data available in `val
 When passing data to a serializer instance, the unmodified data will be made available as `serializer.initial_data`.
 
 Useful attributes on `Serializer`:
-1. `data` - plain json/dict data 
+1. `data` - plain json/dict data (outgoing, i.e. validated)
 2. `errors` - errors during serialization
 3. `validated_data` - validated dict/data
 4. `fields` - all fields of serialization
