@@ -5,10 +5,24 @@ Start with `Single View application`.
 
 ### App ID
 
-Basically also known as bundle identifier is similar to package name of
-the app and is usually reverse dns naming e.g. `com.mydomain.myappname`
+An App ID represents one or more applications in Apple's system. 
+It consists of two components, 
+* a Team ID and 
+* a bundle ID search string.
 
-Other convention used by xcode is `orgIdentifier.ProjectName`
+In this example, `ABCDE12345` is the Team ID and `com.cocoacasts.scribbles` is the bundle ID search string. The Team ID and the bundle ID search string are separated by a period.
+
+`ABCDE12345.com.cocoacasts.scribbles`
+
+An App ID links one or more applications from a development team in Apple's system.
+
+**WildCard App ID** - One `app ID` can be used for several bundler identifiers e.g.
+`ABCDE12345.com.cocoacasts.*` can be used for 
+```
+com.cocoacasts.scribbles
+com.cocoacasts.scribbles.ios
+com.cocoacasts.scribbles.macos
+```
 
 ### Device UDID
 
