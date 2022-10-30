@@ -512,6 +512,8 @@ type sometype = "a"|"b"|"c"|"d";
 type subtype = "a"|"b";
 // "a"|"b" <: "a"|"b"|"c"|"d"
 
+// extends = "is a narrower version of?" = <:
+
 // then subtype extends sometype
 // or subtype <: sometype
 // or subtype is assignable to sometype
@@ -546,7 +548,14 @@ function fixed(name: string | null): string {
 ```
 Useful in cases of nested function where calls could not be tracked.
 
+### Typing an inline arrow function seems to have a slightly weird syntax
 
+If you write type inline with the function instead of before the equals sign, we have to follow:
+```ts
+const getNumber3 =  (num: number): number => {// note arrow goes after return type
+    return num+1;
+};
+```
 
 ### Enums
 
@@ -930,6 +939,9 @@ function fn(cb: () => void) {
 
 `unknown` is a typesafe counterpart of `any`.
 
+`unkown` can show up when a type argument `T` is expected, but no value(or type parameter) is passed for inference.
+e.g. `new Set()` represents `Set<unknown>` where as `new Set<string>()` represents `Set<string>`
+
 Anything is assignable to `unkown`, but `unknown` is not assignable to other types, only itself and `any`.
 No operations are allowed on `unkown` type without first asserting or narrowing type.
 
@@ -947,7 +959,22 @@ function doSomething(a: unknown) {
 }
 ```
 
-## Error interface
+## Error handling
+
+### By default an untyped error variable of catch block is of unkown type:
+
+```ts
+try {
+    console.log('hi');
+} catch(e) { // e: unkown
+    console.log(e);
+}
+```
+
+**We must use type narrowing to narrow from unknown to Error or something else using `instanceof`**
+
+
+### Error interface
 
 The error interface looks like following:
 
@@ -972,6 +999,8 @@ let Error = function () {
 } as any
 ```
 
+
+
 ## Catch block
 
 In TypeScript 4.0, support was added to allow changing the type of the variable in a catch clause from `any` to `unknown`. Allowing for code like:
@@ -988,3 +1017,67 @@ try {
 }
 ```
 This pattern ensures that error handling code becomes more comprehensive because you cannot guarantee that the object being thrown is a Error subclass ahead of time
+
+### Why is the type of e/err unkown in `catch` block?
+
+**Because anything can be thrown** and it is upto the programmer to narrow down the thrown thing from `unkown` to specific type using `if` checks.
+e.g. of anything thrown:
+```ts
+const tryCatchDemo = (state: "fail" | "succeed") => {
+    try {
+      if (state === "fail") {
+        throw new Error("Failure!");
+      } else {
+        throw new Number(2);
+      }
+    } catch (e) {
+      if(e instanceof Error) {
+        console.log('error was thrown : ', e);
+        return e.message;
+        
+      }
+      if(e instanceof Number) {
+        console.log('a number was thrown');
+      }
+    }
+  };
+
+  tryCatchDemo('fail');
+  tryCatchDemo('succeed');
+```
+
+## Idea: indexing an (union of object types which share same key) with the shared key, distributes over union  and returns union of value side types
+
+* Left side: union of objects with a shared key.
+* index/right side: shared key
+
+```ts
+// union of objects but they all share a key
+type A = { a: number} | { a: string } | { a: boolean }
+
+// indexing into common key distributes over the union
+type Aidx = A['a'] // left side is a union, index is a shared key
+
+// Aidx = number | string | boolean
+```
+
+## Core idea - Getting value type union set from a given object type
+
+**key union set used as index on object type, distributes to value type union set on an object!**
+
+So indexing with a key-union-set distributes, returning value-type-union-set.
+
+* Left side: object
+* Right side: union-key-set
+
+```ts
+type TT = {'a': number, 'c': string }
+// getting 'a' | 'c' is easy using keyof TT
+type TA = TT['a' | 'c'] // TA = string | number
+// or in other words, key union set used as index, distributes to value type union set on an object!
+type TA = TT[keyof TT] // TA = string | number
+```
+
+i.e. you can get `key union set` using `keyof TT`,
+
+similarly you can get `value type union set` using `TT[keyof TT]`
