@@ -107,3 +107,19 @@ Answer:
 ```tsx
 const [address, setAddress] = useState<null | Person["address"]>(null);
 ```
+
+
+## `Ref<T>` is a higher order type which accepts a type parameter which represents type for its `.current` property
+
+```ts
+interface RefObject<T> {
+    readonly current: T | null;
+}
+// Bivariance hack for consistent unsoundness with RefObject
+type RefCallback<T> = { bivarianceHack(instance: T | null): void }["bivarianceHack"];
+type Ref<T> = RefCallback<T> | RefObject<T> | null;
+
+// create ref object with types
+function createRef<T>(): RefObject<T>;
+```
+

@@ -15,6 +15,58 @@ React hooks work because React stores all of the hooks for a component as a link
 
 
 
+## Plain jsx compilation
+
+```tsx
+<hi k={2} key="32" ref={null}></hi> // all props including key,ref go in the config param of `React.createElement`
+```
+gets converted to :
+```jsx
+"use strict";
+
+/*#__PURE__*/React.createElement("hi", {
+  k: 2,
+  key: "32",
+  ref: null
+});
+```
+
+## How object spread for props compiles to `React.createElement`
+
+```tsx
+<hi {...prps}></hi>
+```
+
+to
+```js
+  /*#__PURE__*/React.createElement("hi", prp);
+```
+
+## Reserved props, props with special meaning
+
+```jsx
+const RESERVED_PROPS = {
+  key: true,
+  ref: true,
+  __self: true,
+  __source: true,
+};
+```
+
+## What does `React.createElement` do?
+
+Accetps a `type`, `config` object and `children` array. 
+Returns a `ReactElement`.
+
+1. Create a fresh `props` object.
+2. Separates out `key`,`ref` and other RESERVED_PROPS from config object passed (collection of user supplied props), and copies rest to `prop` object
+3. setups `children` prop.
+4. copies over from defaultProps to props object.
+5. Calls `ReactElement constructor` with all above information.
+
+Check `ReactElement.js` for details in React source code.
+
+
 ### Why do react elemnts have `$$typeof` property?
 
 https://overreacted.io/why-do-react-elements-have-typeof-property/

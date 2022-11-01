@@ -320,6 +320,11 @@ function CustomInput({someProp}, ref) {
 export default React.forwardRef(CustomInput)
 ```
 
+**Think of `forwardRef` as the `ref unwrapper` for your component, provided your component takes one more argument called ref**.
+
+`forwardRef` takes in a component that takes two arguments -> `props` and `ref`, and returns a component,
+for which clients can pass `ref` as a prop, and this returned component will take care of unwrapping and provide to the component wrapped.
+
 Why useImperativeHandle?
 
 To have children Override ref functionality (ref which was forwarded by parent).
@@ -490,6 +495,31 @@ function logProps(Component) {
 ```
 **Ref forwarding is not limited to DOM components. You can forward refs to class component instances, too.**
 
+### Ref forwarding using `React.forwardRef`
+
+Let's say we have a custom input component `CustomInput` which is a functional component, but we need to focus on the CustomInput.
+
+Steps to fix:
+1. update functional component `CustomInput`, to take one more parameter `ref` after `props`, apply that ref to DOM input, and wrap functional component `CustomInput` in `React.forwardRef`, 
+e.g.
+```jsx
+function CustomInput({someProp}, ref) {
+  return (
+    <input 
+      ref={ref}
+      someProp={someProp}
+    />
+  )
+}
+
+export default React.forwardRef(CustomInput)
+```
+
+**Think of `forwardRef` as the `ref unwrapper` for your component, provided your component takes one more argument called ref**.
+
+`forwardRef` takes in a component that takes two arguments -> `props` and `ref`, and returns a component,
+for which clients can pass `ref` as a prop, and this returned component will take care of unwrapping and provide to the component wrapped.
+
 #### useRef vs createRef
 
 The difference is that `createRef` will always create a new ref. In a class-based component, you would typically put the ref in an instance property during construction (e.g. `this.input = createRef()`). You don't have this option in a function component. `useRef` takes care of returning the same ref each time as on the initial rendering.
@@ -509,6 +539,17 @@ const Example = () => {
    // well, you can re
    return <div ref={onRefSet}>😎</div>
 }
+```
+
+A ref is a plain JS object `{ current: <some value> }`.
+
+`React.createRef()` is a factory returning a ref `{ current: null }` - no magic involved.
+
+`useRef(initValue)` also returns a ref `{ current: initValue }` akin to `React.createRef()`. Besides, it memoizes this ref to be persistent across multiple renders in a function component. Better to use `useRef` in functional components.
+
+It is sufficient to use `React.createRef` in class components, as the ref object is assigned to an instance variable, hence accessible throughout the component and its lifecyle:
+```js
+this.myRef = React.createRef(); // stores ref in "mutable" this context (class)
 ```
 
 #### React setState signatures
