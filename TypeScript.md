@@ -1081,3 +1081,33 @@ type TA = TT[keyof TT] // TA = string | number
 i.e. you can get `key union set` using `keyof TT`,
 
 similarly you can get `value type union set` using `TT[keyof TT]`
+
+
+## Generic functions
+
+Normal generic functions are simple, the type paramater `T` goes after the function name.
+e.g.
+```tsx
+function identity<T>(arg: T): T {
+    return arg;
+}
+```
+
+## Generic arrow functions
+
+We might try to define `generic arrow functions` in a similar manner, with type parameter `<T>` before the param,, but typescript compiler will think it is an unfinished jsx tag.
+e.g.
+```tsx
+const foo = <T>(x: T) => x; // ERROR : unclosed `T` tag
+```
+
+### Workaround, use a comma(,) or try `T extends unknown`
+
+```tsx
+const foo = <T extends unknown>(x: T) => x;// extends keyword tells compiler it iis not a jsx tag
+// also `T` extends unknown is equivalent to T since unknown is very wide.
+```
+or
+```tsx
+const foo = <T,>(x: T) => x;// comma tells compileer it is not a jsx tag
+```

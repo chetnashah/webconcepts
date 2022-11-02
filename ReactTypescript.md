@@ -295,11 +295,13 @@ e.g.
 ```tsx
 import { ReactNode, useState } from "react";
 
+// note parametrized props
 interface Props<T> {
   items: T[];
   renderItem: (item: T) => ReactNode;
 }
 
+// note parametrized props, state and component.
 function List<T>(props: Props<T>) {
   const { items, renderItem } = props;
   const [state, setState] = useState<T[]>([]); // You can use type T in List function scope.
@@ -310,5 +312,31 @@ function List<T>(props: Props<T>) {
       {JSON.stringify(state, null, 2)}
     </div>
   );
+}
+```
+
+## Funtional HOC
+
+```tsx
+// means T has more properies on topof theme props
+export function withTheme<T extends WithThemeProps = WithThemeProps>(
+  WrappedComponent: React.ComponentType<T>
+) {
+  // Try to create a nice displayName for React Dev Tools.
+  const displayName =
+    WrappedComponent.displayName || WrappedComponent.name || "Component";
+
+  // Creating the inner component. The calculated Props type here is the where the magic happens.
+  const ComponentWithTheme = (props: Omit<T, keyof WithThemeProps>) => {
+    // Fetch the props you want to inject. This could be done with context instead.
+    const themeProps = useTheme();
+
+    // props comes afterwards so the can override the default ones.
+    return <WrappedComponent {...themeProps} {...(props as T)} />;
+  };
+
+  ComponentWithTheme.displayName = `withTheme(${displayName})`;
+
+  return ComponentWithTheme;
 }
 ```
