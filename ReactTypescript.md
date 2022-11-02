@@ -123,3 +123,192 @@ type Ref<T> = RefCallback<T> | RefObject<T> | null;
 function createRef<T>(): RefObject<T>;
 ```
 
+
+## Functional components
+
+`FC` is exactly same as `FunctionComponent`
+
+```tsx
+type FC<P = {}> = FunctionComponent<P>;
+
+// note how a function object TS signatrue is written
+interface FunctionComponent<P = {}>{
+  (props: PropsWithChildre<P>, context ?: any): ReactElement<any, any> | null;
+  propTypes ?: WeakValidationMap<P>;
+  contextTypes ?: ValidationMap<P>;
+  defaultProps ?: Partial<P>;
+  displayName ?: string;
+}
+```
+
+## Class components
+
+```tsx
+interface ComponentClass<P={}, S=ComponentState> extends StaticLifecycle<P,S> {
+  new (props:P, context?: any): Component<P,S>;
+  propTypes ?: WeakValidationMap<P>;
+  contextType ?: Context<any>;
+  childContextTypes ?: ValidationMap<any>;
+  defaultProps ?: Partial<P>;
+  displayName ?: string;
+}
+```
+
+The full class type `Component`:
+
+```tsx
+class Component<P,S> {
+  static contextType: Context<any>;
+  constructor(props: P);
+  setState<K extends keyof S>(...): void;
+  render(): ReactNode;
+  state: readonly S;
+  props: ReadOnly<P> & ReadOnly<{ children ?: ReactNode }>;
+  // string refs
+  refs: {
+    [key: string]: ReactInstance
+  }
+}
+```
+
+## `ComponentType` is common abstraction over class components as well as functional components
+
+```tsx
+type ComponentType<P = {}> = ComponentClass<P> | FunctionComponent<P>; 
+```
+
+example:
+```tsx
+import * as React from 'react';
+
+// functional component
+function Box(){
+    return <div>Box</div>
+}
+
+// class component
+class BoxC extends React.Component { 
+    render() {
+        return <div>CBox</div>;
+    }
+}
+
+let B: React.ComponentType<any> = Box;
+B = BoxC;
+```
+
+## Having components with one prop dependent on other 
+
+https://www.youtube.com/watch?v=vXh4PFwZFGI
+https://react-typescript-cheatsheet.netlify.app/docs/advanced/patterns_by_usecase/#props-pass-one-only-if-the-other-is-passed
+
+https://react-typescript-cheatsheet.netlify.app/docs/advanced/patterns_by_usecase/#props-must-pass-both
+
+https://react-typescript-cheatsheet.netlify.app/docs/advanced/patterns_by_usecase/#props-one-or-the-other-but-not-both
+
+Use cases can be:
+1. only one of two props is allowed on a component
+2. a second prop is allowed only if first prop is included, e.g. `<Panel collapsable collapsed>` - here `collapsed` should not be added without `collapsable`.
+
+## React Element types
+
+### JSX.Element
+
+```tsx
+// functional component
+function Box(){
+    return <div>Box</div>
+}
+
+let t: JSX.Element = Box();
+```
+
+`JSX.Element` is `ReactElement`, whose props and type have type `any`, so they are more or less the same
+
+### ReactElement
+
+An object with following properties:
+1. `type`
+2. `props`
+3. `key`
+
+```tsx
+ interface ReactElement<P = any, T extends string | JSXElementConstructor<any> = string |JSXElementConstructor<any>> {
+    type: T;
+    props: P;
+    key: Key | null;
+}
+```
+
+### ReactNode
+
+A react node is something renderable like `null`, `false` or `ReactElement` or `string`.
+
+```tsx
+type ReactText = string | number;
+type ReactChild = ReactElement | ReactText;
+
+interface ReactNodeArray extends Array<ReactNode> {}
+type ReactFragment = {} | ReactNodeArray;
+
+type ReactNode = ReactChild | ReactFragment | ReactPortal | boolean | null | undefined;
+```
+
+
+## PAtterns
+
+### Function-as-child render prop pattern
+
+function-as-a-child render prop:
+```ts
+import { ReactNode } from "react";
+
+interface Props {
+  children: (foo: string) => ReactNode;
+}
+
+```
+
+
+### Extracting prop types of a Component, using `ComponentProps<typeof Comp>`
+
+Sometimes you want proptypes of a component, but it isn't exported.
+
+Use `React.ComponentProps<typeof Comp>`
+```tsx
+// a Modal component defined elsewhere
+const defaultProps: React.ComponentProps<typeof Modal> = {
+  title: "Hello World",
+  visible: true,
+  onClick: jest.fn(),
+};
+```
+
+
+## Generic props
+
+https://react-typescript-cheatsheet.netlify.app/docs/advanced/patterns_by_usecase/#generic-components
+
+`type parameter T` is decided by the type of the prop values that are passed. and Props are parametrized on that type `T`
+
+e.g.
+```tsx
+import { ReactNode, useState } from "react";
+
+interface Props<T> {
+  items: T[];
+  renderItem: (item: T) => ReactNode;
+}
+
+function List<T>(props: Props<T>) {
+  const { items, renderItem } = props;
+  const [state, setState] = useState<T[]>([]); // You can use type T in List function scope.
+  return (
+    <div>
+      {items.map(renderItem)}
+      <button onClick={() => setState(items)}>Clone</button>
+      {JSON.stringify(state, null, 2)}
+    </div>
+  );
+}
+```
