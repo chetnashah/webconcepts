@@ -61,3 +61,11 @@ that would be resolved at dynamic lib loading or runtime.(Verify all address usi
 `Dynamic Library`: also referred to as shared library, shared object, dynamically linked library, .dll, .so etc is archive of object files that can be loaded at arbitrary memory address
 and lnked with a program in memory at loadtime or runtime.
 It is done by `dyld` on macOS. `man dlopen` also.
+
+
+## Work with archive files using `ar` command
+
+ar command is used to create, modify and extract the files from the archives.
+
+e.g. extract `.o` files from `.a` files.
+
