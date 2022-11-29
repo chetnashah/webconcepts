@@ -54,3 +54,16 @@ You will see below screen:
 ![download push cert](images/downloadyourcert.png)
 
 ![downloaded push cert](images/downloadedpushcert.png)
+
+
+## Creating a new Notification SErvice extension
+
+Go to File > New > Target > NotificationServicExtension
+
+Create Notification Service Extension:
+![Create](images/createnotificationserviceextension.png)
+
+
+Naming the Notification service extension:
+![Name it](images/namenotificationserviceextension.png)
+

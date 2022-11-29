@@ -9,6 +9,8 @@ https://tldp.org/LDP/abs/html/wrapper.html#EX3
 sed SCRIPT INPUTFILE...
 ```
 
+the script (or command) is also referred to as pattern regex, e.g.`s/a/b/g`
+
 If you do not specify INPUTFILE, or if INPUTFILE is -, sed filters the contents of the standard input.
 
 ## Where does sed output?
@@ -17,7 +19,24 @@ If you do not specify INPUTFILE, or if INPUTFILE is -, sed filters the contents 
 
 Use `-i` to edit files in-place instead of printing to standard output.
 
+## common flags
 
+Explicity specify script/command/regex, helps in specifying multiple patterns
+```
+-e script, --expression=script
+add the script to the commands to be executed
+```
+Specify file for script
+```
+-f script-file, --file=script-file
+add the contents of script-file to the commands to be executed
+```
+
+## Sed works on line level
+
+The sed utility works by sequentially reading a file, line by line, into memory. It then performs all actions specified for the line and places the line back in memory to dump to the terminal with the requested changes made.
+
+So if you specify: `sed ‘s/Hello/Hi/’ file.txt`, it will only substitute only first occurence of `Hello` in a given line.
 
 ## Basic usage
 
@@ -72,7 +91,8 @@ While with extended (ERE) syntax it is reversed: these characters are special un
 ```
 
 ## How to execute silently?
-
+`-n` option disables automatic printing, the `p` command is used instead to print
+suppress automatic printing of pattern.
 ```sh
 -n
 --quiet
@@ -103,3 +123,6 @@ Then commands are executed; each command can have an address associated to it: a
 When the end of the script is reached, unless the -n option is in use, the contents of pattern space are printed out to the output stream, adding back the trailing newline if it was removed.8 Then the next cycle starts for the next input line.
 
 Unless special commands (like ‘D’) are used, the pattern space is deleted between two cycles. The hold space, on the other hand, keeps its data between cycles (see commands ‘h’, ‘H’, ‘x’, ‘g’, ‘G’ to move data between both buffers). 
+
+
+## Utilities
