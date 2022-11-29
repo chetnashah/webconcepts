@@ -409,3 +409,65 @@ Specifying custom jest reporter in jest-config:
       ["<rootDir>/custom-reporter.js", {"banana": "yes", "pineapple": "no"}]
     ]
 ```
+
+
+## Custom test runners
+
+create-jest-runner takes care of handling the appropriate parallelization and creating a worker farm for your runner.
+
+You simply need two files:
+
+* `Entry file`: Used by Jest as an entrypoint to your runner.
+* `Run (per test) file`: Runs once per test file, and it encapsulates the logic of your runner
+
+A test runner will get access to:
+1. file contents
+2. pass fn
+3. fail fn
+
+and it can be used to run any arbitrary test.
+
+This runner "blade-runner" makes sure that these two emojis ⚔️ 🏃 are present in every file
+`index.js` file:
+
+```js
+// index.js
+const { createJestRunner } = require('create-jest-runner');
+module.exports = createJestRunner(require.resolve('./run'));
+```
+
+`run.js` file:
+
+```js
+// run.js
+const fs = require('fs');
+const { pass, fail } = require('create-jest-runner');
+
+/** @type {import('create-jest-runner').RunTest} */
+const runTest = ({ testPath }) => {
+  const start = Date.now();
+  const contents = fs.readFileSync(testPath, 'utf8');
+  const end = Date.now();
+
+  if (contents.includes('⚔️🏃')) {
+    return pass({ start, end, test: { path: testPath } });
+  }
+  const errorMessage = 'Company policies require ⚔️ 🏃 in every file';
+  return fail({
+    start,
+    end,
+    test: { path: testPath, errorMessage, title: 'Check for ⚔️ 🏃' },
+  });
+};
+
+module.exports = runTest;
+```
+
+specify custom runner via config:
+```json
+{
+  "jest": {
+    "runner": "/path/to/my-runner"
+  }
+}
+```
