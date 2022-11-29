@@ -368,3 +368,44 @@ These can be mocked out in jest tests using following config of jest:
     "^.*[.](jpg|JPG|gif|GIF|png|PNG|less|LESS|css|CSS)$": "EmptyModule"
   },
 ```
+
+
+## Writing a custom test reporter
+
+https://gitlab.com/colinfwren/jest-reporter-debug/-/blob/master/src/index.js
+
+There are three important methods:
+1. onRunStart
+2. onTestResults
+3. onRunComplete
+
+```js
+//<rootdir>/custom-reporter.js
+export default class CustomeReporter {
+    constructor(globalConfig, options) {
+        this._globalConfig = globalConfig;
+        this._options = options;
+        console.log('this._globalConfig = ', this._globalConfig);
+    }
+    
+    onTestResult() {
+        console.log('onTestResult = ', arguments);
+    }
+
+    onRunStart() {
+        console.log('onRunStart = ', arguments);
+    }
+
+    onRunComplete() {
+        console.log('onRunComplete = ', arguments);
+    }   
+}
+```
+
+Specifying custom jest reporter in jest-config:
+```json
+    "reporters": [
+      "default",
+      ["<rootDir>/custom-reporter.js", {"banana": "yes", "pineapple": "no"}]
+    ]
+```
