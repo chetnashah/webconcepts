@@ -47,7 +47,6 @@ target 'RNIntegrations' do
   )
 
 
-
   post_install do |installer|
     react_native_post_install(
       installer,
@@ -60,5 +59,36 @@ target 'RNIntegrations' do
     end
     __apply_Xcode_12_5_M1_post_install_workaround(installer)
   end
+end
+```
+
+## hooks
+
+### post_install
+This hook allows you to make any last changes to the generated Xcode project before it is written to disk, or any other tasks you might want to perform.
+
+It receives the `[Pod::Installer]` as its only argument.
+
+Examples:
+Customizing the build settings of all targets.
+```
+post_install do |installer|
+  installer.pods_project.targets.each do |target|
+    target.build_configurations.each do |config|
+      config.build_settings['GCC_ENABLE_OBJC_GC'] = 'supported'
+    end
+  end
+end
+```
+### post_integrate
+This hook allows you to make changes after the project is written to disk.
+
+It receives the `[Pod::Installer]` as its only argument.
+
+Examples:
+Customizing the build settings of all targets
+```
+post_integrate do |installer|
+  # some change after project write to disk
 end
 ```
