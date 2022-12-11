@@ -10,6 +10,34 @@ The `packer {}` block contains Packer settings, including specifying a required 
 
 The `source` block configures a specific builder plugin, which is then invoked by a `build` block.
 
+A source block has two important labels: `a builder type` and a `name`
+
+```
+// The amazon-ebs builder launches the source AMI, runs provisioners within this instance, then repackages it into an EBS-backed AMI.
+
+source "amazon-ebs" "ubuntu" {
+  ami_name      = "learn-packer-linux-aws" // new ami name
+  instance_type = "t2.micro"
+  region        = "us-west-2"
+  source_ami_filter {
+    filters = {
+      name                = "ubuntu/images/*ubuntu-xenial-16.04-amd64-server-*" // base image
+      root-device-type    = "ebs"
+      virtualization-type = "hvm"
+    }
+    most_recent = true
+    owners      = ["099720109477"]
+  }
+  ssh_username = "ubuntu"
+}
+```
+
+In the example template, the amazon-ebs builder configuration launches a t2.micro AMI in the us-west-2 region using an ubuntu:xenial AMI as the base image, 
+
+then creates an image named learn-packer-linux-aws from that instance. 
+
+**The builder will create all the temporary resources necessary (for example, keypairs, security group rules, etc..) to temporarily access the instance while the image is being created.**
+
 ## Build block
 
 The `build` block defines what Packer should do with the instance after it launches.
@@ -55,5 +83,6 @@ Provisioners use built-in and third-party software to install and configure the 
 * creating users
 * downloading application code
 
+## AMI packer
 
-
+https://developer.hashicorp.com/packer/tutorials/aws-get-started/aws-get-started-build-image
