@@ -16,8 +16,11 @@ Sub cases:
 2. `pull_request` - `GITHUB_REF` is pull request merge branch
 3. `release` - ref is release tag created.
 
+`GITHUB_EVENT_PATH` - path to file on runner, that contains full event webhook payload. for e.g. `/github/workflow/event.json`.
 
 `GITHUB_RUN_ID` - unique number for workflow run, does not change if you re-run workflow run. GITHUB_RUN_NUMBER is associated with this run-id and bumps on re-run.
+
+`GITHUB_PATH` - file to which paths can be appended for system path update, this will be visible to subsequent actions/steps.
 
 ## GITHUB_ENV file
 
