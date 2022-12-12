@@ -24,3 +24,43 @@ class Person {
   }
 }
 ```
+
+
+## Typing of methods
+
+
+```swift
+    public func sayName() -> String {
+        return "name is " + name
+    }
+    
+    public func sayWithArg(s: String) -> String {
+        return "arg is " + s + " and name is " + name
+    }
+```
+
+
+## Class Static member func with `public class func` 
+
+```swift
+public class Person {
+    private var name : String?;
+    
+    public class func getStaticVar() -> String {
+        return "Static member";
+    }   
+}
+```
+
+
+## Class Static member property is not obvious
+
+Instead of `public class var`, we should use `public static var` for a static member property.
+
+```swift
+public class Person {
+    public static var stname = "Adsf";
+}
+```
+
+

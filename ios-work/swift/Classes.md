@@ -53,5 +53,16 @@ A module is typically a target like framework/app.
 
 `public class/member` - same as `open`, but the class is only allowed to be subclassed within a module. (Kind of like protected in java).
 
+## Making default initializers public
 
-
+```swift
+public class Person {
+    public var name : String = "default name";
+    
+    public init() {} // this needed for name to be initialized above
+    
+    public func sayName() {
+        print("Name is " + name);
+    }
+}
+```
