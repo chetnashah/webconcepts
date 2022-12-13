@@ -1,7 +1,17 @@
 
+## Good blogs
+
+https://www.developerway.com/
+
+https://blog.isquaredsoftware.com/
+
+https://kentcdodds.com/blog
+
+https://overreacted.io/
+
 ### Render function calling
 
-Whenever a render function is called, it will recursively call render function of all the children (all levels - nothing skipped), unless there is some memo in between.
+Whenever a render function is called, it will recursively call render function of all the childs (all levels - nothing skipped), unless there is some memo in between.
 
 render function call of a component will, by default, cause all to call render function of components inside of it!
 
@@ -68,6 +78,8 @@ problem lies in the fact that you are calling your `state setter immediately ins
 ### Same element reference returned as render function output, (will skip child/children render)
 
 if a React component returns the **exact same element reference** e.g. `children prop` in its render output as it did the last time, React will skip re-rendering that particular child.
+
+Usually tags like `<Me />` will create a new react element each time so their render function call is not skipped, but props like `this.props.children` stay the same referentially so their render is skipped.
 
 e.g.
 see [Gotcha](ReactGotchas.md)
@@ -751,6 +763,9 @@ a re-render of `children`, as they are used by reference.
 
 https://www.youtube.com/watch?v=3XaXKiXtNjw
 
+React doesn't bother to render a React Element again if it is referentially (===) equal to what it was in the previous render.
+
+https://www.developerway.com/posts/react-elements-children-parents
 
 ### When to reach out for global state?
 If you need state in two components that
