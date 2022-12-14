@@ -1,4 +1,11 @@
 
+## Gives you access to internal/external modules using `getModules(ClassName.class)` API
+
+e..g
+```java
+mPermissionsManager = moduleRegsitry.getModule(Permissions.class);
+```
+
 ## ModuleRegistry
 
 HOlds a map of class/string to imported and exported modules

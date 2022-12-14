@@ -8,6 +8,10 @@ or
 buildkite-agent start
 ```
 
+## All steps are parellel by default
+
+Can only be sequential if explicitly or implicitly specified via `wait` or `depends_on` or `block` step types.
+
 ## Token needs to be replaced in config file
 
 ```
@@ -42,3 +46,21 @@ To run multiple agents simply run the buildkite-agent start command
 multiple times, or duplicate the LaunchAgent plist to create another
 that starts on login.
 
+## Add code coverage 
+
+```groovy
+plugins {
+    jacoco
+}
+
+// hooking into test task
+tasks.named("test") {
+    finalizedBy(tasks.named("jacocoTestReport"))
+}
+```
+
+You can do test coverage verification using `JacocoCoverageVerification` type task.
+
+## test task usually runs after i.e. depends on compile task
+
+## check task usually runs after i.e. depends on test
