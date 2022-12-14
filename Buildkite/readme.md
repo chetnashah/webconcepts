@@ -64,3 +64,5 @@ You can do test coverage verification using `JacocoCoverageVerification` type ta
 ## test task usually runs after i.e. depends on compile task
 
 ## check task usually runs after i.e. depends on test
+
+checkstyle is an interesting plugin
