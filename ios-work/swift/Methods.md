@@ -39,6 +39,30 @@ class Person {
     }
 ```
 
+## Argument labels are always needed at call site (unless you opt out of it at definition)
+
+If no explicit argument lables are declared in function definition, argument label is same as parameter name.
+If you really want to opt out of passing argument label at call site of function, you must use `_` at the definition site of the function.
+
+```swift
+
+public class Person {
+    public class func doMeOneArg(n: String) -> String {// must be called as Person.doMeOneArg(n: "Hi")
+        print("dome one arg")
+        return n
+    }
+    
+    public class func doMeNoArg() -> Void { // call doMeNoArg()
+        print("dome no arg")
+    }
+    
+    // must be called as var p3 = Person.doMeTwoArg(n1: "Df", n2: "Adf")
+    public class func doMeTwoArg(n1: String, n2: String) -> String{ 
+        return n1 + n2
+    }
+}
+```
+
 
 ## Class Static member func with `public class func` 
 

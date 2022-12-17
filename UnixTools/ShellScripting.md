@@ -1,4 +1,6 @@
 
+https://www.youtube.com/watch?v=GXu1bZptwf4
+
 ### Print user running the script
 
 ```sh
@@ -72,3 +74,43 @@ export PATH=$PATH:/my/path
 
 https://unix.stackexchange.com/questions/119905/why-does-my-regular-expression-work-in-x-but-not-in-y
 
+## Bash globbing
+
+https://dwheeler.com/essays/filenames-in-shell.html
+
+https://dwheeler.com/essays/filenames-in-shell.html#globbing
+Bash does carry out filename expansion -- a process known as globbing -- but this does not use the standard RE set.
+e.g. `ls -al *.txt`.
+
+Strings containing `*` will not match filenames that start with a `dot`. 
+
+e.g. `ls *rc` does not work, but `ls .*rc` will print all the rc files.
+
+**Globbing is a simple language specifically designed for filename handling, primarily to create lists of unhidden files in a particular directory. In this language, “*” matches all non-hidden files in the current directory, “*.pdf” matches all non-hidden files in the current directory ending in “.pdf” - and so on.**
+
+`Globbing and expansion`: glob expansion is built into the shell and done after field (IFS) expansion.
+
+
+## Field expansion
+
+Bash separates fields using an env variable named `IFS`, known as Internal field separator.
+
+## Shell expansions
+
+https://tldp.org/LDP/Bash-Beginners-Guide/html/sect_03_04.html
+
+https://www.gnu.org/software/bash/manual/html_node/Shell-Parameter-Expansion.html
+
+https://effective-shell.com/part-6-advanced-techniques/understanding-shell-expansion/
+
+https://www.youtube.com/watch?v=yTijxqjZhRo
+
+**Always wrap your variables in quotes**
+
+## Command invocation
+
+`$ KEY=VALUE command`
+
+wills set `KEY=VALUE` only within the context of the command.
+
+Otherwise, if `$KEY=VALUE` then the environment variable named `KEY` wiht value `VALUE` is set at shell level.
