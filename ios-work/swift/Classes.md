@@ -59,10 +59,28 @@ A module is typically a target like framework/app.
 public class Person {
     public var name : String = "default name";
     
-    public init() {} // this needed for name to be initialized above
+    public init() {} // this needed for name to be initialized above, for a public class
     
     public func sayName() {
         print("Name is " + name);
+    }
+}
+```
+
+## Initializers and Deinitializers (or Constructors and Destructors)
+
+**Note** - `deinit` does not take any parameters or access control modifiers.
+
+```swift
+class Person {
+    let name: String
+    init(name: String) {
+        self.name = name
+        print("\(name) is being initialized")
+    }
+    // Note: how deinit clause does not take parameters or access control modifiers
+    deinit {
+        print("\(name) is being deinitialized")
     }
 }
 ```

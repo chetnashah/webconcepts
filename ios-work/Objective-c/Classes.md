@@ -31,6 +31,50 @@ Public information goes into the interface for your class—it defines the way y
 
 In Objective-C, the interface and implementation are usually placed in separate files so that you only need to make the interface public.
 
+![here](images/objcclassstuff.png)
+
+
+Here is an example DateCalculator class implementation:
+
+```objc
+// DateCalculator.h
+#ifndef DateCalculator_h
+#define DateCalculator_h
+
+@interface DateCalculator : NSObject
+
+- (void)setHisAge:(float)hisAge;
+- (float)hisAge;
+- (BOOL)shouldHeDateIfHerAgeIs:(float)herAge;
+
+@end
+
+#endif /* DateCalculator_h */
+```
+DateCalculator.m file:
+```objc
+/* DateCalculator.m */
+#import <Foundation/Foundation.h>
+#import "DateCalculator.h"
+
+@implementation DateCalculator {
+    // private instance variables go here
+    float _hisAge;
+}
+
+- (void)setHisAge:(float)hisAge {
+    _hisAge = hisAge;
+}
+- (float)hisAge {
+    return _hisAge;
+}
+
+- (BOOL)shouldHeDateIfHerAgeIs:(float)herAge {
+    return YES;
+}
+@end
+```
+
 ### Properties (specified in interface) control access to an object values
 
 ### Method declarations (specified in interface) indicate the Messages an Object Can Receive
@@ -51,10 +95,15 @@ joiningArgumentn:(argumentTypeN)paramNameN
 }
 ```
 
-**Note how argument1 name does not exist, only param name.**
+**Note how argument1 name does not exist, only param name, a good way to make it easier is to use argname as part of func_name**
 e.g. single param function looks like this:
 ```objc
-- (return_type) func_name:(firstArgType) paramName1 {
+- (return_type) func_name_with_argname:(firstArgType) paramName1 {
+    // body
+}
+
+// multi-param method
+- (return_type) func_name_with_argname:(firstArgType) paramName1 arg2Name: (arg2Type) paramName2 {
     // body
 }
 ```
@@ -208,4 +257,53 @@ When one class inherits from another, the child inherits all the behavior and pr
 In the case of Objective-C string classes, the class description for `NSMutableString` specifies that the class inherits from `NSString`.
 
 It’s important to keep the inheritance chain in mind for any class you need to use, in order to work out exactly what it can do.
+
+## initializers
+
+`initWithX` methods can be present on instance instead of class, because first `alloc` is called. 
+
+What it should look like?
+
+```objc
+- (instancetype)initWithA:(atype) aparam barg:(btype) bparam {
+    if((self = [super init])) {
+        _a = aparam; // populating backing private instance variables
+        _b = bparam;
+    }
+    return self;// return instance itself
+}
+```
+
+### Designated initializer
+
+object initialization is based on the notion of a **designated initializer**, an initializer method that is responsible for calling one of its superclass’s initializers and then initializing its own instance variables. 
+
+Initializers that are not designated initializers are known as `convenience initializers`. `Convenience initializers` typically delegate to another initializer—eventually terminating the chain at a designated initializer.
+
+### instancetype vs id
+
+`instancetype` is a contextual keyword that can be used as a result type to signal that a method returns a related result type.
+Using instancetype instead of id in appropriate places improves type safety in your Objective-C code.
+
+This is typically the case for init methods and class factory methods.
+e.g.
+```objc
+@interface Person
++ (instancetype)personWithName:(NSString *)name;
+@end
+```
+
+### Calling of custom intitializers
+
+```objc
+TemperatureConverter* tc = [[TemperatureConverter alloc] initWithLocation:@"Delhi"];
+
+```
+
+
+## Properties
+
+Properties are awesome because getters and setters are created automatically based on specifications.
+
+Use `@property property-attributes property-name`
 
