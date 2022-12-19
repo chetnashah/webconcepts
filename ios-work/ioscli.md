@@ -1,5 +1,10 @@
 
 
+codesign manpage - https://www.manpagez.com/man/1/codesign/
+
+security cli manpage - https://ss64.com/osx/security.html
+
+
 ### List all Targets, Build Configurations and Schemes
 
 ```sh
@@ -60,3 +65,36 @@ cert are all about identity
 
 1. dev
 2. distribution
+
+## find all code signing identities
+
+```sh
+security find-identity -v -p codesinging
+```
+
+## Inspect provisioning profile contents
+
+```sh
+security cms -D -i myprovprofile.mobileprovision
+```
+
+## List local keychains
+
+```sh
+security list-keychains -d user
+```
+
+## ios-deploy tool 
+
+### list all provisioning profiles on device
+
+```sh
+ios-deploy --list_profiles
+```
+
+### list all devices
+
+```sh
+ios-deploy -c
+```
+
