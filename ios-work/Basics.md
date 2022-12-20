@@ -1,4 +1,9 @@
 
+
+**simulator builds do not need codesigning - Both Debug/Release configuration**.
+
+**Device builds - both Debug/Release Configuration need codesigning**.
+
 ### Project types
 
 Start with `Single View application`.
