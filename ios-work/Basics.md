@@ -1,8 +1,9 @@
 
 
-**simulator builds do not need codesigning - Both Debug/Release configuration**.
+**simulator builds do not need codesigning - Both Debug/Release configuration, and simulator builds are `.app` files**.
 
-**Device builds - both Debug/Release Configuration need codesigning**.
+**Device builds - both Debug/Release Configuration need codesigning, and device builds are `.ipa` file**.
+
 
 ### Project types
 
