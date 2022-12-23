@@ -307,3 +307,24 @@ Properties are awesome because getters and setters are created automatically bas
 
 Use `@property property-attributes property-name`
 
+The default name for the automatically generated ivar is the name or your property starting with an underscore
+
+## Private instance variables
+
+The modern way is to declare them with the **@implementation block with braces**
+
+```objc
+@implementation ClassName {
+    // private instance vars go here
+    int privateInteger;
+    MyObject *privateObject;
+}
+
+// method implementations etc...
+
+@end
+```
+
+## Extending classes
+
+Refer: [here](CategoriesAndExtensions.md)
