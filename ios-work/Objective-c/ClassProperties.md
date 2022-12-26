@@ -4,6 +4,16 @@
 
 Syntax: `@property (attribute-list) property-type property-name;`
 
+## Implementation of properties
+
+By default, a readwrite property will be backed by an instance variable, which will again be synthesized automatically by the compiler.
+
+An instance variable is a variable that exists and holds its value for the life of the object. The memory used for instance variables is allocated when the object is first created (through alloc), and freed when the object is deallocated.
+
+Unless you specify otherwise, **the synthesized instance variable has the same name as the property, but with an underscore prefix.** For a property called `firstName`, for example, the **synthesized instance variable** will be called `_firstName`.
+
+
+
 ## List of property attributes
 
 ![here](images/classproperties.png)
