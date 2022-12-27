@@ -40,7 +40,7 @@ extra property holding EXReactDelegateWRapper
 `ExReactDelegateWrapper.m` implementation holds a hidden property `@property (nonatomic, weak) ExpoReactDelegate *expoReactDelegate;` 
 
 
-## Swift class ExpoReactDelegate 
+## ExpoReactDelegate (swift class)
 
 ```swift
 /**
@@ -468,3 +468,7 @@ open class ExpoAppDelegate: UIResponder, UIApplicationDelegate {
   }
 }
 ```
+
+
+## ExpoReactDelegate
+
