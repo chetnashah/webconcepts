@@ -5,6 +5,20 @@ build your project.
 
 You specify dependencies for each target. Pods will be linked to that target.
 
+
+## Imp variables
+
+`PODS_ROOT` - `Pods` directory within iOS.
+
+`PODS_XCFRAMEWORKS_BUILD_DIR` - 
+
+`PODS_CONFIGURATION_BUILD_DIR` - 
+
+`PODS_TARGET_SRCROOT` - 
+
+These can be found in main app target as follows:
+![pod vars](images/PodVars.png)
+
 ### creating Podfile for the first time
 
 ```

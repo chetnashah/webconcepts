@@ -60,3 +60,20 @@ NSLog(@"Now the first date is %@", dateList[0]);
 
 Inside any method, you have access to the implicit local variable self. **self is a pointer to the object
 that is running the method. It is used when an object wants to send a message to itself.**
+
+
+## What is an umbrella header of a framework?
+
+An umbrella header is named by framework name usually(`<FrameworkName>.h`) 
+
+##
+
+You include framework header files in your code using the #include directive. If you are working in Objective-C, you may use the #import directive instead of the #include directive. The two directives have the same basic results. but the #import directive guarantees that the same header file is never included more than once. There are two ways for including framework headers:
+
+```objc
+#include <Framework_name/Header_filename.h>
+#import <Framework_name/Header_filename.h>
+```
+
+
+https://gist.github.com/bgromov/f4327343ad67a5f7216262ccbe99c376
