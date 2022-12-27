@@ -77,3 +77,30 @@ You include framework header files in your code using the #include directive. If
 
 
 https://gist.github.com/bgromov/f4327343ad67a5f7216262ccbe99c376
+
+## `.m` vs `.mm` file
+
+`.m` - 	Objective-C implementation file
+`.mm` - 	Objective-C++ implementation file
+
+##
+
+All instance variables for a newly allocated object are initialized to 0 
+
+## Identify Designated initializer
+
+Identify Designated Initializer
+Clearly identify your designated initializer.
+
+It is important for those who might be subclassing your class that the designated initializer be clearly identified. That way, they only need to override a single initializer (of potentially several) to guarantee the initializer of their subclass is called. It also helps those debugging your class in the future understand the flow of initialization code if they need to step through it. Identify the designated initializer using comments or the NS_DESIGNATED_INITIALIZER macro. If you use NS_DESIGNATED_INITIALIZER, mark unsupported initializers with NS_UNAVAILABLE.
+
+## Instance variables in headers should be @protected or @private
+
+**Instance variables should typically be declared in implementation files (which are private by default) or auto-synthesized by properties **
+
+When ivars are declared in a header file, they should be marked @protected or @private.
+
+## Header Imports are recursive replace of code
+
+e.g. 
+if programin imprts `Employee.h` and `EMployee.h` imports `Person.h`, then `Person` class is automatically in scope, i.e. headers are recursively preprocessed.

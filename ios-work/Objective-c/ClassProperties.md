@@ -10,8 +10,7 @@ By default, a readwrite property will be backed by an instance variable, which w
 
 An instance variable is a variable that exists and holds its value for the life of the object. The memory used for instance variables is allocated when the object is first created (through alloc), and freed when the object is deallocated.
 
-Unless you specify otherwise, **the synthesized instance variable has the same name as the property, but with an underscore prefix.** For a property called `firstName`, for example, the **synthesized instance variable** will be called `_firstName`.
-
+Unless you specify otherwise, **the automatically synthesized instance variable has the same name as the property, but with an underscore prefix.** For a property called `firstName`, for example, the **synthesized instance variable** will be called `_firstName`. you rarely need these instance variables.
 
 
 ## List of property attributes
@@ -50,3 +49,49 @@ class MyList: NSObject {
     var allItems: [MyListItem]
 }
 ```
+
+## setter property access is same as dot based assignment
+
+**Note** - setter accessor has name `setPropName`.
+
+```objc
+mikey.weight = 98;
+// is same as
+[mikey setWeight] = 98; // setter is auto synthesized from property
+```
+
+```objc
+// synthesized accessor
+- (void)setWeight: (int)weight; // set accessor
+- (int)weight; // get accessor
+```
+
+## getter property accessor is same as dot based access
+
+**NOte - No `get` keyword in accessor method, accessor method name is same as property name** 
+
+```objc
+float w = mikey.height;
+float w = [mikey height]; // note no get 
+```
+
+## How to access properties declared in implementation (`.m`) file if they were declared in `.h` file?
+
+Ans: use `self`.
+
+```objc
+@implementation BNRPerson
+- (float)bodyMassIndex {
+    float h = [self heightInMeters];           // heightInMeters property was declared in interface/.h file
+    return [self weightInKilograms] / (h * h); // weightInKilograms property was declared in interface/.h file
+}
+@end
+```
+## properties holding NSString or NSAArray should have copy attribute, why?
+
+## Dot notation for calling accessors
+
+dot property access calls the accessor for get/set (which themsselves are auto synthesized for properties).
+
+
+
