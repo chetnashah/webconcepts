@@ -132,3 +132,33 @@ If you do need to define your own instance variables without declaring a propert
 ...
 @end
 ```
+
+## Have a Immutable public property backed by mutable local instance var
+
+```objc
+@interface BNREmployee : BNRPerson
+
+@property int employeeId; // 0,1,3
+@property (nonatomic, strong, readonly) NSArray *tags; // Immutable interface
+
+@end
+```
+
+
+In implementaiton/private parts:
+```objc
+// BNREmployee.m
+@interface BNREmployee (){
+    NSMutableArray *_tags; // mutable internal backing storage.
+}
+@end
+
+@implementation BNREmployee
+
+- (void)addTag:(NSString*) tag {
+    if(!_tags) {
+        _tags = [[NSMutableArray alloc] init];
+    }
+    [_tags addObject:tag];
+}
+```
