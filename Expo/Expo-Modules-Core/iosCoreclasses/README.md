@@ -3,6 +3,12 @@
 ## ExAppDelegateWrapper
 
 AppDelegate wrapper, that extends UIResponder and implements `UIApplicationDelegate` protocol.
+
+Its implementation, contains a hidden instance var: `ExExpoAppDelegate *_expoAppDelegate` which is a swift class.
+and another hidden property `ExReactDelegateWrapper *reactDelegate`.
+
+**Both are alloc'ed here**.
+
 ```objc
 /**
  Provides backwards compatibility for existing projects with `AppDelegate`
@@ -21,6 +27,8 @@ extra property holding EXReactDelegateWRapper
 
 
 ## EXReactDelegateWrapper
+
+Maintains a reference to `ExpoReactDelegate *expoReactDelegate`, but it is not self alloc'ed but passed in to constructor.
 
 ```objc
 @interface EXReactDelegateWrapper : NSObject
@@ -41,6 +49,10 @@ extra property holding EXReactDelegateWRapper
 
 
 ## ExpoReactDelegate (swift class)
+
+Maintains a list of **ExpoReactDelegateHandler**.
+
+**This class will loop through each `ExpoReactDelegateHandler` to determine the winner to create the instance.**
 
 ```swift
 /**
@@ -83,6 +95,7 @@ public class ExpoReactDelegate: NSObject {
 
 ## ExpoReactDelegateHandler
 
+Interface to implement handler to customize react instance creation/processing.
 Modules have handlers to customize react instance creation/processing.
 
 ```swift
@@ -468,7 +481,4 @@ open class ExpoAppDelegate: UIResponder, UIApplicationDelegate {
   }
 }
 ```
-
-
-## ExpoReactDelegate
 

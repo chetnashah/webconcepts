@@ -328,3 +328,4 @@ The modern way is to declare them with the **@implementation block with braces**
 ## Extending classes
 
 Refer: [here](CategoriesAndExtensions.md)
+

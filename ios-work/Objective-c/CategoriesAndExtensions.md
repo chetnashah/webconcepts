@@ -103,3 +103,49 @@ e.g.
 ```
 
 
+## Managing private/internal class extensions via private headers(private members like private methods/private property)
+
+Named like : `ClassName+Private.h`
+
+```objc
+//BNRPerson.h
+// this is public interface of the class
+@interface BNRPerson 
+- (void) publicMethod;
+@end
+```
+
+```objc
+// BNRPerson+Private.h
+// all the private extensions go here, anonyone interested in accessing private/internal api must include this header
+@interface BNRPerson ()
+- (void) hiddenMethod;
+@end
+```
+
+**Class implementer will need to import both public+private API to fulfill complete contract of class.**
+e.g. `BNRPerson.m` will need to import both `BNRPerson.h` and `BNRPerson+Private.h`.
+
+```objc
+#import <BNRPerson.h>
+#import <BNRPerson+Private.h>
+
+@implementation BNRPerson 
+
+- (void) publicMethod {
+    NSLog(@"I am public method");
+}
+
+- (void) hiddenMethod {
+    NSLog(@"I am hidden method");
+}
+@end
+```
+
+Usage of internal api in internal classes, private headers are not exposed outside of module/framework, but are available with module/framework.
+```objc
+// InternalModule.m
+#import "BNRPerson.h"
+#import "BNRPerson+Private.h" // now we can also access internal members
+// now internal module has access to both public/private api of BNRPerson class
+```

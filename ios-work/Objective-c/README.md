@@ -13,6 +13,10 @@ sending messages to a pointer that has been set to `nil`.
 Important thing #2: If you send a message to `nil`, the return value is meaningless and should be
 disregarded.
 
+**Sending a message to nil reliably returns nil as a pointer, zero as an integer or floating-point value, structs initialized to 0, and _Complex values equal to {0, 0}.**
+
+
+
 ## id for generic pointer (like auto)
 
 ## Create Arrays using `NSArray` (Immutable by default)
