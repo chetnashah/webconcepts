@@ -108,3 +108,44 @@ When ivars are declared in a header file, they should be marked @protected or @p
 
 e.g. 
 if programin imprts `Employee.h` and `EMployee.h` imports `Person.h`, then `Person` class is automatically in scope, i.e. headers are recursively preprocessed.
+
+## isa  pointer (similar to instanceof)
+
+Each NSObject contains a field called `isa`, which is a pointer to the class that the object is an instance of (that's how the object and Objective-C runtime knows what kind of object it is).
+
+`isa` is used for method name/message name searching:
+
+When you send a message to an object, you kick off a search for a method of that name. The search
+follows the object’s `isa` pointer to start looking for the method in the object’s class. If there is no
+method of that name there, then it is on to the superclass. The hunt stops when the method is found or
+when the top of the hierarchy (NSObject) is reached.
+
+**The first implementation that is found is the one that gets executed.**
+
+Use with `super`: When you use the super directive, you are sending a message to the current object but saying, **Run a method with this name, but start the search for its implementation at your superclass.**
+
+## Description method on NSString
+
+
+Override to provide string debugability to an object.
+
+The description method returns a string that is a useful description of an instance of the class. It is
+an NSObject method, so every object implements it. `The default NSObject implementation returns the object’s address in memory as a string.`
+
+```objc
+- (NSString *)description
+{
+return [NSString stringWithFormat:@"<Employee %d>", self.employeeID];
+}
+```
+
+
+## Important things to know about collections and ownership
+
+two other important things to know about collections and ownership (ARC based):
+
+* When an object is added to the collection, the collection establishes a pointer to the object,
+and the object gains an owner.
+* When an object is removed from a collection, the collection gets rid of its pointer to the object,
+and the object loses an owner.
+

@@ -102,3 +102,8 @@ BNRPerson implementation
 
 @end
 ```
+
+
+## inheritance and extensions
+
+**A subclass has no access to its superclass’s class extensions.**

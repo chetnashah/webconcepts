@@ -54,6 +54,10 @@ class MyList: NSObject {
 
 **Note** - setter accessor has name `setPropName`.
 
+Dot Syntax Is a Concise Alternative to Accessor Method Calls
+
+
+
 ```objc
 mikey.weight = 98;
 // is same as
@@ -69,6 +73,8 @@ mikey.weight = 98;
 ## getter property accessor is same as dot based access
 
 **NOte - No `get` keyword in accessor method, accessor method name is same as property name** 
+
+Dot Syntax Is a Concise Alternative to Accessor Method Calls
 
 ```objc
 float w = mikey.height;
@@ -94,4 +100,35 @@ Ans: use `self`.
 dot property access calls the accessor for get/set (which themsselves are auto synthesized for properties).
 
 
+## type of instance var and type of property may not be same
 
+You can expose a read-only var, while being backed by read-write property.
+e.g. `NSArray` as a public interface in header, but `NSMutableArray` in implementation.
+
+## What is instance variables?
+
+An instance variable is unique/private to a class. By default, only the class and subclasses can access it. Therefore, as a fundamental principal of object-oriented programming, instance variables (ivars) are private—they are encapsulated by the class.
+
+unless an ivar is declared in a public header it is difficult to even determine that such an ivar exists
+
+## property
+
+a property is a public value that may or may not correspond to an instance variable. If you want to make an ivar public, you'd probably make a corresponding property. But at the same time, instance variables that you wish to keep private do not have corresponding properties, and so they cannot be accessed from outside of the class. You can also have a calculated property that does not correspond to an ivar.
+
+## Define instance vars without property
+
+If you do need to define your own instance variables without declaring a property, you can add them inside braces at the top of the class interface or implementation, like this:
+
+```objc
+@interface SomeClass : NSObject {
+    NSString *_myNonPropertyInstanceVariable;
+}
+...
+@end
+ // or
+@implementation SomeClass {
+    NSString *_anotherCustomInstanceVariable;
+}
+...
+@end
+```

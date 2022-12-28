@@ -71,7 +71,9 @@ impl of category
 @end
 ```
 
-## Class extensions (extend internal implementation)
+## Class extensions (empty parentheses with e.g. `@interface className ()`)
+
+**A class extension is a set of declarations/members that is private to the class, usually declared in implementation i.e. `.m` file or `Original+Private.h` and then only implementation files include `Original+Private.h` for reference**
 
 Class extension can only be added to a class for which you have the source code at compile time
 
@@ -146,6 +148,10 @@ Usage of internal api in internal classes, private headers are not exposed outsi
 ```objc
 // InternalModule.m
 #import "BNRPerson.h"
-#import "BNRPerson+Private.h" // now we can also access internal members
+#import "BNRPerson+Private.h" // now we can also access internal members/extension
 // now internal module has access to both public/private api of BNRPerson class
 ```
+
+## Inheritance and extensions
+
+**A subclass has no access to its superclass’s class extensions.**
