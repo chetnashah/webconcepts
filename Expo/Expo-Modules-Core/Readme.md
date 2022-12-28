@@ -6,3 +6,11 @@
 2. `ExpoModulesPackage` itself collects a list of expo packages in pre-build step via expo autolinking scripts, which inturn reads via reflection all info from generated file: `ExpoModulesPackageList.java`.
 
 
+## How expo hacks into original RN flow
+
+### On android
+
+1. THe main idea is to create a custom `ReactActivityDelegate` via overriding `createReactActivityDelegate()` method in `MainActivity` to hook into all important methods/messages like loadApp, onCreate, createRootView calls. Although MainActivity uses a custom ReactActivityDelegate, the DevLauncherActivity uses a different ReactActivityDelegate, overriden via method `createReactActivityDelegate()` in `DevLauncherActivity.kt`, where it uses custom RNhost - `controller.devClientHost`
+2. `ReactActivityHandler.onDidCreateReactActivityDelegate` allows you to return a different activityDelegate, which will followed by calling `onCreate` on newly returned ActivityDelegate object.
+3. Custom ReactNativeHost to hook into custom creation of `ReactInstanceManager` and other events.
+4. 
