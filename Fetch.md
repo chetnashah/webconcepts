@@ -1,5 +1,7 @@
 
 
+Use http://httpstat.us/ for statuscode testing!
+
 ## Used to make api calls
 
 `fetch()` is used as a replacement of xhr calls.
@@ -36,7 +38,45 @@ let promise = fetch(url, {
 
 The promise resolves to the `Response` object representing the response to your request.
 
-A `fetch()` promise only rejects when a network error is encountered (which is usually when there's a permissions issue or similar). A `fetch()` promise does not reject on HTTP errors (404, etc.). Instead, a then() handler must check the Response.ok and/or Response.status properties.
+A `fetch()` promise only rejects when a network error is encountered (which is usually when there's a permissions issue or offline or DNS issue or conn-reset). A `fetch()` promise does not reject on HTTP errors (404,500 etc.). Instead, a then() handler must check the Response.ok and/or Response.status properties.
+
+### An example that 500/400 will not reject a fetch promise
+
+```js
+var fetch = require('node-fetch');
+
+fetch('http://httpstat.us/500')
+.then((res) => {
+    return res.text();
+})
+.then((txt) => {
+    console.log('txt = ', txt); // statuscode 4xx/5xx come here - HTTPerrors
+})
+.catch(err => {
+    console.log('err = ', err); // only offline/DNS errors come here - Network errors
+});
+```
+
+## Use resp.ok for 2xx vs 4xx/5xx range
+
+fetch provides a simple `ok` flag that indicates whether an HTTP response’s status code is in the successful range or not.`ok` is directly available on `response` object without any need for json or text body deserialization.
+
+Some practices also advice to throw an error manually on 4xx/5xx i.e. `!ok` condition, and have a common catch handler for all cases: e.g.
+```js
+const handleErrors = response => {
+  if (!response.ok) { // note that ok checking happens directl
+    throw Error(response.statusText);
+  }
+  return response;
+}
+
+fetch("/cars/23")
+  .then(handleErrors) // will return json in happy case, will throw error for 4xx/5xx
+  .then(response => response.json())
+  .then(processData)
+  .catch(console.log)
+```
+
 
 ### simple use case, GET api, provide url as first argument.
 
@@ -117,3 +157,9 @@ The AbortController interface represents a controller object that allows you to 
 You can create a `new AbortController` object using the `AbortController()` constructor. Communicating with a DOM request is done using an `AbortSignal` object.
 
 ### Details
+
+## retry
+
+
+## timeout
+

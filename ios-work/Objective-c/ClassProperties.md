@@ -162,3 +162,9 @@ In implementaiton/private parts:
     [_tags addObject:tag];
 }
 ```
+
+## Even subclasses cannot access class instance properties
+
+In `Employee.m`, even though `Employee` is a subclass of `Person`,
+you cannot access `_weight` of `Person`, only allowed way is property accessors.
+

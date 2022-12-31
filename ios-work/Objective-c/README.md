@@ -1,5 +1,12 @@
 
 
+## Circular dependency in headers
+
+Circular dependency in headers can lead to problems like:
+1. `Expected a type`
+
+Solving circular dependency issue, let the complex interface/implementation include a simple/basic/util header, and in the simple/basic header, use a forward class declaration e.g. `@class Complex` instead of `#include Complex.h`.
+
 ## Sending messages to `nil` does not produce error
 
 ```objc
