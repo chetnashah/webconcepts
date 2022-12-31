@@ -33,6 +33,10 @@ Server side daemon config:
 
 `ssh-keyscan`: Utility for gathering public host keys from a number of hosts
 
+## Disabling PasswordAuthentication on ssh server side (Use PKI instead)
+
+SInce attackers with random passwords, it is reocmmended to turn off `PasswordAuthentication no` in `/etc/ssh/sshd_config`.
+
 ### SSH login with keys in cli
 
 Providing ssh Identity-key as a cli arg
@@ -175,4 +179,71 @@ ssh-keygen -f ~/tatu-key-ecdsa -t ecdsa
 ssh-copy-id -i ~/.ssh/tatu-key-ecdsa user@host
 ```
 
+### Getting "permission-denied(public key)" during ssh-copy-id
+
+Permission denied (publickey) is the remote SSH server saying "I only accept public keys as an authentication method, go away".
+
+You actually need to login to copy your key, you don't have any access to the remote machine (invalid key and password authentication disabled):
+
+Re-enable passwd authentication in `/etc/ssh/sshd_config`:
+```
+# in /etc/ssh/sshd_config
+PasswordAuthentication yes
+```
+Then restart the service:
+```
+service sshd restart
+```
+Copy your public key:
+```
+ssh-copy-id -i ~/.ssh/id_rsa.pub USER@HOST -p PORT
+[Enter user password]
+```
+Try to login again, no password should be required.
+
+Then disable password authentication via `PasswordAuthnetication no` inside `/etc/ssh/sshd_config`.
+
+
+## Debugging auth process
+
+Try `tail -f /var/log/auth.log`.
+
+Check `AllowUsers` section in your ssh server side config i.e. `/etc/ssh/sshd_config`. Sometimes it can be restricted to a ip range etc.
+
+## Reverse ssh tunnel
+
+As long as one of the machines has ssh server and other has ssh client, we can make tunnels in both direction.
+
+https://unix.stackexchange.com/questions/46235/how-does-reverse-ssh-tunneling-work
+
+### Local port forwarding using `-L`
+
+`ssh -NL 8888:localhost:8000 user@192.168.1.10` means use local port 8888 for forwarding to port 8000 on machine `192.168.1.10` with `user` as the user.
+
+The first port specified will always be of the local machine where we want forwarding to take place.
+
+Use cases:
+1. use a port instead of full remote address + port setup to connect to some external service.
+
+### Remote port forwarding using `-R`
+
+Says that forward the remote machine port to a given machine and port
+
+e.g.
+`ssh -R 8484:localhost:8686 user@192.168.1.10` says that take all requests that reach remote machine's port 8484 and forward them to this machine's 8686.
+
+Use cases:
+1. my local machine serves something, but I want remote machine's port to route to my service.
+
+
+
+## Using ngrok to ssh to a different laptop/machine 
+
+`ngrok` helps expose a dns for a remote laptop service by providing a dns name + tunnel/reverse proxying to it.
+
+In the remote laptop that has `ssh` service/port open, run `ngrok tcp 22`.
+
+this will output something like: `Forwarding tcp://0.tcp.ap.ngrok.io:19801 -> localhost:22`
+
+Now on the ssh client machine side, simply do: `ssh 0.tcp.ap.ngrok.io -p 19801`, this will directly connect to the ssh server running in your other machine exposed via internet.
 
