@@ -168,3 +168,10 @@ In implementaiton/private parts:
 In `Employee.m`, even though `Employee` is a subclass of `Person`,
 you cannot access `_weight` of `Person`, only allowed way is property accessors.
 
+## Marking variables as weak with `__weak typename name`;
+
+If you are explicitly declaring a pointer variable that should be weak, mark it with `__weak` like this:
+
+```objc
+__weak BNRPerson *parent;
+```

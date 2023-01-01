@@ -1,11 +1,48 @@
 
 
+## Equality
+
+The class NSObject defines a method
+called `isEqual:`. To check if two objects are equal, you use the `isEqual:` method.
+
+Default implementation by `NSObject` is reference check:
+```objc
+NSObject has a simple implementation of isEqual:. It looks like this:
+- (BOOL)isEqual:(id)other
+{
+return (self == other);
+}
+```
+
+## Selectors
+
+A selector is the name used to select a method to execute for an object.
+
+```objc
+SEL aSelector = @selector(run);
+[aDog performSelector:aSelector];
+[anAthlete performSelector:aSelector];
+[aComputerSimulation performSelector:aSelector];
+```
+
 ## Circular dependency in headers
 
 Circular dependency in headers can lead to problems like:
 1. `Expected a type`
 
 Solving circular dependency issue, let the complex interface/implementation include a simple/basic/util header, and in the simple/basic header, use a forward class declaration e.g. `@class Complex` instead of `#include Complex.h`.
+
+### Quotes vs angle brackets in headers
+
+Quotes indicate that the header is in your project directory. 
+
+Angle brackets indicate that the header is in one of the standard locations that the preprocessor knows about.
+
+
+### #define
+
+`#define` means replace in the preprocessor step, i.e. before compiler sees it.
+e.g. `#define MAX(A,B) ((A) > (B) ? (A) : (B))`
 
 ## Sending messages to `nil` does not produce error
 
@@ -155,4 +192,43 @@ two other important things to know about collections and ownership (ARC based):
 and the object gains an owner.
 * When an object is removed from a collection, the collection gets rid of its pointer to the object,
 and the object loses an owner.
+
+## General rule of preventing strong reference cycles
+
+the general rule for preventing this type of strong reference cycle is the
+parent owns the child, but the child should not own the parent. instead child should have weak pointer to parent.
+
+**When the object that a weak reference points to is deallocated, the pointer variable is zeroed, or set to nil.**
+
+Thus instance variables and properties that are marked as weak are pointing at
+objects that might go away. If this happens, that instance variable or property will be set to nil, instead
+of continuing to point to where the object used to live.
+
+## Error Handling
+
+Methods like wrting to file can go wrong in many ways e.g. no permissions or disk full.
+
+**In these cases methods need a way to return a description of what went wrong in additiont to the boolean value of success or failure**
+
+### NSError
+
+For error handling, many methods take an `NSError` pointer by reference.
+
+**We only have to declare one, not initialize it, and pass it to relevant method. An Error object will only be created if there is, infact an error, and method should retrun success/failure depending whether error did not occur/occur**
+
+Only access NSError object, if return value was not success.
+
+e.g
+```objc
+NSError *err;
+
+BOOL success = [str writeToFile:@"/too/darned/bad/tmp/cool.txt" atomically:YES encoding:NSUTF8StringEncoding error:&err];
+
+if(success) {
+    NSLog(@"successfully wrote file");
+} else {
+    NSLog(@" error writing file : ", [err localizedDescription]);
+}
+```
+
 

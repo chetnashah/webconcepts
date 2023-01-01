@@ -73,3 +73,25 @@ example::
 - (double)getDistanceFromObject:(id <CoordinateSupport>)theObject;
 @end
 ```
+
+
+## type of objects that implement protocols
+
+Below we have a property that refers to an object implementing `UITableViewDataSource` protocol.
+```objc
+@property(nonatomic, assign) id<UITableViewDataSource> dataSource;
+```
+
+
+## Managing optional methods of protocol
+
+First check for selector presence via `respondsWithSelector`.
+e.g.
+```objc
+if ([_dataSource respondsToSelector:@selector(numberOfSectionsInTableView:)]) {
+    _numberOfSections = [_dataSource numberOfSectionsInTableView:self];
+} else {
+    _numberOfSections = 1; // 1 is the default number of sections
+}
+```
+
