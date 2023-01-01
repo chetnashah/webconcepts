@@ -232,3 +232,28 @@ if(success) {
 ```
 
 
+## BLock signature typedefs are pretty common
+
+e.g.
+```objc
+typedef double (^Operation)(double first, double second);
+
+// now use Operation type for a function/lambda type that takes two doubles and returns a double
+```
+The type can be used for the parameter of a method:
+```objc
+- (double)doWithOperation:(Operation)operation 
+                    first:(double)first 
+                   second:(double)second;
+```
+or as a variable type:
+```objc
+Operation addition = ^double(double first, double second){
+    return first + second;
+};
+
+// Returns 3.0
+[self doWithOperation:addition
+                first:1.0
+               second:2.0];
+```
