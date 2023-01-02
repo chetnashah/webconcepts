@@ -923,3 +923,31 @@ The NodeEventTarget object implements a modified subset of the EventEmitter API 
 2. The `NodeEventTarget` does not emulate the full `EventEmitter` API. Specifically the `prependListener()`, `prependOnceListener()`, `rawListeners()`, `setMaxListeners()`, `getMaxListeners()`, and `errorMonitor` APIs are not emulated. The `'newListener'` and `'removeListener'` events will also not be emitted.
 3. The `NodeEventTarget` does not implement any special default behavior for events with type `'error'`.
 4. The `NodeEventTarget` supports `EventListener` objects as well as functions as handlers for all event types.
+
+
+## Which one of this is preferred (for promise based file reading)?
+```js
+function getData(fileName, type) {
+  return new Promise(function(resolve, reject){
+    fs.readFile(fileName, type, (err, data) => {
+        err ? reject(err) : resolve(data);
+    });
+  });
+}
+```
+or 
+```js 
+// should not be preferred! blocks event loop in microtask
+function getData(fileName, type) {
+  return new Promise(function(resolve, reject){
+      try {
+          const data = fs.readFileSync('/Users/joe/test.txt', 'utf8');
+          resolve(data);
+       } catch(e){
+         reject(e);
+       }
+  });
+}
+```
+
+First approach is preferred because it does not block event loop, second one will block event loop in mircrotask queue.
