@@ -333,7 +333,7 @@ computeDistance3({ x: 1, y: 2, z: 3 }); // OK
 ### Gotchas
 
 * excess property checks with object literals
-Object literals get special treatment and undergo excess property checking when assigning them to other variables, or passing them as arguments. If an object literal has any properties that the “target type” doesn’t have, you’ll get an error(object literal may specify only known properties)
+Object literals get special treatment and undergo excess property checking when assigning them to other variables, or passing them as arguments. If an object literal has any properties that the “target type” doesn’t have, you’ll get an error**(object literal may specify only known properties)**
 
 Why are excess properties forbidden in object literals?
 The open interpretation that allows excess properties is reasonably safe when the data comes from somewhere else. However, if we create the data ourselves, then we profit from the extra protection against typos that the closed interpretation gives us.
@@ -345,8 +345,8 @@ interface Point {
 
 function computeDistance(point: Point) { /*...*/ }
 
-const obj = { x: 1, y: 2, z: 3 };
-computeDistance(obj); // OK
+const obj = { x: 1, y: 2, z: 3 };// intermediate var
+computeDistance(obj); // OK , for intermediate var, exact property checking not done extra properties allowed
 
 // Type error, excess property in literal
 computeDistance({ x: 1, y: 2, z: 3 });
@@ -1110,4 +1110,49 @@ const foo = <T extends unknown>(x: T) => x;// extends keyword tells compiler it 
 or
 ```tsx
 const foo = <T,>(x: T) => x;// comma tells compileer it is not a jsx tag
+```
+
+
+## Type widening (on mutable value vars) and const assertions
+
+**When declaring a mutable variable or property, typescript will often widen values to make sure, assignability works as expected**
+
+**Mutability is one of the best heuristics of intent which typescript can use for type widening, instead of analyzing the entire program**.
+
+e.g.
+```ts
+let x = "hello";// type widened from "hello" to string
+x = "world"; // we can safely assign because x: string 
+```
+
+**If we make type const, than it will narrow down to value/literal type**
+
+```ts
+// const assertion to prevent type widening
+let y = "sdf" as const;// y is a literal type now i.e. y: "sdf"
+```
+
+
+## Exact types are not supported directly
+
+https://github.com/microsoft/TypeScript/issues/12936
+
+A utility type in its place:
+```ts
+type ValidateExactShape<T, Shape> =
+  T extends Shape ? 
+  Exclude<keyof T, keyof Shape> extends never ? 
+  T : never : never;
+
+declare function savePerson<T>(person: ValidateExactShape<T, Person>): void;
+```
+
+
+## Any variable delcared with object literal type has excess property checking enabled
+
+e.g.
+```ts
+// object literal value variable declarations are considered strict types that undergo excess property checks
+let k = {a: 1, x: 0};// typeof k = { a: number, x: number };
+k.b = 2; // TypeError! Property b does not exist on type {a: number, x: number};
 ```
