@@ -47,3 +47,17 @@ https://docs.github.com/en/actions/learn-github-actions/environment-variables#pa
 
 https://www.youtube.com/watch?v=Ef0gPGUh9oo
 
+The code lives near to the action, and the action code looks like:
+```yml
+name: 'PR Thank You Action'
+description: 'Gives thank you as a comment to a newly opened PR'
+
+inputs:
+  GITHUB_TOKEN:
+    description: 'Github token'
+    required: true
+
+runs:
+  using: 'node12'
+  main: 'dist/index.js' # this path starts from action.yml location
+```
