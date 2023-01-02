@@ -41,3 +41,9 @@ A runner is a server that runs your workflows when they're triggered. Each runne
 You can use environment variables to store information that you want to reference in your workflow. You reference environment variables within a workflow step or an action, and the variables are interpolated on the runner machine that runs your workflow. Commands that run in actions or workflow steps can create, read, and modify environment variables.
 
 https://docs.github.com/en/actions/learn-github-actions/environment-variables#passing-values-between-steps-and-jobs-in-a-workflow
+
+
+### Github actions in Nodejs
+
+https://www.youtube.com/watch?v=Ef0gPGUh9oo
+
