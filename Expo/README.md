@@ -15,7 +15,7 @@ The new cli lives in `@expo/expo` monorepo itself.
 
 ON running `DEBUG=expo* npx expo start --ios` will start `Expo Go` app on simulator.
 
-Expo hosts its own simulator/emulator builds at: `https://api.expo.dev/v2/versions/latest`
+Expo hosts its own simulator/emulator builds at: `https://api.expo.dev/v2/versions/latest` along with version metadata etc.
 
 Full logs:
 ```
