@@ -10,6 +10,10 @@ The new cli lives in `@expo/expo` monorepo itself.
 2. `ReactNativeHostWrapper(application, originalAppRNHost)` - `double delegate pattern -> extend the delegate as well as delegate to the original delegate.
 
 
+## Managed workflow
+
+config plugins only make sense with managed workflow.
+
 
 ## How expo go installs itself on simulator/emulator
 
