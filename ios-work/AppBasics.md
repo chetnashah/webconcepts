@@ -130,3 +130,6 @@ The root view controller is accessible from the `rootViewController` property of
 
 **UIWindow extends UIView** i.e. `@MainActor class UIWindow : UIView`.
 
+## Scenes
+
+https://developer.apple.com/documentation/uikit/app_and_environment/scenes
