@@ -26,6 +26,18 @@ Another common pattern in React is to have children as a function, in which case
 `children: (valuetypes) => ReactNode` would be the correct type for children prop
 
 
+### Even better use `PropsWithChildren<P>`
+
+The `PropsWithChildren<P>` type encapsulates children declaration in itself along with Props type passed:
+```ts
+type PropsWithChildren<P> = P & { children ?: ReactNode};
+```
+
+Now u can use it as a generic:
+```ts
+type MyComponentProps = PropsWithChildren<{ foo: string}>
+```
+
 ### REact component with few props optional
 
 use `name ?: type`
