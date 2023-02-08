@@ -32,7 +32,7 @@ UIKit handles the transition from one set of views to another, and manages your 
 
 **ViewControllers are screens** - Define view controllers for each unique page of content.
 
-Viewcontroller's view can be accessed by `viewController.view` property
+Viewcontroller's view can be accessed by `viewController.view` property or `self.view` inside viewcontroller, e.g. in `viewDidLoad` method.
 
 ### Two types of viewcontollers
 
@@ -126,3 +126,77 @@ The root view controller is accessible from the `rootViewController` property of
 ## Scenes
 
 https://developer.apple.com/documentation/uikit/app_and_environment/scenes
+
+
+## Segues
+
+Segues let you navigate between view controllers in your interface.
+
+## Two ways to use NavigationViewController
+
+
+1. `Push`/`Pop` viewcontrollers - stack like hierarchy
+2. `present`/`dismiss` as modal.
+
+## UIViewController lifecycle
+
+https://developer.apple.com/library/archive/featuredarticles/ViewControllerPGforiPhoneOS/DefiningYourSubclass.html#//apple_ref/doc/uid/TP40007457-CH7-SW1
+
+1. `viewDidLoad` - content view created in memory, (might not be displayed on screen).
+2. `viewWillAppear/viewDidAppear`: before and after being shown in screen (e.g. coming back to a given screen/vc)
+3. `viewWillDisappear/viewDidDisappear`: similar to above but for disappearing
+4. `viewWillLayoutSubviews/viewDidLayoutSubviews`: when bounds change
+
+
+## Handling user interactions
+
+https://developer.apple.com/documentation/uikit/touches_presses_and_gestures/using_responders_and_the_responder_chain_to_handle_events
+
+### Types of events
+
+* touch events, 
+* motion events, 
+* remote-control events, and 
+* press events. 
+
+### UIResponder
+
+Responder objects — instances of `UIResponder` — constitute the event-handling backbone of a `UIKit` app. 
+Many key objects are also responders, including the 
+* **UIApplication** object, 
+* **UIViewController** objects, and 
+* all **UIView** objects (which includes UIWindow). 
+  
+As events occur, UIKit dispatches them to your app’s responder objects for handling.
+
+**It is a common practice to have `AppDelegate` implement UIResponder protocol, so that `UIApplication` can forward `UIResponder` messages to `AppDelegate`.**
+
+### Touch handling
+
+the `touchesBegan(_:with:)`, `touchesMoved(_:with:)`, `touchesEnded(_:with:)`, and `touchesCancelled(_:with:)` methods.
+
+### Responder Chain
+
+If a given responder doesn’t handle an event, it forwards that event to the next event in the responder chain. UIKit manages the responder chain dynamically, using predefined rules to determine which object should be next to receive an event. 
+
+For example, a view forwards events to its superview, and the root view of a hierarchy forwards events to its view controller.
+
+UIKit automatically directs that event to the most appropriate responder object, known as the first responder. (Usually the deepest nested object at the event location)
+
+Detailed rules for first responder:
+
+* `Touch events`: The view in which the touch occurred.
+* `Press events`: The object that has focus.
+* `Shake-motion events`: The object that you (or UIKit) designate.
+* `Remote-control events`: The object that you (or UIKit) designate.
+* `Editing menu messages`: The object that you (or UIKit) designate.
+
+
+#### Altering the responder chain
+
+You can alter the responder chain by overriding the `next` property of your responder objects. **When you do this, the next responder is the object that you return.**
+
+
+
+
+
