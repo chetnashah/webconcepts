@@ -7,6 +7,29 @@ What you would need to know is the number of cores that can be used efficiently,
 
 **OS X and iOS provide technologies to allow you to perform any task asynchronously without having to manage the threads yourself.**
 
+## Blocks
+
+Variables accessed by the block are copied to the block data structure on the heap so that the block can access them later. When blocks are added to a dispatch queue, these values must typically be left in a read-only format. However, blocks that are executed synchronously can also use variables that have the `__block` keyword prepended to return data back to the parent’s calling scope.
+
+e.g.
+```objc
+int x = 123;
+int y = 456;
+ 
+// Block declaration and assignment
+void (^aBlock)(int) = ^(int z) {
+    printf("%d %d %d\n", x, y, z);
+};
+ 
+// Execute the block
+aBlock(789);   // prints: 123 456 789
+```
+
+**Note** - you should not try to capture large structures or other pointer-based variables that are allocated and deleted by the calling context. By the time your block is executed, the memory referenced by that pointer may be gone. 
+
+Of course, it is safe to allocate memory (or an object) yourself and explicitly hand off ownership of that memory to the block.
+
+
 ## GCD
 
 All you have to do is define the tasks you want to execute and add them to an appropriate dispatch queue. 
