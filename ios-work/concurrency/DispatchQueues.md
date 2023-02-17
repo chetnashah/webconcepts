@@ -8,6 +8,25 @@ You define tasks by placing the corresponding code inside either a function or a
 
 The system takes queue priority levels into account when choosing which new tasks to start
 
+## Crash case: with nested inner sync on same dispatch queue
+
+**Nested dispatch inside same queue will cause crash if there is sync inside async or sync inside sync, i.e. inner sync on same queue can cause a crash**.
+
+CRASHING case:
+```objc
+    dispatch_queue_t sq = dispatch_queue_create("myserialqueue", NULL);
+    dispatch_async(sq, ^(void){
+        dispatch_sync(sq, ^(void){
+            NSLog(@"Running on serial q 2: sq");
+        });
+
+        for(int i=0;i<1000;i++) {
+            NSLog(@"ADF");
+        }
+        NSLog(@"Running on serial q: sq");
+    });
+```
+
 ## Serial queues
 
 Serial queues (also known as private dispatch queues) execute one task at a time in the order in which they are added to the queue. 
