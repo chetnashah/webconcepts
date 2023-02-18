@@ -282,3 +282,32 @@ int main(int argc, const char * argv[]) {
     return 0;
 }
 ```
+
+### COllection object removal gotcha, object removal causes release of that object
+
+```objc
+heisenObject = [array objectAtIndex:n];
+[array removeObjectAtIndex:n];
+// heisenObject could now be invalid.
+```
+
+**After removal, release is called on heisenObject**
+
+If the collection was the only owner of the removed object, the removed object (heisenObject in the example ) is then immediately deallocated.
+
+To protect against this situation: you retain heisenObject upon receiving it and you release it when you have finished with it
+
+### Reference to child object unless retained, might be deallocated
+
+
+```objc
+id parent = <#create a parent object#>;
+// ...
+heisenObject = [parent child] ;
+[parent release]; // Or, for example: self.parent = nil;
+// heisenObject could now be invalid.
+```
+
+In some situations you retrieve an object from another object, and then directly or indirectly release the parent object. If releasing the parent causes it to be deallocated, and the parent was the only owner of the child, then the child (heisenObject in the example) will be deallocated at the same time (assuming that it is sent a release rather than an autorelease message in the parent’s dealloc method).
+
+To protect against this situation: you retain heisenObject upon receiving it and you release it when you have finished with it
