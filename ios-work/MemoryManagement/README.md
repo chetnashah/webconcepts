@@ -5,7 +5,7 @@ ARC continues the reference counting tradition and simply eliminates the need fo
 
 Under ARC the compiler inserts these calls for you, but the reference counting mechanism remains the same as it has always been. It does not provide a cycle collector; users must explicitly manage the lifetime of their objects, breaking cycles manually or with weak or unsafe references.
 
-
+**If you send a message to an object after it has been deallocated, your application will crash.**
 
 
 ARC in detail - https://clang.llvm.org/docs/AutomaticReferenceCounting.html
@@ -26,6 +26,17 @@ Another way is to run Analyze to find potential issues:
 ![here](../images/memanalyze.png)
 
 ## Rules
+
+### Core rules
+
+The ownership policy is implemented through reference counting—typically called “retain count” after the retain method. Each object has a `retain count`.
+
+When you create an object, **it has a retain count of 1**.
+When you send an object a `retain` message, its retain count is incremented by 1.
+When you send an object a `release` message, its retain count is decremented by 1.
+When you send an object a `autorelease` message, its retain count is decremented by 1 at the end of the current autorelease pool block.
+
+**If an object’s retain count is reduced to zero, it is deallocated.**
 
 
 ### You own any object you create
@@ -109,7 +120,7 @@ If we retain via property attribute marker, it is our responsibility to release 
 
 ```objc
 @interface Person : NSObject
-@property (retain) NSString* name;
+@property (retain) NSString* name; // only affects accessors i.e. getters/setters, not init
 - (instancetype)initWithName:(NSString*) name;
 @end
 
@@ -127,6 +138,18 @@ If we retain via property attribute marker, it is our responsibility to release 
 }
 @end
 ```
+
+Here is what a generated/synthesized `retain` property setter will look like:
+```objc
+- (void)setCount:(NSNumber *)newCount {
+    [newCount retain]; // claim ownership of passed in arg
+    [_count release]; // free the currently held reference
+    // Make the new assignment.
+    _count = newCount; // make the reference connection to incoming arg
+}
+```
+
+
 
 ### You don't own objects returned by reference
 
@@ -182,6 +205,10 @@ e.g.
 @end
 ```
 
+Some common things to do in dealloc:
+1. When the object is deallocated, you need to unregister it with the notification center to prevent the notification center from sending any further messages to the object, which no longer exists. 
+2. Likewise, when a delegate object is deallocated, you need to remove the delegate link by sending a setDelegate: message with a nil argument to the other object. These messages are normally sent from the object’s dealloc method
+
 ## `release` is not available in ARC mode
 
 **ARC forbids explicit message send of 'release'**
@@ -207,3 +234,51 @@ e.g.
 
 https://stackoverflow.com/questions/9086913/why-is-autoreleasepool-still-needed-with-arc
 
+## Why NSString has very large retain count?
+
+**Strings are retained in a constant pool forever like Java**
+
+It sees @"Hello world" and thinks "Aha! A constant string!"
+
+It then sees `[[NSString alloc] initWithString:@"Hello world!"]` and thinks "Aha! An immutable object created with a constant string!"
+
+It then collapses both of them down into a single `NSConstantString`, which has a retainCount of UINT_MAX, so that it can never be released.
+
+## Do not use accessor methods in initializer/dealloc
+
+to set an instance var in a initializer, use simile `_ivarname = value`.
+
+e.g.
+```objc
+- init {
+    self = [super init];
+    if (self) {
+        _count = [[NSNumber alloc] initWithInteger:0];
+    }
+    return self;
+}
+```
+
+## Collections own the objects they contain
+
+When you add an object to a collection (such as an array, dictionary, or set), the collection takes ownership of it. 
+
+The collection will relinquish ownership when the object is removed from the collection or when the collection is itself released.
+
+Gotcha - **When you add objects you created to a collection, u must release them after adding to collection**
+e.g.
+```objc
+int main(int argc, const char * argv[]) {
+    NSMutableArray *array = [[NSMutableArray alloc] init];
+    NSUInteger i;
+    for (i = 0; i < 10; i++) {
+        Car *cari = [[Car alloc] init];
+        [array addObject:cari];
+        [cari release]; // This is necessary to add ! else the retain count will be 2 for car instance added to collection
+        NSLog(@"car age is %d", [cari age]);
+    }
+
+    [array release];
+    return 0;
+}
+```
