@@ -14,6 +14,11 @@ a repository can have multiple workflows, each of which can perform a different 
 2. another workflow to deploy your application every time a release is created, and still 
 3. another workflow that adds a label every time someone opens a new issue.
 
+### Events
+
+`pull_request` - only to do with PR entity, nothing to do with commit pushes
+`push` - only to do with commit pushes.
+
 ### Job 
 
 **A job is a set of steps in a workflow that execute on the same runner**. Each step is either a shell script that will be executed, or an action that will be run. **Steps are executed in order and are dependent on each other**. **Since each step is executed on the same runner, you can share data from one step to another**. For example, you can have a step that builds your application followed by a step that tests the application that was built.
