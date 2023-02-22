@@ -16,8 +16,8 @@ a repository can have multiple workflows, each of which can perform a different 
 
 ### Events
 
-`pull_request` - only to do with PR entity, nothing to do with commit pushes
-`push` - only to do with commit pushes.
+`pull_request` - only to do with PR entity, nothing to do with commit pushes. Important events in `pull_request` are: `opened`, `closed`, `synchronize`. The workflow will get the future merged commit as a ref.
+`push` - only to do with commit pushes. You can specify branch filters on this event.
 
 ### Job 
 
