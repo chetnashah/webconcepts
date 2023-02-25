@@ -10,9 +10,25 @@ The new cli lives in `@expo/expo` monorepo itself.
 2. `ReactNativeHostWrapper(application, originalAppRNHost)` - `double delegate pattern -> extend the delegate as well as delegate to the original delegate.
 
 
+## Creating a project on expo.dev
+
+Creating a project on `expo.dev` will create an EAS project and generate a project slug.
+This will generate a EAS project slug.
+Integration steps of project slug with our codebase:
+```sh
+npm install --global eas-cli
+eas init --id 51b3f64c-8a90-4b42-8b03-xyzxyzxyz
+```
+
+`expo.dev` can also connect with github to webhooks access.
+
 ## Adding env variables
 
 https://docs.expo.dev/build-reference/variables/
+
+## Prebuild
+
+Prebuild only make sense for managed workflow, not for bare workflow.
 
 ## Managed workflow
 

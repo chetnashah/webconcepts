@@ -2,6 +2,18 @@
 
 EAS Build is available to anyone with an Expo account, regardless of whether you pay for EAS or use our free tier. You can sign up at https://expo.dev/signup.
 
+**CAn be used with bare expo also**
+All you need is:
+1. expo.dev account
+2. Configure `eas.json`
+
+## What features does EAS contain?
+
+1. Submit - to submit to stores
+2. Builds - just create native builds
+3. Updates - JS OTA updates targeted by a native build's runtime version, platform, and channel. With these three constraints, we can make an update available to a specific group of builds.
+
+
 ## Login to EAS
 
 ```sh
@@ -9,7 +21,17 @@ eas login
 ```
 
 
+
 ## EAS Build
+
+## Setup
+
+Do `eas build:configure`, this will create an `eas.json` config file if it did not exist.
+
+## Build
+
+When you run `eas build`, it will upload project to EAS, create credentials if missing, and start build, returning a slug where we can track status.
+
 
 ### Profiles
 
@@ -64,4 +86,6 @@ eas build -p android --profile preview
 The default file format used when building Android apps with EAS Build is an Android App Bundle (AAB/.aab). This format is optimized for distribution to the Google Play Store. However, AABs can't be installed directly on your device. 
 
 To install a build directly to your Android device or emulator, you need to build an Android Package (APK/.apk) instead.
+
+## EAS update
 
