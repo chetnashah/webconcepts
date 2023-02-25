@@ -11,6 +11,10 @@ Relying on observed object lifetimes can cause bugs!
 
 * Weak and unowned references in reference counting.
 
+## autorelease 
+
+So autorelease is a way of extending the lifetime of an object, just enough so that it can survive across method call boundaries. But the pool will be drained at the end of event loop.
+
 ## Weak references
 
 **the object with the delegate should not retain its delegate, management/owning of the delegate is not the delegators responsibility, and must be weakly held by delegator. The real owner of a delegate is only the entity registering the delegate**
@@ -37,3 +41,12 @@ object sending the delegate messages does not own the delegate.
 
 The weak reference enforces the concept that the management of the delegate is not the delegators responsibility.
 
+The summary here is: delegators don't own the delegates, but it is the delegate restierers that should be owning the delegates.
+
+Same goes for data sources, datasource users don't own the datasource protocol implementor/delegate, but the registerer of the datasource delegate owns it.
+
+## Data source pattern
+
+A data source is like a delegate except that, instead of being delegated control of the user interface, it is delegated control of data.
+
+A data source is an outlet held by NSView and UIView objects such as table views and outline views that require a source from which to populate their rows of visible data.

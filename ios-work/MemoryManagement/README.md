@@ -25,6 +25,15 @@ Another way is to run Analyze to find potential issues:
 
 ![here](../images/memanalyze.png)
 
+## When you have retain cycles
+
+* None of the objects in cycle can be referenced/accessed, but they cannot be deallocated either since they have non-zero retain count.
+* When last remaining reference to any member of retaining cycle is removed, entire cycle is leaked.
+
+![img](images/retaincycle.png)
+
+In a garbage-collected environment, this situation would usually be picked up as a so-called island of isolation. In such a scenario, the collector would deallocate all three objects. In obj-c this is not the case
+
 ## Rules
 
 ### Core rules
