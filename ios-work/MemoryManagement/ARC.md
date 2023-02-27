@@ -95,3 +95,21 @@ An example of dealloc, where we can do cleanup, if explicit cleanup method was n
 }
 ```
 
+## Exception handling
+
+```objc
+@try {
+    EOCSomeClass *object = [[EOCSomeClass alloc] init];
+    [object doSomethingThatMayThrow];
+}
+@catch (...) {
+    NSLog(@"Whoops, there was an error. Oh well...");
+}
+```
+
+surely ARC handles this situation, you are probably thinking. 
+
+Well, by default, it does not; to do so requires a large amount of boilerplate code to be added to track the objects that potentially need cleaning up if an exception is thrown
+
+**The reason no cleanup happens when exception is thrown because ObjC thinks exception should only be thrown if application will terminate**
+

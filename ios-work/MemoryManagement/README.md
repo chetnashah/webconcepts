@@ -25,6 +25,14 @@ Another way is to run Analyze to find potential issues:
 
 ![here](../images/memanalyze.png)
 
+### Zombie objects
+
+When this debugging feature is enabled, the runtime turns all deallocated instances into a special zombie object rather than deallocating them.
+
+When it receives any message, a zombie object throws an exception saying exactly what message was sent and what the object used to be when it was still alive.
+
+
+
 ## When you have retain cycles
 
 * None of the objects in cycle can be referenced/accessed, but they cannot be deallocated either since they have non-zero retain count.
