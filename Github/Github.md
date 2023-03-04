@@ -1,6 +1,52 @@
 
 https://docs.github.com/en/actions/learn-github-actions/understanding-github-actions
 
+
+## Access stuff
+
+Your protected branch rules for your main branch won't be enforced on this private repository until you move to a GitHub Team or Enterprise organization account
+
+### Personal account
+
+Each personal account can be a member of multiple organizations.
+Your personal account can own resources such as repositories, packages, and projects. 
+
+Most people will use one personal account for all their work on GitHub.com, including both open source projects and paid employment. If you're currently using more than one personal account that you created for yourself, we suggest combining the accounts.
+
+### Machine user
+
+Personal accounts are intended for humans, but you can create accounts to automate activity on GitHub. This type of account is called a machine user. For example, you can create a machine user account to automate continuous integration (CI) workflows.
+
+
+
+### Organizations
+
+Organizations can be made under any of 3 plans:
+* free
+* Team
+* Enterprise
+
+Your team can collaborate on GitHub by using an organization account, which serves as a container for your shared work and gives the work a unique name and brand.
+
+Each person that uses GitHub always signs into a personal account, and multiple personal accounts can collaborate on shared projects by joining the same organization account. A subset of these personal accounts can be given the role of organization owner, which allows those people to granularly manage access to the organization's resources using sophisticated security and administrative features.
+
+**If an organization only has one owner, the organization's projects can become inaccessible if the owner is unreachable. To ensure that no one will lose access to a project, we recommend that at least two people within each organization have the owner role.**
+
+### Teams
+
+You can use teams to organize, mention, and manage access for people in an organization. 
+* Organization owners and team maintainers can give teams admin, read, or write access to organization repositories. * Organization members can send a notification to an entire team by mentioning the team's name. Organization members can also send a notification to an entire team by requesting a review from that team. 
+* Organization members can request reviews from specific teams with read access to the repository where the pull request is opened. 
+* Teams can be designated as owners of certain types or areas of code in a CODEOWNERS file.
+
+
+
+### Enterprise accounts
+
+Enterprise accounts are a feature of GitHub Enterprise Cloud that allow owners to centrally manage policy and billing for multiple organizations. For more information, see the GitHub Enterprise Cloud documentation.
+
+
+
 ### Events
 
 Events are interesting triggers/events that trigger a workflow.
