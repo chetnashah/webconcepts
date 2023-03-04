@@ -16,3 +16,9 @@ Everything in coregraphics is driven by `context`i.e. `let ctx = UIGraphicsGetCu
     return [[self alloc] init];
 }
 ```
+
+## Data/NSData is byte array convinience class
+
+Object oriented interface for blobs of bytes/memory.
+
+Can be used to hold bytes from files/URL.
