@@ -42,6 +42,8 @@ if let name = name {
 }
 ```
 
+**Note** - observe how `if let` uses a single equals (assignment) instead of a double equals (comparision)
+
 ### `guard let v = mightBeNil else { // nil here } normal code`
 
 ```swift

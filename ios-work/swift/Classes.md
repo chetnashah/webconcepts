@@ -34,6 +34,8 @@ class Person {
 By far the most common reason for using `self` is inside an initializer,
  where you’re likely to want parameter names that match the property names of your type,
 
+**Note** - no need to return anything from initializer, except failable initializer where nil can be returned.
+
 
 ## Constructors are called "initializers" in swift lingo
 
