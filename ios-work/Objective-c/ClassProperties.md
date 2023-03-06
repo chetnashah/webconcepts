@@ -203,3 +203,22 @@ The following example shows using a class extension to provide a property that i
 @synthesize language;
 @end
 ```
+
+## Computed property (if you override getter/setter of the property to not refer backing field)
+
+```objc
+// Declare a computed property called radius
+@property (assign, nonatomic) CGFloat radius;
+
+// Implement the getter method
+- (CGFloat)radius {
+  // Return some computed value based on other properties or variables
+  return self.width / 2;
+}
+
+// Implement the setter method
+- (void)setRadius:(CGFloat)radius {
+  // Update some other properties or variables based on the new value of radius
+  self.width = radius * 2;
+}
+```
