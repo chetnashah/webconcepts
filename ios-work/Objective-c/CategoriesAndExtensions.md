@@ -15,6 +15,9 @@ If you need to add a method to an existing class, use a category.
 
 The syntax to declare a category uses the @interface keyword, just like a standard Objective-C class description, but does not indicate any inheritance from a subclass. Instead, it specifies the name of the category in parentheses.
 
+You use categories to **define additional methods of an existing class—even one whose source code is unavailable to you—without subclassing.**
+
+**category can’t declare additional data/instance variables for the class; it includes only methods**
 
 ```objc
 #include <ClassName.h>

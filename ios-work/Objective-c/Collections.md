@@ -1,4 +1,5 @@
 
+https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/Collections/Collections.html#//apple_ref/doc/uid/10000034-BBCFIHFH
 
 **By default collections are untyped**
 
@@ -8,6 +9,8 @@ NSArray* arr = @[@1, @2, @[@3, @4]];
 ```
 
 **Note - `@` literals will create immutable collections**
+
+
 
 ## Immutability
 
@@ -47,6 +50,34 @@ NSMutableArray *arr = [[NSMutableArray alloc] init];
 [arr addObject: nil]; // Error!
 [arr addObject:[NSNull null]];// This is correct/ok
 ```
+
+## Copy behavior
+
+**The normal copy is a shallow copy that produces a new collection that shares ownership of the objects with the original**.
+
+If collection contains scalars, scalar values are copied over to other array, and there would be no link between the old and new collection.
+
+When you create a shallow copy, the objects in the original collection are sent a retain message and the pointers are copied to the new collection. Which means all array items see increased retain counts, i.e. shared by multiple collecti
+ons.
+
+![Collection copy](images/collectioncopy.png)
+
+### NSArray copy behavior
+
+* you can depend on the result of `mutableCopy` to be mutable, regardless of the original type. In the case of arrays, the result should be an `NSMutableArray`.
+* you cannot depend on the result of `copy` to be mutable! , when an `NSMutableArray` is sent `-copy`, it returns an `NSArray` containing the same objects.
+
+https://stackoverflow.com/questions/14856681/why-does-a-copy-nonatomic-nsmutablearray-property-create-nsarrays
+
+```objc
+    NSMutableArray* nsArray = [[NSMutableArray allocWithZone:nil] init];
+    [nsArray addObject:@1];
+    [nsArray addObject:@"hi"];
+    
+    NSMutableArray* ns3 = [nsArray copy];
+    [ns3 addObject:@"9999"];// CRASH
+```
+
 
 ## NSSet/NSMutableSet
 

@@ -4,6 +4,9 @@
 
 Syntax: `@property (attribute-list) property-type property-name;`
 
+
+`@property` can also appear in the declaration of a `protocol` or `category` or `extension` (This is useful if you want to hide the declaration of private properties).
+
 ## Implementation of properties
 
 By default, a readwrite property will be backed by an instance variable, which will again be synthesized automatically by the compiler.
@@ -18,16 +21,17 @@ Unless you specify otherwise, **the automatically synthesized instance variable 
 ![here](images/classproperties.png)
 
 * By default, **properties are atomic** - i.e thread safe, you can specify `nonatomic` to make it faster.
-
 * By default, **properties are readwrite** - i.e. getters and setters are generated.
-
 * By default, **properties are strongly held, also known as retain**, if you want weak references use `weak` attribute.
 
 `assign` - use for primitives.
 
 If you do not have an object, you cannot use strong, because strong tells the compiler how to work with pointers. But if you have a primitive (i.e. int, float, bool, or something without the little asterisk after the type), then you use `assign`, and that makes it work with primitives.
 
-`copy` - mostly used for strings.
+`copy` - mostly used for strings. copy
+Specifies that a copy of the object should be used for assignment.
+The previous value is sent a `release` message.
+The copy is made by invoking the copy method. 
 
 Lastly, there’s a keyword called copy. Copy I have seen most commonly with strings. It works really well with all kinds of mutable objects. If you set a copy property, instead of just setting both references to the same object, what it actually does is it makes a copy of the object you are setting and then sets the property to that copy. If I write in a string, it just copies that string so there are now two copies of that string. It leaves mine with me at the variable I passed in and just saves the copy. That way I can keep going with my string and I can modify it, and the one that I set remains the way that it was when I set it.
 
@@ -125,7 +129,7 @@ If you do need to define your own instance variables without declaring a propert
 }
 ...
 @end
- // or
+ // or recommended
 @implementation SomeClass {
     NSString *_anotherCustomInstanceVariable;
 }
@@ -163,7 +167,7 @@ In implementaiton/private parts:
 }
 ```
 
-## Even subclasses cannot access class instance properties
+## Even subclasses cannot access class instance vars, only properties
 
 In `Employee.m`, even though `Employee` is a subclass of `Person`,
 you cannot access `_weight` of `Person`, only allowed way is property accessors.
@@ -174,4 +178,28 @@ If you are explicitly declaring a pointer variable that should be weak, mark it 
 
 ```objc
 __weak BNRPerson *parent;
+```
+
+## property redeclaration (in subclasses or implementations)
+
+The ability to redeclare a read-only property as read/write enables two common implementation patterns: 
+1. a mutable subclass of an immutable class (NSString, NSArray, and NSDictionary are all examples) and 
+2. a property that has a public API (header) that is readonly but a private readwrite implementation (file) internal to the class. 
+
+The following example shows using a class extension to provide a property that is declared as read-only in the public header but is redeclared privately as read/write.
+
+```objc
+// public header file
+@interface MyObject : NSObject
+@property (readonly, copy) NSString *language;
+@end
+ 
+// private implementation file
+@interface MyObject ()
+@property (readwrite, copy) NSString *language;
+@end
+ 
+@implementation MyObject
+@synthesize language;
+@end
 ```
