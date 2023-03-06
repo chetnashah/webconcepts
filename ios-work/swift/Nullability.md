@@ -27,6 +27,16 @@ class Folder {
 val f = Folder("") // type of f is Folder?
 ```
 
+## It is ok to have `let` for optional variables
+
+optional variables are like enums. can be set once, but cannot be changed later. If they gonna change later, use `var` instead.
+Cannot change after 
+```swift
+let k : String? = nil
+let j : String? = "ADsf"
+//Error
+// k = "Hi"
+```
 
 ## Nil handling
 

@@ -22,3 +22,13 @@ Swift initializers don’t return a value, while Objective-C initializers return
 
 Swift initializers must initialize all non-inherited properties before calling `super.init()`, while Objective-C initializers can set inherited properties before or after calling `super.init()`.
 
+## It is ok to have `let` for optional variables
+
+optional variables are like enums. can be set once, but cannot be changed later. If they gonna change later, use `var` instead.
+Cannot change after 
+```swift
+let k : String? = nil
+let j : String? = "ADsf"
+//Error
+// k = "Hi"
+```
