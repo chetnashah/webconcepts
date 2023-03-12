@@ -74,6 +74,37 @@ impl of category
 @end
 ```
 
+### (Stored/syntehsized) Properties do not work on categories
+
+Reason: **adding properties to a category is prohibited because it changes the object’s memory allocation and requires recompilation. Categories are meant to add new methods without changing the object’s structure.**
+
+categories can be used to declare either instance methods or class methods but are not usually suitable for declaring additional properties. It’s valid syntax to include a property declaration in a category interface, but it’s not possible to declare an additional instance variable in a category. 
+
+This means the compiler won’t synthesize any instance variable, nor will it synthesize any property accessor methods. 
+You don't get the ivars and the methods synthesised in case of a category, but nothing prevents you from declaring them this way (under the hood it could be an associated ivar or a computed value)
+
+You can write your own accessor methods in the category implementation, but you won’t be able to keep track of a value for that property unless it’s already stored by the original class (instance vars).
+
+```objc
+// Car.h
+@interface Car : NSObject
+@property (copy) NSString* name;
+@end
+
+@interface Car (CarCat)
+@property NSString* carCatName;
+- (void) hello;
+@end
+
+// main.m
+    Car* cc = [[Car alloc] init];
+    cc.carCatName = @"asdf"; // CRASH!
+    NSLog(@"cc car Cat name = %@ ", cc.carCatName);// CRASH!
+```
+
+Workaround - use associated objects: https://nshipster.com/associated-objects/ to support properties on categories.
+
+
 ## Class extensions (empty parentheses with e.g. `@interface className ()`)
 
 **A class extension is a set of declarations/members that is private to the class, usually declared in implementation i.e. `.m` file or `Original+Private.h` and then only implementation files include `Original+Private.h` for reference**
