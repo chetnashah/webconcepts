@@ -2,6 +2,10 @@ resources:
 
 https://github.com/jrasmusson/swift-arcade
 
+https://www.vadimbulavin.com/
+
+https://www.avanderlee.com/
+
 ## Core graphics
 
 https://github.com/jrasmusson/swift-arcade/tree/master/Animation/CoreGraphicsIntro
