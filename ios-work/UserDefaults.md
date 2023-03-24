@@ -36,3 +36,14 @@ defaults.set(fruits, forKey: "favoriteFruits")
 
 In order to get data from UserDefaults, use one of its type dedicated get methods, or a generic `object(forKey:)` method.
 
+```swift
+ let value = UserDefaults.standard.bool(forKey: "Key")
+ let value = UserDefaults.standard.integer(forKey: "Key")
+ let value = UserDefaults.standard.string(forKey: "Key")
+```
+
+### Remove a key/value
+
+```swift
+UserDefaults.standard.removeObject(forKey: "Key")
+```

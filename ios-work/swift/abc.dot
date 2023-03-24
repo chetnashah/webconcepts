@@ -1,0 +1,15 @@
+digraph G {
+    subgraph cluster_frontend {
+        React;
+        Bootstrap;
+    }
+    
+    subgraph cluster_backend {
+        expressjs;
+        "aws-sdk";
+    }
+    
+    React -> expressjs;
+    expressjs -> "aws-sdk";
+    "aws-sdk" -> Bootstrap;
+}

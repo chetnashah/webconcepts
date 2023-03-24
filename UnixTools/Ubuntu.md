@@ -156,3 +156,13 @@ You might need to convert this way a regular font to be used in console `.otf ->
 
 
 
+## Using ubuntu on Mac OS
+
+Use mulltipass
+
+https://multipass.run/install
+
+Startin with config:
+```sh
+multipass launch --name ubunut --cloud-init cloud-config.yaml
+```
