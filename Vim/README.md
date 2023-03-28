@@ -23,3 +23,9 @@ https://www.imaginaryrobots.net/posts/2021-04-17-converting-vimrc-to-lua/
         -- package_name.lua
         -- keymaps.lua
 ```
+
+## Get list of autocmds installed
+
+Run `:autocmd` in bottom line.
+
+https://vimhelp.org/autocmd.txt.html#autocmd-list
