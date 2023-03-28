@@ -7,6 +7,41 @@ iex> 2+2
 iex>4
 ```
 
+## Learning
+
+https://elixircasts.io/
+
+https://elixir-lang.org/learning.html
+
+## Naming conventions
+
+https://hexdocs.pm/elixir/naming-conventions.html
+
+Elixir developers must use `snake_case` when defining `variables`, `function names`, `module attributes`, and the like:
+```elixir
+some_map = %{this_is_a_key: "and a value"}
+is_map(some_map)
+```
+Module names are an exception as they must be capitalized and written in `CamelCase`, like `OptionParser`. 
+
+### Trailing bang (`foo!`)
+
+Trailing bang (`foo!`)
+A trailing bang (exclamation mark) signifies a function or macro where failure cases raise an exception.
+
+### Trailing question mark (`foo?`)
+
+Functions that return a boolean are named with a trailing question mark.
+
+Examples: `Keyword.keyword?/1`, `Mix.debug?/0`, `String.contains?/2`
+
+### is_ prefix
+
+Type checks and other boolean checks that are allowed in guard clauses are named with an `is_` prefix
+
+
+
+
 ## file name & running
 
 * `.ex` files - meant to be compiled to bytecode
@@ -26,6 +61,14 @@ IO.puts "Hello world"
 ```
 Run it using
 `elixir helloworld.exs`
+
+### Project organization
+
+Elixir projects are usually organized into three directories:
+
+* `_build` - contains compilation artifacts
+* `lib` - contains Elixir code (usually .ex files)
+* `test` - contains tests (usually .exs files)
 
 ### Getting help
 
