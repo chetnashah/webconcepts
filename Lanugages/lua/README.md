@@ -7,59 +7,6 @@ e.g.
 local a = 1
 ```
 
-## Functions
-
-`Note` - no brackets, but `end` at the end of the block.
-```lua
-function max(num1, num2)
-   if (num1 > num2) then
-      result = num1;
-   else
-      result = num2;
-   end
-   return result; 
-end
-```
-
-## Module
-
-Module is like a library that can be loaded using require and has a single global name containing a table.
-
-**Module name and its file name should be the same**
-
-Defining `mymath` module:
-```lua
--- mymath.lua
-local mymath =  {}
-
-function mymath.add(a,b)
-   print(a+b)
-end
-
-function mymath.sub(a,b)
-   print(a-b)
-end
-
-function mymath.mul(a,b)
-   print(a*b)
-end
-
-function mymath.div(a,b)
-   print(a/b)
-end
-
-return mymath	
-```
-
-Using the module via `require`:
-```lua
--- main.lua
-mymathmodule = require("mymath")
-mymathmodule.add(10,20)
-mymathmodule.sub(30,20)
-mymathmodule.mul(10,20)
-mymathmodule.div(30,20)
-```
 
 ## Data types
 
