@@ -3,6 +3,18 @@
 An iOS **Push Certificate is required** for push notification delivery to all iOS mobile apps.
 
 
+## Simulator does not have Notification settings
+
+![Simulator notif settings missing](images/simulatorntoficationsettingmissing.png)
+
+## Device app notification settings -> in app notification settings deeplink 
+
+![Settings deeplink](images/RPReplay_Final1680926526.MP4)
+
+Set this up using https://developer.apple.com/documentation/uikit/uiapplication/1623042-opensettingsurlstring
+
+
+
 ## Capabilities and entitlements
 
 ### Adding Push notification capability
