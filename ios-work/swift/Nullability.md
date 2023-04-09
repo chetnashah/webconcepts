@@ -68,11 +68,15 @@ func greet (name: String?) {
 }
 ```
 
-### nil coalescing operator `??`
+### nil coalescing operator `??` (Elvis operator in some languages ?:)
+
+The nullish coalescing (??) operator is a logical operator that returns its right-hand side operand when its left-hand side operand is null or undefined, and otherwise returns its left-hand side operand.
 
 ```swift
 let v = mightBeNil ?? "OK";// v = "OK" if first expression is nil
 ```
+
+In some languages it is also called the `Elvis operator` i.e `?:`, e.g. in Kotlin.
 
 ### Force Unwrapping with `mightBeNil!` 
 

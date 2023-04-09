@@ -1,4 +1,6 @@
 
+Since iOS 8 you need to ask user's permission to show notifications from your app, this applies for both remote/push and local notifications.
+
 Get user auth/permission for (needed for both local/remote)
 1. Banners
 2. Sound alerts
@@ -146,3 +148,62 @@ To receive background notifications, you must add the remote notifications backg
 
 
 
+## Local Notifications
+
+**Note** - event to show local notifications, you need User permission authorization.
+
+**By default triggered local notification is not shown if app is in foreground!**
+
+### UNMutableNotificationContent
+
+Create one to setup body/title content
+
+### UNNotificationTrigger
+
+We need to define a trigger, one of:
+1. Location trigger
+2. Time based trigger
+3. Calendar event trigger
+
+Here is an example of time based trigger:
+```swift
+let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 5, repeats: false)
+```
+
+### Scheduling Local Notification with UNNotificationRequest that combines UNMutableNotificationContent + UNNotificationTrigger
+
+```swift
+let request = UNNotificationRequest(identifier: "mynotif", content: content, trigger: trigger);
+```
+
+### Add to UNUserNotificationCenter with `.current().add`
+
+```swift
+let notificationCenter = UNUserNotificationCenter.current()
+notificationCenter.add(request) { (error) in
+   if error != nil {
+      // Handle any errors.
+   }
+}
+```
+
+### Complete example
+
+```swift
+func createLocalNotification(title: String) {
+  let content = UNMutableNotificationContent()
+  content.title = title;
+  content.body = "Notification body";
+  
+  let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 5, repeats: false)
+  
+  let request = UNNotificationRequest(identifier: "mynotif", content: content, trigger: trigger);
+  
+  UNUserNotificationCenter.current().add(request) {
+      (error) in
+      if error != nil {
+          print(error)
+      }
+  }
+}
+```

@@ -108,13 +108,17 @@ class StepCounter {
 A property wrapper is made using:
 1. class,struct or enum
 2. decorated with `@propertyWrapper`
-3. provides `get`ters/`set`ters for `var wrappedValue`
+3. provides `get`ters/`set`ters for `var wrappedValue` - mandatory with same name!
+
+
+**Note** - It is mandatory to have a property named `wrappedValue` in the `@propertyWrapper` implementation.
 
 e.g.
 ```swift
 @propertyWrapper
 struct TwelveOrLess {
     private var number = 0 // backing property storage
+    // mandatory to have this property named wrappedValue!!
     var wrappedValue: Int { // additional wrapping logic in getters/setters over backing property above
         get { return number }
         set { number = min(newValue, 12) }
