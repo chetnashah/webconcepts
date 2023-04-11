@@ -171,3 +171,6 @@ class SomeClass {
     }
 }
 ```
+
+## Warning - Instance will be immediately deallocated because property 'delegate' is 'weak'
+
