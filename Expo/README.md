@@ -4,6 +4,13 @@
 
 The new cli lives in `@expo/expo` monorepo itself.
 
+## Contributing to EXPO
+
+If you directly want to use modify development pods, set EXPO_USE_SOURCE=1 in env.
+e.g. https://github.com/expo/expo/blob/main/packages/expo-location/ios/EXLocation.podspec#L19
+
+https://github.com/expo/expo/blob/0680b7871a78b0492842997e8089298b633eb193/docs/pages/config-plugins/development-and-debugging.mdx#modify-ios-podfile
+
 ## How expo hooks into android lifecycle
 
 1. `ReactActivityDelegateWrapper(application, originalReactActivityDelegate)` - double delegate pattern -> extend the delegate as well as delegate to original 
