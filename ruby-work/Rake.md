@@ -1,0 +1,1 @@
+allows you to run tasks that are defined in a file named `Rakefile`
