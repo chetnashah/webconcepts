@@ -32,7 +32,31 @@ All viewcontrollers have a built-in reference to storyboard.
 
 TO instantiate by referring a viewcontroller in storyboard, we will use `storyboard` refrence along with specifying the identifier of the viewcontroller to load.
 
+```swift
+class ViewController: UIViewController {
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        // Do any additional setup after loading the view.
+        view.backgroundColor = .link
+    }
+    
+    @IBAction func didTapButton() {
+        print("did tap button!")
+        // "second" is the id of another viewcontroller in storyboard
+        if let vc2 = storyboard?.instantiateViewController(withIdentifier: "second") as? SecondViewController {
+            present(vc2, animated: true)
+        }
+    }
+}
+```
 
+### Direct instantiation programmatically
+
+```swift
+let vc = UIViewController()
+vc.view.backgroundColor = UIColor.systemPink
+present(vc, animated: true)
+```
 
 ## How to connect code IBOutlet with storyboard
 

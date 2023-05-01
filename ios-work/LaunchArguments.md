@@ -24,6 +24,8 @@ func application(_ application: UIApplication, didFinishLaunchingWithOptions lau
 
 We can launch `XCUIApplication` with different launch params for different test behaviors.
 
+It allows for per-test parametrization mocking by making app react to external launchargs, treating them as custom config/environment.
+
 ```swift
 enum LaunchArgument {
     static let isUITesting = "-isUITesting";
