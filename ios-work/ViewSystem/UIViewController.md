@@ -81,7 +81,9 @@ Connect the button in story board by right-click on first menu-item in viewcontr
 and drag and drop from received actions to the actual UI button.
 ![connect ibaction](../imagees/../images/viewcontrolleroptions.png)
 
-## How to show a viewcontroller?
+## How to show another viewcontroller?
+
+A `viewcontroller` can `present` another viewcontroller.
 
 `vc.present(vc2, animated: true)`
 
@@ -90,3 +92,6 @@ and drag and drop from received actions to the actual UI button.
 
 Use `.view` property on the viewcontroller.
 
+## How to dismiss ?
+
+`vc.dismiss` or `dismiss` in the vc itself.
