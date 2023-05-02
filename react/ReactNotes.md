@@ -419,6 +419,12 @@ function Example() {
 }
 ```
 
+#### When to use refs?
+
+1. inside `effects`
+2. inside `eventhandlers`
+3. after mount.
+
 #### setState on unmounted components
 
 https://github.com/facebook/react/pull/22114
