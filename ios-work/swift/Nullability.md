@@ -40,7 +40,7 @@ let j : String? = "ADsf"
 
 ## Nil handling
 
-### `if let v = mightBeNil {}`
+### Optional binding `if let v = mightBeNil {}`
 
 Unwraps and assigns if value is not nil, otherwise executes else block
 
@@ -54,7 +54,7 @@ if let name = name {
 
 **Note** - observe how `if let` uses a single equals (assignment) instead of a double equals (comparision)
 
-### `guard let v = mightBeNil else { // nil here } normal code`
+### Optional binding `guard let v = mightBeNil else { // nil here } normal code`
 
 ```swift
 func greet (name: String?) {
@@ -67,6 +67,14 @@ func greet (name: String?) {
   print ("Hello, \ (name)!")
 }
 ```
+
+### guard-let vs if-let use case
+
+guard let is designed to exit the current function (brings else part into focus first), loop, or scope if the check fails so any values you unwrap using it will stay around after the check.
+Early exit from scope implies that the else block generally requires return or aborting the program.
+
+if-let usually skips code if optional is nil, return is not necessary. 
+
 
 ### nil coalescing operator `??` (Elvis operator in some languages ?:)
 
@@ -84,3 +92,22 @@ In some languages it is also called the `Elvis operator` i.e `?:`, e.g. in Kotli
 let name = name!
 print ("Hello, \ (name)!") // crashes if name is nil
 ```
+
+
+## Implicitly unwrapped optional
+
+You write an implicitly unwrapped optional by placing an exclamation point (`String!`) rather than a question mark (String?) after the type that you want to make optional
+
+**they do not need to be checked before accessing. It’s called implicitly unwrapped since Swift force unwraps it every time.**
+
+The drawback of this is same as forced unwrapping - if the value is nil when accessing, it leads to a fatal error.
+
+```swift
+//Defining an implicitly unwrapped optional
+var name: String!
+//It will lead to runtime error if the value is nil when accessing
+print(name) 
+```
+
+Use case: Implicitly unwrapped optionals are mainly used for convenience when the value once initialised is never nil.
+
