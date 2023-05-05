@@ -25,3 +25,47 @@ optional func application(
     fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void
 )
 ```
+
+
+### open URL - application(_:open:options:)
+
+Asks the delegate to open a resource specified by a URL, and provides a dictionary of launch options.
+This is basically the deep link click callback.
+
+If a URL arrives while your app is suspended or running in the background, the system moves your app to the foreground prior to calling this method.
+
+
+```swift
+optional func application(
+    _ app: UIApplication,
+    open url: URL,
+    options: [UIApplication.OpenURLOptionsKey : Any] = [:]
+) -> Bool
+```
+
+
+### will/didFinishLaunchWithOptions
+
+Tells the delegate that the launch process is almost done and the app is almost ready to run.
+
+`application(_:didFinishLaunchingWithOptions:)` 
+
+Full declaration:
+```swift
+optional func application(
+    _ application: UIApplication,
+    didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil
+) -> Bool
+```
+
+This method represents your last chance to process any keys in the launchOptions dictionary.
+
+Alternate callback - Objects that are not the app delegate can access the same launchOptions dictionary values by observing the notification named didFinishLaunchingNotification and accessing the notification’s userInfo dictionary. That notification is sent shortly after this method returns.
+
+**launchOptions** - **A dictionary indicating the reason the app was launched (if any).** The contents of this dictionary may be empty in situations where the user launched the app directly.
+
+return value - false if the app cannot handle the URL resource or continue a user activity, otherwise return true. The return value is ignored if the app is launched as a result of a remote notification.
+
+
+
+
