@@ -1,4 +1,53 @@
 
+
+## What is an initializer?
+
+In other languages, it is referred to as a constructor - a type level function that sets up memory/variables for the instance.
+
+In swift, it does not need the func keyword or return type
+
+```swift
+class Dog {
+    var name = ""
+    var license = 0
+    init(name:String) {
+        self.name = name
+    }
+    init(license:Int) {
+        self.license = license
+    }
+    init(name:String, license:Int) {
+        self.name = name
+        self.license = license
+    }
+}
+```
+
+Note - no need of new keyword after class to create instances:
+```swift
+let fido = Dog(name:"Fido")
+let rover = Dog(license:1234)
+let spot = Dog(name:"Spot", license:1357)
+```
+
+## It is mandatory to initialize all stored properties in initializer
+
+if not done, error shows up: Return from initializer without initializing all stored properties.
+
+## let property initialization in initializer
+
+Because immutable `let` property initialization in initializer also counts as initializaiton, following is valid:
+```swift
+class Dog {
+    let name : String // let is ok as long as init happens in initializer
+    let license : Int  // let is ok as long as init happens in initializer
+    init(name:String = "", license:Int = 0) {
+        self.name = name
+        self.license = license
+    }
+}
+```
+
 ## Default meember property values
 
 If a property always takes the same initial value, provide a default value rather than setting a value within an initializer. The end result is the same, but the default value ties the property’s initialization more closely to its declaration. It makes for shorter, clearer initializers and enables you to infer the type of the property from its default value. The default value also makes it easier for you to take advantage of default initializers and initializer inheritance, as described later in this chapter.
