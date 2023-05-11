@@ -24,6 +24,8 @@ To support a custom URL scheme:
 2. Register your scheme so that the system directs appropriate URLs to your app.
 3. Handle the URLs that your app receives.
 
+
+
 ### Example Custom URL Scheme
 
 See following example: `myphotoapp:albumname?name="albumname"`
@@ -49,3 +51,48 @@ UIApplication.shared.open(url!) { (result) in
 
 3. Specify an identifier for your app.
 
+![custom url schemes](../images/customurlschemes.png)
+
+#### Identifier
+
+The identifier you supply with your scheme distinguishes your app from others that declare support for the same scheme. To ensure uniqueness, specify a reverse DNS string that incorporates your company’s domain and app name,
+
+If multiple apps register the same scheme, the app the system targets is undefined. There’s no mechanism to change the app or to change the order apps appear in a Share sheet.
+
+
+## test custom url deeplinks from simulator
+
+```
+xcrun simctl openurl booted <url>
+```
+
+## handle deeplinks via application.open
+
+
+```swift
+func application(_ application: UIApplication,
+                 open url: URL,
+                 options: [UIApplicationOpenURLOptionsKey : Any] = [:] ) -> Bool {
+
+    // Determine who sent the URL.
+    let sendingAppID = options[.sourceApplication]
+    print("source application = \(sendingAppID ?? "Unknown")")
+
+    // Process the URL.
+    guard let components = NSURLComponents(url: url, resolvingAgainstBaseURL: true),
+        let albumPath = components.path,
+        let params = components.queryItems else {
+            print("Invalid URL or album path missing")
+            return false
+    }
+
+    if let photoIndex = params.first(where: { $0.name == "index" })?.value {
+        print("albumPath = \(albumPath)")
+        print("photoIndex = \(photoIndex)")
+        return true
+    } else {
+        print("Photo index missing")
+        return false
+    }
+}
+```
