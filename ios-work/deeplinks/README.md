@@ -96,3 +96,31 @@ func application(_ application: UIApplication,
     }
 }
 ```
+
+## handle deeplinks in scene based app
+
+If your app has opted into Scenes, and your app isn’t running, the system delivers the URL to the scene(_:willConnectTo:options:) delegate method after launch, and to scene(_:openURLContexts:) when your app opens a URL while running or suspended in memory.
+
+
+
+```swift
+func scene(_ scene: UIScene, 
+           willConnectTo session: UISceneSession, 
+           options connectionOptions: UIScene.ConnectionOptions) {
+
+    // Determine who sent the URL.
+    if let urlContext = connectionOptions.urlContexts.first {
+
+        let sendingAppID = urlContext.options.sourceApplication
+        let url = urlContext.url
+        print("source application = \(sendingAppID ?? "Unknown")")
+        print("url = \(url)")
+
+        // Process the URL similarly to the UIApplicationDelegate example.
+    }
+
+    /*
+     *
+     */
+}
+```
