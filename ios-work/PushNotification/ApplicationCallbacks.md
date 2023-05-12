@@ -26,6 +26,14 @@ optional func application(
 )
 ```
 
+Apple has changed the way that remote notifications are delivered when an app is running in the background (i.e. opened but minimised by the user) in iOS 13 and above.
+
+If you take no further action, when your app is running in the background the `application:didReceiveRemoteNotification:fetchCompletionHandler:` method **will not be called until the user brings the app to the foreground by tapping on the notification.** The method call will also be delayed after the app enters the foreground, depending on the type of the received notification.
+
+**To ensure that the AppDelegate method is called immediately after a notification is displayed when your app is running in the background and (as was the case with iOS 12 and below), you must implement a Notification Service Extension.**
+
+https://pusher.com/docs/beams/guides/handle-incoming-notifications/ios/
+
 
 ### open URL - application(_:open:options:)
 
