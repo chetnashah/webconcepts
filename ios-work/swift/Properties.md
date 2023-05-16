@@ -14,6 +14,10 @@ supoorted by `class` and `struct`.
 
 a constant or variable that’s stored as part of an instance of a particular class or memory structure
 
+**A stored property must be given an initial value** - either through default value in declaration, or via initializer functions.
+
+Setter observers are not called during initialization of properties.
+
 ### lazy stored properties (must be var)
 
 A lazy stored property is a property whose initial value isn’t calculated until the first time it’s used. You indicate a lazy stored property by writing the lazy modifier before its declaration.
@@ -31,7 +35,75 @@ class DataManager {
 ```
 
 
-## Computed properties (always use var)
+## Properties and self
+
+A property declaration cannot fetch an instance property or instance method (via self). 
+because there is no self constructed yet.
+
+property initializers must run before 'self' is available.
+
+```swift
+class Moi {
+    let first = "Matt"
+    let last = "Neuburg"
+    let whole = self.first + " " + self.last // compile error: Cannot find 'self' in scope
+}
+```
+
+### self allowed in computed properties
+
+### self allowed for lazy property declarations
+
+lazy properties are not evaluated till first access.
+
+```swift
+class Moi {
+    let first = "Matt"
+    let last = "Neuburg"
+    lazy var whole = self.first + " " + self.last
+}
+```
+
+## static properties are lazily initialized
+
+```swift
+struct Greeting {
+    static let friendly = "hello there"
+    static let hostile = "go away"
+    static var ambivalent : String {
+        self.friendly + " but " + self.hostile
+    }
+}
+```
+
+## lazy cannot be used with let
+
+**lazy can only be used with var** - why?
+
+You must always declare a lazy property as a variable (with the var keyword), 
+because its initial value might not be retrieved until after instance initialization completes. 
+
+Constant properties must always have a value before initialization completes, 
+and therefore can’t be declared as lazy.
+
+```swift
+class Moi {
+    lazy let first = "Matt"; // lazy cannot be used on let
+    lazy var second = "hii"; // ok
+}
+```
+
+### Use cases for lazy var
+
+Lazy properties are useful when the initial value for a property is dependent on outside factors whose values aren’t known until after an instance’s initialization is complete. 
+
+Lazy properties are also useful when the initial value for a property requires complex or computationally expensive setup that shouldn’t be performed unless or until it’s needed.
+
+
+
+
+
+## Computed properties (always use var), cannot use let
 
 You must declare computed properties—including read-only computed properties—as variable properties with the `var` keyword, because their value isn’t fixed.
 

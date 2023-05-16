@@ -86,3 +86,45 @@ class Person {
     }
 }
 ```
+
+## Nested types
+
+outer class/type acts as namespace.
+Outer type must be referred to explicitly in order to access the nested object type.
+
+Namespacing also allows more than one Noise type to exist, without any clash of names
+
+```swift
+class Dog {
+    struct Noise {
+        static var noise = "woof"
+    }
+    func bark() {
+        print(Dog.Noise.noise) // to access nested type Noise, `Dog.Noise` must be used
+    }
+}
+```
+
+### Nested types access to outer type
+
+A nested type can’t refer directly to the surrounding type’s instance members, but it can refer directly to the surrounding type’s static/class members (from its namespacing nature which is static).
+
+```swift
+
+class Animal {
+    static var tt = "something" // accessible to nested types because static
+    var pp = "instance prop" // not accessible to nested types because instance property
+    class Noise {
+        func getTT() -> String {
+            return tt + pp
+        }
+    }
+}
+
+var n = Animal.Noise()
+print(n.getTT())
+
+```
+
+
+

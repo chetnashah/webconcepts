@@ -1,4 +1,10 @@
 
+## What are enums?
+
+An enum is an object type whose instances represent distinct predefined alternative values.
+
+An enum is the Swift way to express a set of constants that are alternatives to one another.
+
 ## objc compatibility
 
 However once you venture away from integers (say String) or start using associated values you can't use enums from within Objective-C.
@@ -21,6 +27,8 @@ enum Country {
 
 ### Dot syntax allowed on inferred types/assignment
 
+If the type is known in advance, you can omit the name of the enum; the bare case must still be preceded by a dot:
+
 ```swift
 enum Country: CaseIterable {
     case India
@@ -28,10 +36,31 @@ enum Country: CaseIterable {
     case Korea
 }
 
+// namespace type of enum alternative is inferred
 var c: Country = .India // dot syntax allowed for inferred types, dropping enum name
 c = .USA
 
 print(c) // USA
+```
+
+Similarly allowed for function arguments that have type arguments
+
+```swift
+enum Filter {
+    case albums
+    case playlists
+    case podcasts
+    case books
+}
+
+func filterExpecter(_ type:Filter) {} // argument's type is inferred to be an enum value
+filterExpecter(.albums)
+```
+
+Real life example in `UIKit`:
+```swift
+let v = UIView()
+v.contentMode = .center // much better than UIView.ContentMode.center
 ```
 
 ## Enums can have constructors/initializers with params (which can decide which one to pick)

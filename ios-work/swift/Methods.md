@@ -271,3 +271,20 @@ blog = nil
 // does not deallocate, use [weak self] in closure onPublish
 RunLoop.main.run()
 ```
+
+
+## Secret life of methods
+
+### Instance methods are actually static methods that take instance as parameter
+
+```swift
+class MyClass {
+    var s = ""
+    func store(_ s:String) {
+        self.s = s
+    }
+}
+let m = MyClass()
+let f = MyClass.store(m) // returns the currried function store, closed with instance memory of instance m, this fn when called with arguments, will execute store
+f("Howdy"); // calls store("Howdy")
+```
