@@ -62,3 +62,21 @@ source .venv/bin/activate
 ## What is the structure of a virtual environment directory?
 
 Virtual env dir shape: ![here](images/virtualenvdir.png)
+
+## How does virtual environment activation work?
+
+**It works by shimming a path in front of your $PATH**. **This is what allows you to have project specific interpreter/libs**
+
+E.g. PATH before environment activation:
+```sh
+$ echo $PATH
+/Users/jayshah/.opam/default/bin:/Users/jayshah/.yarn/bin:/Users/jayshah/.config/yarn/global/node_modules/.bin:/Users/jayshah/.rbenv/shims:/Users/jayshah/opt/anaconda3/bin:/Users/jayshah/.gem/bin:/Users/jayshah/.rbenv/shims:/Users/jayshah/.nvm/versions/node/v16.13.1/bin:/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Library/TeX/texbin:/usr/local/go/bin:/usr/local/MacGPG2/bin:/usr/local/share/dotnet:~/.dotnet/tools:/Library/Apple/usr/bin:/Library/Frameworks/Mono.framework/Versions/Current/Commands:/Applications/Wireshark.app/Contents/MacOS:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/Users/jayshah/.cargo/bin:/Users/jayshah/Library/Android/sdk/emulator:/Users/jayshah/Library/Android/sdk/tools:/Users/jayshah/Library/Android/sdk/tools/bin:/Users/jayshah/Library/Android/sdk/platform-tools:/Users/jayshah/Documents/depot_tools:/Users/jayshah/Documents/depot_tools
+```
+
+After doing `source .venv/bin/activate` inside `myproject`,
+```sh
+jayshah@192 myvenvproject % source .venv/bin/activate
+(.venv) jayshah@192 myvenvproject % echo $PATH # notice below how .venv/bin is appended to front of $PATH
+/Users/jayshah/Documents/programming/myvenvproject/.venv/bin:/Users/jayshah/.opam/default/bin:/Users/jayshah/.yarn/bin:/Users/jayshah/.config/yarn/global/node_modules/.bin:/Users/jayshah/.rbenv/shims:/Users/jayshah/opt/anaconda3/bin:/Users/jayshah/.gem/bin:/Users/jayshah/.rbenv/shims:/Users/jayshah/.nvm/versions/node/v16.13.1/bin:/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Library/TeX/texbin:/usr/local/go/bin:/usr/local/MacGPG2/bin:/usr/local/share/dotnet:~/.dotnet/tools:/Library/Apple/usr/bin:/Library/Frameworks/Mono.framework/Versions/Current/Commands:/Applications/Wireshark.app/Contents/MacOS:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/Users/jayshah/.cargo/bin:/Users/jayshah/Library/Android/sdk/emulator:/Users/jayshah/Library/Android/sdk/tools:/Users/jayshah/Library/Android/sdk/tools/bin:/Users/jayshah/Library/Android/sdk/platform-tools:/Users/jayshah/Documents/depot_tools:/Users/jayshah/Documents/depot_tools
+```
+Similarly `deactivate` will remove this extra path from front of your `$PATH`.
