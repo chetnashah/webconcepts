@@ -127,4 +127,35 @@ print(n.getTT())
 ```
 
 
+## Static vs class properties
+
+a static property can be stored, but a class property must be a computed property.
+
+```swift
+// stored static properties are allowed
+class Cat {
+    static var whatCatsSay = "woof" // Ok
+    func meow() {
+        print(Cat.whatCatsSay)
+    }
+}
+
+// stored class properties not allowed!
+class Dog {
+    class var whatDogsSay = "woof" // ERROR! Class stored properties not supported in classes; did you mean 'static'?
+    func bark() {
+        print(Dog.whatDogsSay)
+    }
+}
+```
+
+## Static vs class methods
+
+**Yes both static and class methods/properties are different and can co-exist**
+
+static and class both associate a method with a class, rather than an instance of a class. 
+
+The difference is that subclasses can override class methods; they cannot override static methods.
+
+class properties function in the same way (subclasses can override them).
 

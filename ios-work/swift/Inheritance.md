@@ -69,3 +69,20 @@ You can prevent a method, property, or subscript from being overridden by markin
 Mark everything as final using `final class`.
 Do this by writing the final modifier before the method, property, or subscript’s introducer keyword (such as `final var`, `final func`, `final class func`, and `final subscript`).
 
+## Properties overriding
+
+**Main Restriction** - **subclass property override cannot be a stored property!**
+
+There are nuances depending on base class property being stored/computed, search the cases online.
+
+
+## Static vs class methods/properties
+
+**Yes both static and class methods/properties are different and can co-exist**
+
+static and class both associate a method with a class, rather than an instance of a class. 
+
+The difference is that **subclasses can override class methods; they cannot override static methods**.
+
+class properties function in the same way (subclasses can override them).
+

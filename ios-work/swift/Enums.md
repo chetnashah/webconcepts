@@ -24,6 +24,16 @@ enum Country {
 }
 ```
 
+## Enum initializers
+
+explicit enum initializer must do what default initialization does: 
+**it must return a particular case of this enum. To do so, set self to the case**
+
+e.g.
+
+```swift
+
+```
 
 ### Dot syntax allowed on inferred types/assignment
 
@@ -204,6 +214,8 @@ enum Device {
 ### Mutating methods can change underlying self
 
 Using a `mutating func` inside the enum can modify self to point to different enum.
+This is useful for modeling state machines which provide method to switch between states,
+and the current state is represented by enum's case.
 
 ```swift
 enum TriStateSwitch {
