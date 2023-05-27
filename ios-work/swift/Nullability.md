@@ -8,6 +8,45 @@ let url: URL? = URL(string:"ASDF") // URL initializer returns nil if string cont
 let url2: URL? = nil // URL? = URL | nil
 ```
 
+## optional property vars are set to nil automatically 
+optional `var` variables are always automatically set to `nil`.
+
+```swift
+class Person {
+  var str: String?
+}
+var pp = Person()
+```
+
+## optional immutable (let based) variables must be explicitly set
+
+```swift
+var str: String? // value assigned is nil
+let st2: String? // ERROR!, must be initialized by inline declaration or initializer!
+
+func abc() {
+    st2 = "ASdf"
+}
+
+abc()
+
+print(str)
+print(st2)
+```
+
+## optional immutable properties (let based) need to be explicitly set in initializer
+
+```swift
+class Person {
+    let name: String? // let optional properties need to be explicitly given a value
+    init(name: String) {
+        self.name = name
+    }
+}
+
+var pp = Person(name: "Kk")
+```
+
 ## Class constructor/initializer that might return nil (e.g. invalid params)
 
 A initializer that can return `nil` is called a `failable initializer` and has name `init?`

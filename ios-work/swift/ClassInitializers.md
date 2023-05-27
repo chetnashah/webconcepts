@@ -34,6 +34,26 @@ let spot = Dog(name:"Spot", license:1357)
 
 if not done, error shows up: Return from initializer without initializing all stored properties.
 
+## initializer and self
+
+an initializer may not refer to self, explicitly or implicitly, until all instance properties have been initialized.
+This also includes method calls because all instance method calls implicitly refer self.
+
+```swift
+struct Cat {
+    var name : String
+    var license : Int
+    init(name:String, license:Int) {
+        self.name = name
+        meow() // too soon - compile error, implicitly refers self via self.meow()
+        self.license = license
+    }
+    func meow() {
+        print("meow")
+    }
+}
+```
+
 ## let property initialization in initializer
 
 Because immutable `let` property initialization in initializer also counts as initializaiton, following is valid:
