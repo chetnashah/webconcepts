@@ -263,12 +263,22 @@ It’s important to keep the inheritance chain in mind for any class you need to
 `initWithX` methods can be present on instance instead of class, because first `alloc` is called. 
 
 What it should look like?
+A well-designed initialization method should complete the following steps to ensure the proper detection and propagation of errors:
 
+1. Reassign self by invoking super’s designated initializer.
+2. Check the returned value for nil, which indicates that some error occurred in the superclass initialization.
+3. If an error occurs while initializing the current class, release the object and return nil.
 ```objc
 - (instancetype)initWithA:(atype) aparam barg:(btype) bparam {
-    if((self = [super init])) {
+    self = [super init];
+
+    if((self != nil)) { // initialize base class first
         _a = aparam; // populating backing private instance variables
         _b = bparam;
+        if (someError) {
+            [self release];
+            self = nil;
+        }
     }
     return self;// return instance itself
 }
@@ -329,3 +339,74 @@ The modern way is to declare them with the **@implementation block with braces**
 
 Refer: [here](CategoriesAndExtensions.md)
 
+
+## isa instance var on object
+
+every object carries with it an `isa` instance variable that
+**identifies the object’s class**—what kind of object it is..
+
+Whenever it needs to, the runtime
+system can find the exact class that an object belongs to, just by asking the object about its isa variable.
+
+`isa` enables introspection - for objects to find out about
+themselves (or other objects). The compiler records information about class
+definitions in data structures for the runtime system to use.
+
+## From message to method
+
+on receiver getting a message, a whole mechanism is run to find the resolved method to run for that message.
+This includes runtime binding/isa self search for message handlers.
+
+## Messages to nil
+
+A message to nil also is valid, as long as the message returns an object; if it does, a
+message sent to nil will return nil. If the message sent to nil returns anything other
+than an object, the return value is undefined.
+
+## include vs import
+
+`#import` Objective-C and Objective-C++ headers, and `#include` C/C++ headers.
+
+## protected properties
+
+For properties that should only be available to subclasses ("protected"), use a category in a separate header. For an example from Apple, see UIGestureRecognizerSubclass.h.
+
+
+## Correct way to make a singleton
+
+Only using `dispatch_once`:
+
+```objc
+// CRLSingletonClass.h
+@property (class, nonatomic, readonly) CRLSingletonClass *sharedInstance;
+
+// CRLSingletonClass.m
++(CRLSingletonClass *)sharedInstance {
+    static dispatch_once_t onceToken;
+    static CRLSingletonClass *singletonInstance;
+    
+    dispatch_once(&onceToken, ^{
+        singletonInstance = [[CRLSingletonClass alloc] init];
+    });
+    
+    return singletonInstance;
+}
+```
+
+## +initialize to do class level initialization
+
+The initialize  class method gives you a place to have some code executed once, lazily, before any other method of the class is invoked. It is typically used to set the version numbers of classes (see Versioning and Compatibility).
+
+The runtime sends initialize to each class in an inheritance chain, even if it hasn’t implemented it; If your class is subclassed, and the subclass doesn't implement +initialize, your implementation will be called more than once
+
+
+always guard the body of +initialize with a check that self is the class you think it is.
+
+```objc
++(void)initialize {
+    if(self != [CRLExpectedClass class]) return;
+    // ... real initialization code ... 
+}
+```
+
+Avoid `+load`

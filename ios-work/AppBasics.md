@@ -198,5 +198,36 @@ You can alter the responder chain by overriding the `next` property of your resp
 
 
 
+## IBOutlet
 
+Think of this as view-binding/butterknife which is done on android.
+
+An outlet is an object instance variable.
+
+With outlets, the reference is configured and archived through Interface Builder. The connections between the containing object and its outlets are reestablished every time the containing object is unarchived from its nib file.
+
+
+
+You need to use IBOutlet and IBAction if you are using interface builder (hence the IB prefix) for your GUI components. IBOutlet is needed to associate properties in your application with components in Interface Builder.
+
+
+The connection between an object and its outlets is archived in a nib file; when the nib file is loaded, each connection is unarchived and reestablished, and is thus always available whenever it becomes necessary to send messages to the other object.
+
+Through an outlet, an object in your code can obtain a reference to an object defined in a nib file or storyboard and then loaded from that file. 
+* The object containing an outlet is often a custom controller object such as a view controller. 
+* You frequently define outlets so that you can send messages to view objects of the UIKit framework (in iOS) and the AppKit framework (in OS X).
+
+An example view controller making use of IBOutlet::
+```swift
+import UIKit
+
+class ViewController: UIViewController {
+    @IBOutlet var myTableView: UITableView!
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        // Do any additional setup after loading the view.
+    }
+}
+```
 
