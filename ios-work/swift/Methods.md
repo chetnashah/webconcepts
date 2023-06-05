@@ -96,6 +96,8 @@ closures, like classes, are reference types. When you assign a closure to a prop
 
 ### Closures expression syntax
 
+Code inside curly brackets `{}` is a closure, and is called closure expression.
+
 ```swift
 let myfn = { (parameters) -> return-type in
     statements

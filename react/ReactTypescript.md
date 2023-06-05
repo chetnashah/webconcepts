@@ -61,7 +61,7 @@ export default function App() {
 
 ### Difference between ReactNode and ReactElement
 
-A `ReactElement` is an object with `type` and `props`.
+A `ReactElement` is an object with `type` and `props` and `key`.
 ```ts
  type Key = string | number
 
@@ -138,7 +138,8 @@ function createRef<T>(): RefObject<T>;
 
 ## Functional components
 
-`FC` is exactly same as `FunctionComponent`
+`FC` is exactly same as `FunctionComponent`.
+When called with props, it returns `ReactElement` or `null`.
 
 ```tsx
 type FC<P = {}> = FunctionComponent<P>;

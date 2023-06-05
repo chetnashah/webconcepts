@@ -231,3 +231,14 @@ class ViewController: UIViewController {
 }
 ```
 
+### Checking the outlet setup
+
+You can check the outlet setup by right clicking on the view controller in the storyboard and see the outlets in the popup.
+
+In code:
+
+![outlet setup](./images/outlet_setup_code.png)
+
+In storyboard:
+
+![outlet setup](./images/outlet_setup_storyboard.png)
