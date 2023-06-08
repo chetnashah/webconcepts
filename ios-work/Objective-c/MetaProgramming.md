@@ -115,3 +115,15 @@ id   helper = getTheReceiver();
 SEL  request = getTheSelector();
 [helper performSelector:request];
 ```
+
+### objc_msgsend
+
+The meat-and-potatoes of the Objective-C runtime is objc_msgSend, the C function responsible for sending a message to an object. When you write the following line of Objective-C code:
+```objc
+[tableView cellForRowAtIndexPath:indexPath];
+```
+The compiler actually translates it down into the following C function call:
+```objc
+objc_msgSend(tableView, @selector(cellForRowAtIndexPath:), indexPath);
+```
+`objc_msgSend_stret` is an alternate version of objc_msgSend that exists solely to return a struct value (the ‘stret’ stands for for struct return). It’s used in the same way as objc_msgSend, but it’s used when the method returns a struct value. 
