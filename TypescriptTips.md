@@ -248,3 +248,6 @@ forceTsTypeError2(name);
 
 ```
 
+Also known as opaque types, 
+a good article here: https://codemix.com/opaque-types-in-javascript/
+

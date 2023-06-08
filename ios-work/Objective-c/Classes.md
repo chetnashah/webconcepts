@@ -410,3 +410,30 @@ always guard the body of +initialize with a check that self is the class you thi
 ```
 
 Avoid `+load`
+
+## Instance variables declaration
+
+Instance variables are declared in the `@interface` block of a class, within curly braces:
+
+In interface file:
+```objc
+#import "ItsSuperclass.h"
+@interface ClassName : ItsSuperclass
+{
+    instance variable declarations
+}
+method declarations
+@end
+```
+
+```objc
+@implementation ClassName : ItsSuperclass
+{
+    instance variable declarations
+}
+method definitions
+@end
+```
+
+To limit an instance variable’s scope to just the class that declares it, you must mark it @private. Instance variables marked @private are only available to subclasses by calling public accessor methods, if they exist.
+
