@@ -145,3 +145,106 @@ type Aidx = A['a']
 
 // Aidx = number | string | boolean
 ```
+
+## Nominal types in typescript
+
+https://michalzalecki.com/nominal-typing-in-typescript/
+
+A feature requested from TS: https://github.com/Microsoft/TypeScript/issues/202
+
+By default typescript is structurally typed, 
+so two types with similar structure are treated same and can be used interchangably (**And they ignore the type name**), 
+even though we explicitly specify the type we need.
+
+Here is an example with simple types:
+```ts
+type OrderId = number;
+
+type CustomerId = number;
+
+function getOrderId(oid: OrderId) {
+    return oid;
+}
+
+function getCustomerId(cid: CustomerId) {
+    return cid;
+}
+
+let o: OrderId = 11;
+
+getCustomerId(o); // no error
+```
+
+Here is an example with object types/interfaces:
+```ts
+
+interface Eur {
+    cnt: number;
+    sym: string;
+}
+
+interface Dollar {
+    cnt: number;
+    sym: string;
+}
+
+let e: Eur = {
+    cnt: 2,
+    sym: "E"
+}
+
+let d: Dollar = {
+    cnt: 1,
+    sym: "D"
+}
+
+function addCurrency<C extends Eur>(c1: C, c2:C) {
+    return {
+        cnt: c1.cnt + c2.cnt,
+        sym: c1.sym
+    }
+}
+
+console.log(addCurrency(e, d)); // no error, but should have!!
+```
+
+### Supporting Nominal keys using symbol
+
+```ts
+const nominalSymbol: unique symbol = Symbol(); // This is a small overhead in the JS output
+
+type Nominal<T extends string, U> = U & { [nominalSymbol]: T };
+```
+
+Examples with use of `Nominal` type:
+```ts
+// example with objects
+type User =  Nominal<'User', { name: string }>;
+type Product = Nominal<'Product', { name: string }>;
+
+const user = { name: 'username' } as User;
+const product = { name: 'product' } as Product;
+
+function forceTsTypeError(u: User):void {}
+
+forceTsTypeError(user);
+forceTsTypeError(product);
+// --------------^^^^^^^ Type '"Product"' is not assignable to type '"User"'.
+
+// example with primitives
+
+type ID = Nominal<'ID', string>;
+type Name = Nominal<'Name', string>;
+
+const id = 'id string' as ID;
+const name = 'jondoe' as Name;
+
+
+function forceTsTypeError2(id: ID):void {}
+
+forceTsTypeError2(id);
+forceTsTypeError2(name);
+// ---------------^^^^ Type '"Name"' is not assignable to type '"ID"'.
+
+```
+
