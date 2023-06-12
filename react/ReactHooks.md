@@ -633,3 +633,44 @@ function App() {
   );
 }
 ```
+
+## useEffect (parent vs children)
+
+Children effects are run before parent effects.
+
+e.g.
+https://stackblitz.com/edit/stackblitz-starters-xxrexd?file=src%2FApp.tsx
+
+e.g.
+```tsx
+// App.tsx
+import * as React from 'react';
+import './style.css';
+
+function Child() {
+  React.useEffect(() => {
+    console.log('Child effect');
+  }, []);
+  return <div>Child</div>;
+}
+
+function Parent(props) {
+  React.useEffect(() => {
+    console.log('Parent effect. !');
+  }, []);
+  return <div>Parent{props.children}</div>;
+}
+
+export default function App() {
+  return (
+    <div>
+      <h1>Hello StackBlitz!</h1>
+      <p>Start editing to see some magic happen :)</p>
+      <Parent>
+        <Child />
+      </Parent>
+    </div>
+  );
+}
+
+```
