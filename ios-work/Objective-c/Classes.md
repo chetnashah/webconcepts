@@ -313,15 +313,21 @@ TemperatureConverter* tc = [[TemperatureConverter alloc] initWithLocation:@"Delh
 
 ## Properties
 
-Properties are awesome because getters and setters are created automatically based on specifications.
+Properties are awesome because getters and setters are created automatically based on specifications. But you can override them if needed, in the implementation.
+
+
 
 Use `@property property-attributes property-name`
 
 The default name for the automatically generated ivar is the name or your property starting with an underscore
 
+Inspecting properties:
+
+![Class structure properties](./images/classstructureproperties.png)
+
 ## Private instance variables
 
-The modern way is to declare them with the **@implementation block with braces**
+The modern way is to declare them with the **@implementation block with braces**. This is almost always recommended, because it makes it clear to the compiler that the instance variables are private, and it also makes it easier to add new instance variables later. Moreover changing/adding instance vars in implementation file will not require changing the header file & avoid recompilation of all the files that import the header file.
 
 ```objc
 @implementation ClassName {

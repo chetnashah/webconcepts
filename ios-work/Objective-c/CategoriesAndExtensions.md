@@ -115,10 +115,11 @@ Because no name is given in the parentheses, class extensions are often referred
 
 **Unlike regular categories, a class extension can add its own properties and instance variables to a class.**
 
+`Relationship with properties` - **We can add extra instance variables and properties in class extension** but not in category. Infact same name properties with different attributes will override/redifine the original property.
+
 Class extensions are often used to **extend the public interface with additional private methods or properties for use within the implementation of the class itself**. It usually makes sense to add these private extensions in the implementation file i.e. `.m` files itself.
 
 It’s common, for example, to define a property as readonly in the interface, but as readwrite in a class extension declared above the implementation, in order that the internal methods of the class can change the property value directly.
-
 
 e.g.
 ```objc
