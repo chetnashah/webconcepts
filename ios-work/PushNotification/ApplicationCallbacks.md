@@ -35,6 +35,50 @@ If you take no further action, when your app is running in the background the `a
 https://pusher.com/docs/beams/guides/handle-incoming-notifications/ios/
 
 
+There are actually many cases to consider here: https://medium.com/fantageek/push-notification-in-ios-46d979e5f7ec#:~:text=If%20your%20delegate%20implements%20both%20methods%2C%20the%20app,the%20appropriate%20information%20in%20the%20launch%20options%20dictionary.
+
+## Case 1: Foreground
+### Loud push
+
+1. No system alert
+2. `application:didReceiveRemoteNotification:fetchCompletionHandler:` is called
+
+### Silent push
+
+1. No system alert
+2. `application:didReceiveRemoteNotification:fetchCompletionHandler:` is called
+
+## Case 2: Background
+### Loud push
+
+1. System alert
+2. No method called
+3. Tap notification and `application:didReceiveRemoteNotification:fetchCompletionHandler:` is called
+4. Tap on App Icon and nothing is called
+
+### Silent push
+
+1. System alert
+2. `application:didReceiveRemoteNotification:fetchCompletionHandler:` is called. If app is suspended, its state changed to UIApplicationStateBackground
+3. Tap notification and `application:didReceiveRemoteNotification:fetchCompletionHandler:` is called
+4. Tap on App Icon and nothing is called
+
+## Case 3: Terminated
+### Loud push
+
+1. System alert
+2. No method called
+3. Tap notification and `application:didFinishLaunchingWithOptions:` with `launchOptions`, `application:didReceiveRemoteNotification:fetchCompletionHandler:` is called
+4. Tap on App Icon and `application:didFinishLaunchingWithOptions:` is called with launchOptions set to nil
+
+### Silent push
+
+1. System alert
+2. `application:didReceiveRemoteNotification:fetchCompletionHandler:` is called. If app was not killed by user, it is woke up and state changed to UIApplicationStateInactive.
+3. Tap notification and `application:didFinishLaunchingWithOptions:` with launchOptions, `application:didReceiveRemoteNotification:fetchCompletionHandler:` is called
+4. Tap on App Icon and `application:didFinishLaunchingWithOptions:` is called with launchOptions set to nil
+
+
 ### open URL - application(_:open:options:)
 
 Asks the delegate to open a resource specified by a URL, and provides a dictionary of launch options.
