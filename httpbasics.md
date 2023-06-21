@@ -168,6 +168,14 @@ On the server side, the server will keep the connections from various clients op
 
 With HTTP/2, the number of connections that a server has to maintain is vastly less than it was with HTTP/1.1. With HTTP/2, a server has to maintain just 1 TCP connection per client; with HTTP/1.1, the server had to maintain typically 2-8 TCP connections per client.
 
+## TCP connections
+
+TCP connections by default never close themselves, the protocols on top can decide when/how to close
+connection.
+
 ## http2 vs 3
+
+**http2 does not close connection on request/response.**
+Instead there is a configured timeout on the server, e.g. nginx has 3 mins by default.
 
 ![http2 and 3](img/http2and3.png)
