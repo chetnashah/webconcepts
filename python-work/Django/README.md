@@ -7,6 +7,14 @@ Difference in Serializers, Form.
 
 Django apps are “pluggable”: You can use an app in multiple projects, and you can distribute apps, because they don’t have to be tied to a given Django installation.
 
+## Request response cycle
+
+![req res cycle](images/djangorequestresponsecycle.png)
+
+## Views and templates
+
+The “View” in MVC is analogous to a “Template” in Django while the “Controller” in MVC is divided into a Django “View” and “URL config.”
+
 ## How to play around with DJango APIs
 
 Open shell using following:
