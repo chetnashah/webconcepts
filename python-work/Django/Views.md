@@ -1,3 +1,17 @@
+
+## Views
+
+This is not a traditional "View" like a template, but more like a controller which controls the window of data that we return combined with URL routing. In essence these would be request handlers for given URL patterns.
+
+## Ways to write views
+
+three ways to write a view in Django: 
+1. function-based views (FBVs), 
+2. class-based views (CBVs), and 
+3. generic class-based views (GCBVs).
+
+## Example
+
 For example, in a blog application, you might have the following views:
 
 * Blog homepage – displays the latest few entries.
@@ -6,6 +20,8 @@ For example, in a blog application, you might have the following views:
 * Month-based archive page – displays all days with entries in the given month.
 * Day-based archive page – displays all entries in the given day.
 * Comment action – handles posting comments to a given entry
+
+
 
 **Django will choose a view by examining the URL that’s requested (to be precise, the part of the URL after the domain name).**
 
