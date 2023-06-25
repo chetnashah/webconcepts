@@ -1,9 +1,19 @@
 Good resource: https://www.youtube.com/watch?v=Z1VhG7cf83M
 
+
+### What is a go workspace?
+
+Useful for arranging a golang monorepo, where we want to link multiple local golang projects/modules on the same machine.
+
+https://go.dev/doc/tutorial/workspaces
+
+We can run `go work init` in dir containing all modules/projects that we want to link to each other, which will create `go.work` file in the current directory.
+
 ### Module vs package
 
-package is just a dir with go files,
-module is a go project/lib with `go.mod` file.
+**Package** - A go package is just a dir with go files. The `import` keyword imports packages. When creating a package, recommended to have same dir name as package name. All files within the package must start with `package pkgname`. Visibility - only exported members are visible outside the package. Exported members start with capital letter (there is no explicit export keyword!)
+
+**Module** - A go module is a go project/lib with `go.mod` file, i.e. dependencies versioned together with code.
 
 ### History
 
