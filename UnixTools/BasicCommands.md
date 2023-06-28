@@ -1,3 +1,53 @@
+## Ssessions and process groups
+
+A **process group** is a collection of related processes which can all be signalled at once.
+
+A **session** is a collection of process groups, which are either attached to a single terminal device (known as the controlling terminal) or not attached to any terminal.
+
+Sessions are used for job control: one of the process groups in the session is the foreground process group, and can be sent signals by terminal control characters. You can think of a session with a controlling terminal as corresponding to a "login" on that terminal. (Daemons normally disassociate themselves from any controlling terminal by creating a new session without one.)
+
+e.g. if you run some_app from the shell, the shell creates a new process group for it, and makes that the foreground process group of the session. (some_app might create some child processes; by default they will be part of the same process group.) If you then press ^Z, some_app's process group is signalled to stop it; and the shell's process group is switched to be the foreground process group again. Then e.g.bg %1 would start some_app's process group again, but keep it running in the background.
+
+https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap11.html#tag_11
+
+https://unix.stackexchange.com/questions/82844/what-is-the-purpose-of-abstractions-session-session-leader-and-process-groups
+
+
+https://unix.stackexchange.com/q/405755/170373
+
+## Login vs non-login shell
+
+https://unix.stackexchange.com/questions/38175/difference-between-login-shell-and-non-login-shell/
+
+https://linuxhandbook.com/login-shell/
+
+
+## who is logged in and doing what/where?
+
+### tty
+
+http://www.linusakesson.net/programming/tty/
+ 
+prints current terminal info
+
+```
+jayshah@192 ~ % tty
+/dev/ttys005
+```
+
+### w - who is logged in doing what
+
+```
+jayshah@192 ~ % w
+13:09  up 8 days, 16:18, 3 users, load averages: 2.74 2.77 3.27
+USER     TTY      FROM              LOGIN@  IDLE WHAT
+jayshah  console  -                19Jun23 8days -
+jayshah  s005     -                13:03       - w
+jayshah  s006     -                13:07       1 -zsh M_S      ��    /bin/zsh
+```
+
+## io
+
 1. Redirect stdout to one file and stderr to another file:
 
 `command > out 2>error`
