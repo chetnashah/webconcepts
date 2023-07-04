@@ -1,0 +1,3 @@
+[submodule "js-work"]
+	path = js-work
+	url = git@github.com:chetnashah/js-work.git
