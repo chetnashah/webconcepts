@@ -24,3 +24,8 @@ m := map[string]bool{
 
 
 
+## gopls is name of the language server
+
+https://pkg.go.dev/golang.org/x/tools/gopls#section-readme
+
+It installs all the tools like linter/formatter etc needed for good ecosystem.

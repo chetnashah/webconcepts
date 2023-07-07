@@ -1,6 +1,8 @@
 
 ### MYSQL
 
+Running it easily using docker: `docker run --name some-mysql -e MYSQL_ROOT_PASSWORD=my-secret-pw -d mysql:latest`
+
 Use library with parametrized queries: Recommended library in js ecosyste: `sql-template-strings`
 
 How it works:
