@@ -15,7 +15,28 @@ An organization account enhances collaboration between multiple personal account
 Don't build a GitHub App if you only want to act as a GitHub user and do everything that user can do.
 
 
+## Can a organization be Private? No!
 
+https://github.com/orgs/community/discussions/23157
+
+don’t have fully private organisations, but I think you might still be able to accomplish what you want with a couple settings.
+
+You can name your organisation anything you want, including totally random characters, so that it’s unlikely anyone will guess it and go straight to the URL. It’s not likely anyone is going to go to github.com/uuurygveryrandomorgname9865vtttk by chance.
+
+You can hide your organisation membership so that nobody can see that you are a member of this organisation.
+
+In this way, the organisation itself isn’t private, but to find it, people would have to know the name of it - they wouldn’t discover it from your profile page, or just by the the name of a project.
+
+As long as your repositories are also private, none of your work will be viewed by anyone who you don’t explicitly give access to either.
+
+## Where do I see the Organization and enterprises I am part of?
+
+Go to profile.
+On left you should see organization and enterprises you are part of.
+
+## How to hide my organization membership?
+
+https://docs.github.com/en/account-and-profile/setting-up-and-managing-your-personal-account-on-github/managing-your-membership-in-organizations/publicizing-or-hiding-organization-membership
 
 ## user to server requests
 
