@@ -57,5 +57,4 @@ func formHandler(w http.ResponseWriter, r *http.Request) {
 	defer fileToSave.Close()
 	defer fileInForm.Close()
 }
-
 ```
