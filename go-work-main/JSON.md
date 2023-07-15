@@ -1,4 +1,20 @@
 
+## Marshaling vs Encoding
+
+`Marshal` => `String`
+`Encode` => `Stream`
+* `Marshal` and `Unmarshal` convert a string into JSON and vice versa. 
+* `Encoding` and `decoding` convert a stream into JSON and vice versa.
+
+
+## Encoder
+
+`func NewEncoder(w io.Writer) *Encoder` - NewEncoder returns a new encoder that writes to `w`.
+
+
+
+
+
 ## JSON tagging (of structs) for serialization
 
 ```go
@@ -22,11 +38,18 @@ The `json` package is part of the Go standard library, and it provides functiona
 
 Overall, this code is a simple example of how to define a struct in Go and use `json` tags to specify how it should be serialized to JSON.
 
+## Core types
+
+### 
+
+A Decoder reads and decodes JSON values from an input stream.
+
+
+
 ## JSON serialization (Dict/Object -> String)
 
 `func json.Marshal(v any) ([]byte, error)` -> takes in any object/struct and returns bytearray and error
 
-```go
 
 ```go
 import (

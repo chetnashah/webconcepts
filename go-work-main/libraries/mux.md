@@ -22,6 +22,20 @@ router := mux.NewRouter()
 router.HandleFunc("/movies", getMovies).Methods("GET")
 ```
 
+## Common recipes
+
+### Read query & path params from request
+
+```go
+func getMovies(w http.ResponseWriter, r *http.Request) {
+    // how to read query params from request?
+    queryParams := r.URL.Query()
+    // how to read path params from request?
+    pathParams := mux.Vars(r)
+    fmt.Println(queryParams)
+    fmt.Println(pathParams)
+}
+```
 
 
 
