@@ -1,6 +1,21 @@
 This is Readme
 
 
+## Declarations/bindings
+
+the form is `var name type = expression`
+
+```go
+var movies []Movie // uninitialized slice
+var age int = 10
+```
+
+Shortform syntax is `name := expression`
+
+```go
+age := 10 // declares a var int age and assigns 10 to it
+```
+
 ## Many ways of allocating memory
 
 Go has multiple ways of memory allocation and value initialization:
