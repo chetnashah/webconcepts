@@ -6,6 +6,16 @@ https://lucasfcosta.com/2019/04/07/streams-introduction.html
 
 Use `tty` command to see the terminal you are in.
 
+## How to redirect from one terminal to other?
+To redirect to a different terminal, determine the file descriptor of the terminal with the command tty:
+```sh
+~$ tty
+/dev/pts/0
+```
+Then redirect error messages to that terminal as in
+```sh
+~$ echo Hello World! >/dev/pts/0
+```
 
 ## Process group
 
