@@ -67,3 +67,27 @@ class NotificationCenterDelegate : NSObject, UNUserNotificationCenterDelegate {
     
 }
 ```
+
+## Protocol extensions
+
+**You can use protocol extensions to provide a default implementation to any method or computed property requirement of that protocol**
+
+`Note` - If a conforming type provides its own implementation of a required method or property, that implementation will be used instead of the one provided by the extension.
+
+This allows you to define behavior on protocols themselves, rather than in each type’s individual conformance or in a global function. This way a `protocol + extension` can give you behavior without declaring any classes
+
+
+
+### Example
+
+For example, the `RandomNumberGenerator protocol` can be extended to provide a `randomBool()` method, which uses the result of the required `random()` method to return a random Bool value:
+
+```swift
+extension RandomNumberGenerator {
+    func randomBool() -> Bool {
+        return random() > 0.5
+    }
+}
+```
+
+**By creating an extension on the protocol, all conforming types automatically gain this method implementation without any additional modification**

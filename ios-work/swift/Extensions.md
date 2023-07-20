@@ -1,5 +1,12 @@
 
 
+## What can extensions do?
+
+1. add new initializers
+2. Make a computed property (but not stored property)
+3. Add new methods for instance and type level methods
+4. Define and use new nested types
+
 ## Use extensions to add more functionality to existing class
 
 ### Extensions to add protocol conformance
