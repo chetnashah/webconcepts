@@ -1156,3 +1156,25 @@ e.g.
 let k = {a: 1, x: 0};// typeof k = { a: number, x: number };
 k.b = 2; // TypeError! Property b does not exist on type {a: number, x: number};
 ```
+
+## Can you declare function type using inteface?
+
+**Yes**, by specifying call singature inside interface.
+https://www.typescriptlang.org/docs/handbook/2/functions.html#call-signatures
+
+```ts
+interface DescribableFunction = {
+  description: string;
+  (someArg: number): boolean;// call signature
+};
+function doSomething(fn: DescribableFunction) {
+  console.log(fn.description + " returned " + fn(6));
+}
+
+function myFunc(someArg: number) {
+  return someArg > 3;
+}
+myFunc.description = "default description";
+ 
+doSomething(myFunc);
+```
