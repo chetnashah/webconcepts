@@ -141,3 +141,15 @@ e.g. to print only matched ip addresses (not the line that matched):
 ```sh
 grep -E '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}' ips.txt
 ```
+
+## filtering certain kind of files
+
+```
+# only search in text files in current directory
+grep -r 'searchterm' --include=\*.txt ./
+```
+Another practical example:
+search for `func` in all go files in current directory:
+```
+grep -rn 'func' --include=\*.go ./
+```
