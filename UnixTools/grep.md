@@ -1,4 +1,12 @@
 
+## general syntax
+
+
+```
+grep pattern [files]
+```
+
+##
 
 **print all the lines that match patterns in given file(s)** - note we print full lines!
 
