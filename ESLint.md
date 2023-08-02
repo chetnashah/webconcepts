@@ -64,3 +64,11 @@ We can delegate module resolution to a literate tool like webpack using followin
   "import/resolver": "webpack"
 }
 ```
+
+## Perf tips
+
+Use `--debug` with cli.
+
+Use `TIMING=1` with cli
+
+Use node js cpu profiling

@@ -7,6 +7,28 @@
 3. Add new methods for instance and type level methods
 4. Define and use new nested types
 
+## Can you override existing functions in a Extension
+
+Extensions cannot/should not override.
+
+**Extensions can add new functionality to a type, but they cannot override existing functionality.**
+
+The compiler is allowing you to override in the extension for compatibility with Objective-C. But it's actually violating the language directive.
+
+
+## Extensions are allowed to have static vars
+
+Since statics are not instance stored properties, they are allowed in extensions.
+
+```swift
+extension String {
+  static let test = "Test"
+  static var test2 = "Test2"
+}
+```
+
+https://stackoverflow.com/questions/45467329/extension-may-not-contain-stored-property-but-why-is-static-allowed
+
 ## Use extensions to add more functionality to existing class
 
 ### Extensions to add protocol conformance

@@ -1,6 +1,32 @@
 
 Default timeout of a node http server is 120 seconds.
 
+## Debugging
+
+Put `debugger` stateent in code to break at that point.
+
+```
+node --inspect --inspect-brk app.js
+```
+
+Open:
+1. chrome://inspect
+2. You should see a inspect link for your app.
+
+## Profiling
+
+```
+node --cpu-prof app.js
+```
+
+This will generate a `xyz.cpuprofile`.
+
+You can open this file in chrome dev tools and see the flame graph.
+1. `chrome://inspect`
+2. Open dedicated devtools for node
+3. Click on `Profiler/Performance` tab
+4. Click on `Load` button and select the `xyz.cpuprofile` file.
+
 ### node package resolution via require
 
 Use `require.resolve(modulename)` in node REPL to quickly see
