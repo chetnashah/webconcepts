@@ -81,6 +81,7 @@ Everything in GN is rooted in the dependency graph. There is one root `BUILD.gn`
 
 The only way other `BUILD.gn` files are even read is if there is a dependency on a label in that directory.
 
+https://gn.googlesource.com/gn/+/refs/heads/main/docs/reference.md#execution
 
 
 ### Group
