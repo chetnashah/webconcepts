@@ -39,6 +39,15 @@ A layout object defines the visual arrangement of the content in the collection 
 You typically specify a layout object when you create a collection view, but you can also change the layout of a collection view dynamically. 
 The layout object is stored in the `collectionViewLayout` property
 
+### Types of Collection Layouts
+
+https://www.youtube.com/watch?v=cWfG79NaOv4
+
+1. **UICollectionViewFlowLayout** - A layout object that organizes items into a grid with optional header and footer views for each section. Items in the collection view flow from one row or column (depending on the scrolling direction) to the next, with each row containing as many cells as will fit. Cells can be the same sizes or different sizes.
+Flow layouts lay out their content using a fixed distance in one direction and a scrollable distance in the other. For example, in a vertically scrolling grid, the width of the grid content is constrained to the width of the corresponding collection view while the height of the content adjusts dynamically to match the number of sections and items in the grid.
+2. **UICollectionViewCompositionalLayout** - A layout object that lets you combine items in highly adaptive and flexible visual arrangements. https://developer.apple.com/documentation/uikit/uicollectionviewcompositionallayout#overview. A compositional layout can have multiple sections, each section containing a header and a group (list of items) to render.
+
+
 
 ## UICollectionViewCell
 
@@ -49,6 +58,39 @@ class MyCell: UICollectionViewCell {
     @IBOutlet weak var textLabel: UILabel!
 }
 ```
+
+### Getting cell's content configuraiton
+
+Using a content configuration, you can set the cell’s content and styling for a variety of different cell states.
+
+```swift
+var contentConfiguration = cell.defaultContentConfiguration()
+```
+
+### CellRegistration
+
+Cell registration specifies how to configure the content and appearance of a cell.
+
+`Why`?
+
+In iOS 14 you can use the new `UICollectionView.CellRegistration` class to register and configure your `UICollectionViewCell` instances. So no more `let cellIdentifier = "MyCell"`, no more `collectionView.dequeueReusableCell(withReuseIdentifier: "MyCell", for: indexPath)` and best of all, you no longer need to cast the cell returned by `dequeueReusableCell(withReuseIdentifier:for:)` to your custom cell class.
+
+Definition:
+```swift
+struct CellRegistration<Cell, Item> where Cell : UICollectionViewCell
+```
+
+1. The struct in its initializer takes a closure to setup the cell.
+2. This closure receives a cell, an index path and the model that's used to configure the cell.
+
+How to use:
+```swift
+// CellRegistration takes a lambda that sets up the cell content
+let simpleConfig = UICollectionView.CellRegistration<MyCollectionViewCell, String> { (cell, indexPath, model) in
+  cell.label.text = model
+}
+```
+
 
 
 ## UICOllectionViewDataSource
@@ -96,5 +138,21 @@ extension ViewController: UICollectionViewDelegate {
     ) {
         print(indexPath.item + 1)
     }
+}
+```
+
+
+## UICollectionLayoutListConfiguration
+A configuration for creating a list layout.
+
+Use this configuration to create a list section for a compositional layout (`UICollectionViewCompositionalLayout`), or a layout containing only list sections. 
+
+A configuration can be used to create a `Layout`.
+```swift
+private func listLayout() -> UICollectionViewCompositionalLayout {
+    var listConfiguration = UICollectionLayoutListConfiguration(appearance: .grouped)
+    listConfiguration.showsSeparators = false
+    listConfiguration.backgroundColor = .clear
+    return UICollectionViewCompositionalLayout.list(using: listConfiguration)
 }
 ```
