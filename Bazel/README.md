@@ -56,3 +56,7 @@ To do the build use:
 
 https://khjtony.github.io/programming/2018/12/31/Add-external-library-to-bazel.html
 explains both Bazel supported and non-supported libs.
+
+## Common use cases with c++
+
+https://bazel.googlesource.com/bazel/+/staging/site/docs/cpp-use-cases.md?autodive=0%2F%2F%2F
