@@ -60,3 +60,7 @@ explains both Bazel supported and non-supported libs.
 ## Common use cases with c++
 
 https://bazel.googlesource.com/bazel/+/staging/site/docs/cpp-use-cases.md?autodive=0%2F%2F%2F
+
+## Example on using gtest
+
+https://google.github.io/googletest/quickstart-bazel.html
