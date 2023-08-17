@@ -156,3 +156,15 @@ private func listLayout() -> UICollectionViewCompositionalLayout {
     return UICollectionViewCompositionalLayout.list(using: listConfiguration)
 }
 ```
+
+## UICollectionViewDiffableDataSource
+The object you use to manage data and provide cells for a collection view.
+
+To connect a diffable data source to a collection view, you create the diffable data source using its `init(collectionView:cellProvider:)` initializer, passing in the collection view you want to associate with that data source
+
+```swift
+var dataSource = UICollectionViewDiffableDataSource<Int, UUID>(collectionView: collectionView) {
+    (collectionView: UICollectionView, indexPath: IndexPath, itemIdentifier: UUID) -> UICollectionViewCell? in
+    // Configure and return cell.
+}
+```
