@@ -91,3 +91,32 @@ extension RandomNumberGenerator {
 ```
 
 **By creating an extension on the protocol, all conforming types automatically gain this method implementation without any additional modification**
+
+## Generic protocols (using associated types in protocol + typealias in impl)
+
+https://www.youtube.com/watch?v=4XpHOJr9Z7I
+
+```swift
+// want to make this generic
+protocol Appendable {
+    func append(_ item: String)
+}
+
+class CustomArray: Appendable {
+    //
+}
+```
+
+Here is how to make protocols generic:
+```swift
+// generic protocol, same as Appendable<T>
+protocol AppendableBetter {
+    associatedtype T // how we declare type parameter
+    func append(_ item: T)
+}
+
+class CustomArrayImpl: AppendableBetter {
+    typealias T = String // how we specify type argument
+    func append()
+}
+```
