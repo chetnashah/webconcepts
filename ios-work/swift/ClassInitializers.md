@@ -36,7 +36,7 @@ if not done, error shows up: Return from initializer without initializing all st
 
 ## initializer and self
 
-an initializer may not refer to self, explicitly or implicitly, until all instance properties have been initialized.
+an initializer may not refer (read) to self, explicitly or implicitly, until all instance properties have been initialized.
 This also includes method calls because all instance method calls implicitly refer self.
 
 ```swift
@@ -128,6 +128,54 @@ var item = ShoppingListItem()
 
 All of a class’s stored properties—including any properties the class inherits from its superclass—must be assigned an initial value during initialization.
 
+
+**Note** - Unlike other languages, A designated initializer must ensure that all of the properties introduced by its class are initialized before it delegates up to a superclass initializer. (self init before superclass init).
+
+e.g.
+```swift
+class MyClassViewController: UIViewController{
+    let previewLayer: AVCaptureVideoPreviewLayer // will be inited in initializer
+    
+    // subclass initializer
+    required init?(coder aDecoder: NSCoder) {
+        self.previewLayer = AVCaptureVideoPreviewLayer() // always self init first
+        super.init(coder: aDecoder) // superclass init comes later
+    }
+}
+```
+
+**Note** - If subclass has no initializers, then superclass initializers are inherited, otherwise there is no link between superclass initializer and subclass initializer. If you want to have a subclass initializer with same signature as parent class initializer, use `override init` in subclass.
+
+```swift
+class Point {
+    let x: Int
+    let y: Int
+
+    init(x: Int, y: Int) {
+        self.x = x
+        self.y = y
+    }
+}
+
+class NamedPoint: Point {
+    let label: String?
+
+    override init(x: Int, y: Int) {
+        self.label = nil
+
+        super.init(x: x, y: y)
+    }
+}
+
+let p1 = NamedPoint(x: 1, y: 1)
+```
+
+**Note** - A designated initializer must delegate up to a superclass initializer before assigning a value to an inherited property. Don't touch inherited stuff before it's init(i.e. `super.init` is done).
+
+**Note** - Unavailable `self` in first phase. An initializer can’t call any instance methods, read the values of any instance properties, or refer to self as a value until after the first phase of initialization is complete.
+
+
+
 ### Designated initializer
 
 Designated initializers are the **primary initializers for a class.** A designated initializer fully initializes all properties introduced by that class and calls an appropriate superclass initializer to continue the initialization process up the superclass chain.
@@ -180,4 +228,34 @@ A simple way to remember this is:
 *  convenience initializer must delegate to another initializer before assigning a value to any property (including properties defined by the same class). If it doesn’t, the new value the convenience initializer assigns will be overwritten by its own class’s designated initializer.
 
 * An initializer can’t call any instance methods, read the values of any instance properties, or refer to self as a value until after the first phase of initialization is complete.
+
+## Phase 1 (Populate memory of self and superclass memory)
+
+`Phase 1` means: Every stored property is assigned an initial value by the class that introduced it.
+
+1. A designated or convenience initializer is called on a class.
+
+2. Memory for a new instance of that class is allocated. The memory isn’t yet initialized.
+
+3. A designated initializer for that class confirms that all stored properties introduced by that class have a value. The memory for these stored properties is now initialized.
+
+4. The designated initializer hands off to a superclass initializer to perform the same task for its own stored properties.
+
+5. This continues up the class inheritance chain until the top of the chain is reached.
+
+6. Once the top of the chain is reached, and the final class in the chain has ensured that all of its stored properties have a value, the instance’s memory is considered to be fully initialized, and phase 1 is complete.
+
+## Phase 2 (self access allowed now)
+
+`Phase 2`: Every class is given opportunity to customize its stored proeprties.
+
+1. Working back down from the top of the chain, each designated initializer in the chain has the option to customize the instance further. Initializers are now able to access self and can modify its properties, call its instance methods, and so on.
+
+2. Finally, any convenience initializers in the chain have the option to customize the instance and to work with self.
+
+## Override initializer
+
+**NOte** - In Swift initializers are not inherited for subclasses by default (if subclass provides an initializer), otherwise if subclass does not provide. If you want to provide the same initializer for a subclass that the parent class already has, you have to use the override keyword.
+
+
 

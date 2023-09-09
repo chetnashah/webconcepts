@@ -119,3 +119,38 @@ To show a viewcontroller in secondary/detail context use: `func showDetailViewCo
 ### Presenting a view controller
 
 Presentation is always modally done.
+
+
+## Fixing "Class ViewController has no initializers"
+
+This happens whenever you have non-nullable properties in view controller, that do not have a default value
+
+```swift
+class ViewController: UIViewController {
+    var age = 12 // ok because default value
+    var userName: String // problem, never initialized
+}
+```
+
+### Fixing this
+
+`option 1`: make properties nullable, lazy or computed - these types of properties are not required to be present on initialization.
+```swift
+class ViewController: UIViewController {
+    var age = 12 // ok because default value
+    var userName: String? // problem, never initialized
+}
+```
+
+`option 2`: Add custom ViewController initalizer with specific signature given below:
+```swift
+class ViewController: UIViewController {
+    var age = 12
+    var userName: String // will be initialized in initalizer
+
+    required init?(coder aDecoder: NSCoder) {
+        self.username = "Anonymous"
+        super.init(coder: aDecoder)
+    }
+}
+```
