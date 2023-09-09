@@ -133,6 +133,28 @@ print ("Hello, \ (name)!") // crashes if name is nil
 ```
 
 
+## Weak vars must always be optional/nullable
+
+Since they are weak references, they can point to `nil` whenever the object referred is de-allocated, hence they must be `var` and `optional`. Similarly `weak let` is not possible. 
+
+**Note**  - this is also a reason why `weak self` is referred like `self?.prop` in closures commonly.
+
+```swift
+class Pet {
+    let name: String
+    
+    weak var owner: Owner? // must always be optional for weak references
+    
+    weak var belt: Belt // compiler ERROR!, must be optional i.e. Belt? in type
+
+    init(name: String) { self.name = name }
+    
+    deinit {
+        print("Pet deallocated")
+    }
+}
+```
+
 ## Implicitly unwrapped optional
 
 You write an implicitly unwrapped optional by placing an exclamation point (`String!`) rather than a question mark (String?) after the type that you want to make optional
