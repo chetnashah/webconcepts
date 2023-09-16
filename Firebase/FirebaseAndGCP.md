@@ -56,5 +56,10 @@ Service accounts can be user created or autocreated by system.
 * Cannot be logged in via browser, but can be attached to apps/instances
 * Can have IAM roles that determine capabilities like access to certain actions and resources.
 
+## What is service account JSON?
+
+It is the private key generated from cloud console or firebase console. 
+Store it somewhere in secrets.
+
 
 
