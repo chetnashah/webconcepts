@@ -179,3 +179,10 @@ connection.
 Instead there is a configured timeout on the server, e.g. nginx has 3 mins by default.
 
 ![http2 and 3](img/http2and3.png)
+
+## How many concurrent streams (multiplexed) are allowed within single HTTP2/TCP connection?
+
+It is virtually unlimited in the sense that browsers and servers may limit the number of concurrent requests via the HTTP/2 configuration parameter called `SETTINGS_MAX_CONCURRENT_STREAMS`.
+
+Typical limits are around 100 (Firefox's default value for `network.http.spdy.default-concurrent` - note the spdy name here: it was the protocol ancestor of the HTTP/2 protocol) but could be larger (or, less commonly, smaller), depending on browser implementation and on the server you connect to.
+
