@@ -353,3 +353,13 @@ export function withTheme<T extends WithThemeProps = WithThemeProps>(
   return ComponentWithTheme;
 }
 ```
+
+## Conditional props (Props that depend on other props)
+
+e.g. if prop `shape="square"`, then `width` prop should be required.
+And if prop `shape="circle"`, then `radius` prop should be required.
+
+Here we see how other props are conditional based on the `shape` prop.
+
+Use discriminated unions.
+
