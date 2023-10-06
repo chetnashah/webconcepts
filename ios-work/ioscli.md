@@ -98,3 +98,8 @@ ios-deploy --list_profiles
 ios-deploy -c
 ```
 
+## Run UI tests
+
+```sh
+xcodebuild test -project PlainPNApp.xcodeproj -scheme PlainPNApp -destination 'platform=iOS Simulator,name=iPhone 14'
+```

@@ -12,6 +12,13 @@ grep pattern [files]
 
 Note: it will print all lines that match, not just the first line that matches so the search is **global** in a sense.
 
+## Gotcha behaviour with `set -e`
+
+`set -e` errors out if any command has non-zero exist status.
+
+`grep` has exit status `1` when no match was found.
+**So grep can make your script fail if no match was found and "set -e" was done on script**
+
 ## Exact string search
 
 Regex concerns: `.` is treated as `any` charachter, so `grep 127.0.0.1 filename` might match both `127.0.0.1` and `127a0a0a1`
@@ -161,3 +168,4 @@ search for `func` in all go files in current directory:
 ```
 grep -rn 'func' --include=\*.go ./
 ```
+
