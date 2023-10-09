@@ -3,6 +3,8 @@ https://docs.swift.org/swift-book/LanguageGuide/Concurrency.html
 
 https://gist.github.com/lattner/31ed37682ef1576b16bca1432ea9f782
 
+https://github.com/apple/swift-evolution/blob/main/proposals/0304-structured-concurrency.md
+
 ##
 
 ## Pyramid of doom with callbacks/closures based APIs
