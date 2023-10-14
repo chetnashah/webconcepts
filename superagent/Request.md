@@ -1,3 +1,7 @@
+## API Chaining
+
+May functions return `this` to ease the API chaining part.
+
 
 ## Request interface
 
@@ -51,6 +55,4 @@
         write(data: string | Buffer, encoding?: string): boolean;
         maxResponseSize(size: number): this;
     }
-
-
 ```
