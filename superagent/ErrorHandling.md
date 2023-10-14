@@ -15,6 +15,7 @@ Network failures, timeouts, and other errors that produce no response will conta
 ## Interfaces
 
 ```ts
+    // for 4xx and 5xx
     interface ResponseError extends Error {
         status?: number | undefined;
         response?: Response | undefined;
@@ -36,3 +37,17 @@ Network failures, timeouts, and other errors that produce no response will conta
 3. `Request has been terminated\nPossible causes: the network is offline, Origin is not allowed by Access-Control-Allow-Origin, the page is being unloaded, etc.`
 4. `Warning: .end() was called twice. This is not supported in superagent`
 5. `The request has been aborted even before .end() was called.`
+
+
+## Error events are also available on the Request event emitter
+
+```ts
+request.post('/upload')
+    .attach('image', 'path/to/tobi.png')
+    .on('error', function(err) { // get emitted error here, note: 4xx and 5xx will come here
+        // handle your error
+    })
+    .then(res => {
+
+    });
+```
