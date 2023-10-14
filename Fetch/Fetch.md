@@ -77,6 +77,9 @@ fetch("/cars/23")
   .catch(console.log)
 ```
 
+### Response handling
+
+
 
 ### simple use case, GET api, provide url as first argument.
 
