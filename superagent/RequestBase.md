@@ -6,11 +6,11 @@
 RequestBase.prototype.clearTimeout
 RequestBase.prototype.parse // set parser
 RequestBase.prototype.timeout
-RequestBase.prototype.retry
+RequestBase.prototype.retry = (count, shouldRetryFn) => this // set count and set shouldRetryFn to consult if should retry
 RequestBase.prototype.redirects
 RequestBase.prototype.serialize
-RequestBase.prototype._shouldRetry // condition for retry
-RequestBase.prototype._retry // actual retry process
+RequestBase.prototype._shouldRetry = (err, res) => boolean // condition for retry, also consults shouldRetryFn set by user on each retry attempt 
+RequestBase.prototype._retry = () => void // actual retry process
 RequestBase.prototype.then // Promise support
 RequestBase.prototype.catch // Promise support
 RequestBase.prototype.use // Extension

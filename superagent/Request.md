@@ -48,6 +48,9 @@ function Request(method, url) {
   this.url = url;
   this.header = {}; // preserves header name case
   this._header = {}; // coerces header names to lowercase
+  this._timer = null;
+  this._responseTimeoutTimer = null;
+  this._uploadTimeoutTimer = null;
 }
 ```
 
@@ -66,7 +69,7 @@ Request.prototype.buffer = (val) => this // enable/disable buffering
 Request.prototype._redirect =  (res) => this // redirect to this.url
 Request.prototype.auth = (user, pass, options) => this // set Authorization with given user and pass
 Request.prototype.request = () => OutgoingMessage // get the underlying OutgoingMessage
-Request.prototype.callback = (err, res) => void // callback for end
+Request.prototype.callback = (err, res) => void // short circuit if retries can be done, otherwise Invoke this.callback(err, res) 
 Request.prototype.end = (fnCb) => void // Initiate request, call this._end(), invoking store this.callback =fn,which will be eventually be called with res i.e. 
 Request.prototype._end = () => void // setupp xhr with listeners, timeouts and open + send request.
 ```
