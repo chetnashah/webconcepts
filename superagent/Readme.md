@@ -16,3 +16,11 @@ request.post('/api/pet')
     // only err.message for network errors
 });
 ```
+
+## Multipart requests
+
+SuperAgent is also great for building multipart requests for which it provides methods `.attach()` and `.field()`.
+
+When you use `.field()` or `.attach()` you can't use `.send()` and you must not set Content-Type (the correct type will be set for you).
+
+

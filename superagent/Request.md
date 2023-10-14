@@ -1,7 +1,75 @@
+
+## Top level API `function request(method,url)` creates `Request` instances
+
+**request** is a function that creates a `Request` instance. It is also the default export of the library.
+
+For browser/client, refer https://github.com/ladjs/superagent/blob/master/src/client.js
+
+FOr nodejs impl of Request/request, refer `node/index.js` here: https://github.com/ladjs/superagent/blob/master/src/node/index.js
+
+```ts
+// essentially a factory for creating `Request` instances
+function request(method, url) {
+  // callback
+  if (typeof url === 'function') {
+    return new exports.Request('GET', method).end(url);
+  }
+
+  // url first
+  if (arguments.length === 1) {
+    return new exports.Request('GET', method);
+  }
+
+  return new exports.Request(method, url);
+}
+```
+
 ## API Chaining
 
 May functions return `this` to ease the API chaining part.
 
+## Request builds on top of RequestBase
+
+See [RequestBase.md](./RequestBase.md) for more details.
+
+## State
+
+```ts
+// browser class Request extends RequestBase
+function Request(method, url) {
+  // ONLY ONE of the below two should be set
+  this._data = null;// for normal urlformencoded
+  this._formData = null;// for multipart/form-data
+
+
+  const self = this;
+  this._query = this._query || [];
+  this.method = method;
+  this.url = url;
+  this.header = {}; // preserves header name case
+  this._header = {}; // coerces header names to lowercase
+}
+```
+
+## Browser Request prototype methods
+
+```ts
+Request.prototype.attach = (field, file, options) => this
+Request.prototype._getFormData = () => FormData
+Request.prototype.attach = () => (field, file, options) => this // add file to FormData
+Request.prototype.agent = (agent) => this // gets/sets the agent
+Request.prototype.lookup = (lookupFn) => this // gets/sets the custom dns lookup fn
+Request.prototype.type = (type) => this // set content-type header
+Request.prototype.query = (kvstring) => this // set query string
+Request.prototype.write = (data, encoding) => this // write raw data to socket
+Request.prototype.buffer = (val) => this // enable/disable buffering
+Request.prototype._redirect =  (res) => this // redirect to this.url
+Request.prototype.auth = (user, pass, options) => this // set Authorization with given user and pass
+Request.prototype.request = () => OutgoingMessage // get the underlying OutgoingMessage
+Request.prototype.callback = (err, res) => void // callback for end
+Request.prototype.end = (fnCb) => void // Initiate request, call this._end(), invoking store this.callback =fn,which will be eventually be called with res i.e. 
+Request.prototype._end = () => void // setupp xhr with listeners, timeouts and open + send request.
+```
 
 ## Request interface
 
