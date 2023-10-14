@@ -1,7 +1,7 @@
 
 ## SuperAgent
 
-Lib to make network requests.
+Lib to make network requests in js.
 
 **Interesting part is request is only invoked when we register a `then` handler**
 
@@ -17,3 +17,4 @@ Till then, you can `attach` or add formData
 ```
 
 https://ladjs.github.io/superagent/#request-basics
+
