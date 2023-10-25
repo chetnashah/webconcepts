@@ -24,6 +24,19 @@ Use `$$` https://webdriver.io/docs/api/browser/$$
 It returns a ChainablePromiseArray containing a set of WebdriverIO elements.
 
 
+### Accessibility ID search syntax : ~
+
+```js
+const el = await driver.$('~buttonStart');
+```
+
+### XPath search syntax : //
+
+```js
+const el = await driver.$('//android.widget.TextView[@content-desc="buttonStart"]');
+```
+### 
+
 ## Writing tests with Appium + UiAutomatorDriver + WebdriverIO
 
 https://github.com/appium/appium-uiautomator2-driver/tree/master/test/functional/commands/find
