@@ -1178,3 +1178,32 @@ myFunc.description = "default description";
  
 doSomething(myFunc);
 ```
+
+## Typescript type predicates/type guards using "is" keyword
+
+https://www.typescriptlang.org/docs/handbook/2/narrowing.html#using-type-predicates
+
+define a function whose return type is a type predicate: `paramName is TypeName`, parameterName must be the name of a parameter from the current function signature
+
+This is a common pattern for predicates i.e. **isXYZ(someArg)** returns a boolean, but also narrows down the type of someArg to XYZ.
+
+```ts
+// parameterName is TypeName
+//  parameterName must be the name of a parameter from the current function signature
+function isFish(pet: Fish | Bird): pet is Fish {
+    // even though return type is boolean, it is a type predicate
+  return (pet as Fish).swim !== undefined;
+}
+```
+
+It assists in **type narrowing** wherever predicates are used:
+```ts
+// Both calls to 'swim' and 'fly' are now okay.
+let pet = getSmallPet();
+ 
+if (isFish(pet)) {// return is boolean, but param type casted/narrowed based on param type
+  pet.swim();
+} else {
+  pet.fly();
+}
+```
