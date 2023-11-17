@@ -16,8 +16,10 @@ func main() {
 }
 
 func checkSlices() {
-	arr := [3]int{1, 2, 3}
-	fmt.Printf("type of arr is %T", arr) // [3]int
+	arr := [3]int{1, 2, 3}                 // arr
+	arr2 := make([]int, 3)                 // slice
+	fmt.Printf("type of arr is %T", arr)   // [3]int
+	fmt.Printf("type of arr2 is %T", arr2) // []int
 }
 
 func boring(msg string, c chan string) {
