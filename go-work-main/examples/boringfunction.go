@@ -12,6 +12,12 @@ func main() {
 		fmt.Printf(" You say %q\n", <-c) // getting formatted string over channel
 	}
 	fmt.Println("done")
+	checkSlices()
+}
+
+func checkSlices() {
+	arr := [3]int{1, 2, 3}
+	fmt.Printf("type of arr is %T", arr) // [3]int
 }
 
 func boring(msg string, c chan string) {

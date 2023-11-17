@@ -6,6 +6,7 @@ https://jordanorelli.com/post/32665860244/how-to-use-interfaces-in-go
 An interface defines an abstract type.
 
 ```go
+// not "interface" instead of "struct" to define an interface
 type Animal interface {
     // The Speak method takes no arguments and returns a string. 
     Speak() string

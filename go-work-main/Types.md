@@ -1,4 +1,14 @@
 
+### Print type of a variable using `%T` format specifier
+
+```go
+// Declare a variable
+myVariable := 42
+
+// Print the type of the variable
+fmt.Printf("Type of myVariable: %T\n", myVariable)
+```
+
 ### Return types
 
 A function can return multiple return values.
