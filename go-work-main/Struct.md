@@ -1,4 +1,4 @@
-**Go does not have classes. However, you can define methods on types.**
+**Go does not have classes. However, you can define methods on types like structs.**
 
 ## Struct are primary way to define types in Go
 
@@ -35,3 +35,36 @@ func main() {
 
 In this example, the Abs method has a receiver of type Vertex named v.
 
+## Struct value instantiation
+
+```go
+// Define a struct named Person
+type Person struct {
+    FirstName string
+    LastName  string
+    Age       int
+}
+
+// Create and initialize an instance of the Person struct
+person2 := Person{
+    FirstName: "Jane",
+    LastName:  "Doe",
+    Age:       25,
+}
+```
+
+## Struct nesting/embedding
+
+```go
+type Address struct {
+    City    string
+    Country string
+}
+
+type PersonWithAddress struct {
+    FirstName string
+    LastName  string
+    Age       int
+    Address   Address // Embedded struct
+}
+```
