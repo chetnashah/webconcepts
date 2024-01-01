@@ -10,6 +10,86 @@ Properties are:
 2. name
 3. type (mime-type)
 
+### Where (APIs) can be File/Blob be used?
+
+1. fetch(url, { method: 'POST', body: File/Blob })
+2. XMLHttpRequest.send(File/Blob)
+3. FormData.append(name, File/Blob), where FormData can be used as body in fetch or XMLHttpRequest
+4. FileReader API
+5. Web Workers
+
+#### Direct File/Blob usage with fetch request options body
+
+This works because `File` inherits from `Blob`, and `Blob` is one of the permissible `BodyInit` [types defined in the Fetch Standard](https://fetch.spec.whatwg.org/#bodyinit-unions), apart from `FormData` which also allows you to add `File` objects to it.
+
+```js
+const myInput = document.getElementById('my-input');
+
+// Later, perhaps in a form 'submit' handler or the input's 'change' handler:
+fetch('https://example.com/some_endpoint', {
+  method: 'POST',
+  body: myInput.files[0],
+});
+```
+
+#### XHR send method accepts File/Blob
+
+https://w3c.github.io/XMLHttpRequest/Overview.html#the-send()-method
+
+```js
+const fileInput = document.querySelector("#fileInput");
+const file = fileInput.files;
+const xhr = new XMLHttpRequest();
+xhr.open("POST", "/upload");
+xhr.send(file);
+```
+
+#### FormaData.append(name, File/Blob) - usable in both fetch and XHR
+
+XHR + formdata
+```js
+const fileInput = document.querySelector('#file');
+const uploadButton = document.querySelector('#upload');
+
+uploadButton.addEventListener('click', () => {
+  const file = fileInput.files[0];
+  const formData = new FormData();
+  formData.append('file', file);
+
+  const xhr = new XMLHttpRequest();
+  xhr.open('POST', '/upload');
+  xhr.setRequestHeader('Content-Type', 'multipart/form-data');
+  xhr.send(formData);
+
+  xhr.onload = function() {
+    if (xhr.status === 200) {
+      // Success!
+    } else {
+      // Error!
+    }
+  };
+});
+```
+
+Fetch body holding formdata:
+```js
+const file = fileInput.files[0];
+const formData = new FormData();
+formData.append('file', file);
+
+fetch('/upload', {
+  method: 'POST',
+  body: formData,
+})
+.then(response => response.json())
+.then(data => {
+  // Do something with the data
+})
+.catch(error => {
+  // Handle the error
+});
+```
+
 ### Getting hold of the File Interface
 
 Consider a `form` with `<input type="file">`,
