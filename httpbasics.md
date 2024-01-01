@@ -1,4 +1,14 @@
 
+### Common request body content types
+
+1. `application/x-www-form-urlencoded` - default for html forms/key value pairs. many libs will help you convert json to this format. (Note this is still not the part of url, url key value pairs are known as query params). Was common for forms before json became popular. Not commonly used these days.
+
+2. `multipart/form-data` - used for file uploads.
+
+3. `application/json` - used for json data.
+
+4. No body with query params in url - everything you need is in the url at the end with `?` and `&` as separators.
+
 
 ### URL encoding
 
