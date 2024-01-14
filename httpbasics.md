@@ -196,3 +196,17 @@ It is virtually unlimited in the sense that browsers and servers may limit the n
 
 Typical limits are around 100 (Firefox's default value for `network.http.spdy.default-concurrent` - note the spdy name here: it was the protocol ancestor of the HTTP/2 protocol) but could be larger (or, less commonly, smaller), depending on browser implementation and on the server you connect to.
 
+## localhost and system proxy
+
+No, **the system proxy settings typically do not affect connections to localhost (127.0.0.1).** When you access a localhost server, the traffic stays within your machine and does not go through external networks or proxies. Localhost requests bypass the system proxy settings, allowing you to interact with your locally hosted services without interference from proxy configurations.
+
+## Python/nodejs/ruby script proxying
+
+Today, most Web clients support connection to proxy servers via environment variables:
+
+1. `http_proxy` / `HTTP_PROXY`
+2. `https_proxy` / `HTTPS_PROXY`
+3. `no_proxy` / `NO_PROXY`
+These variables tell the client what URL should be used to access the proxy servers and which exceptions should be made. For example, if you had a proxy server listening on `http://alice.example.com:8080`, you might use it via:
+
+`export http_proxy=http://alice.example.com:8080`
