@@ -70,3 +70,88 @@ class Membership(models.Model):
     invite_reason = models.CharField(max_length=64)
 ```
 
+## ChatGPT's response
+
+In Django, you can model relationships between different entities using the built-in model fields. There are several types of relationships, including:
+
+1. **One-to-One Relationship:**
+   - Use `OneToOneField` to create a one-to-one relationship between two models.
+   - Example:
+
+     ```python
+     from django.db import models
+
+     class Person(models.Model):
+         name = models.CharField(max_length=100)
+
+     class UserProfile(models.Model):
+         person = models.OneToOneField(Person, on_delete=models.CASCADE)
+         bio = models.TextField()
+     ```
+
+2. **One-to-Many Relationship:**
+   - Use `ForeignKey` to create a one-to-many relationship. The many-side model gets a foreign key pointing to the one-side model.
+   - By convention the, we do not keep the field where we would have to keep a list/array e.g. A has many B, like Author has many Books, we would have to save a list of Books, but instead **we prefer the other way around, i.e. Book has one Author, so we keep a foreign key in Book model pointing to Author model.**
+   - Example:
+
+     ```python
+     from django.db import models
+
+     class Author(models.Model):
+         name = models.CharField(max_length=100)
+
+     class Book(models.Model):
+         title = models.CharField(max_length=200)
+         author = models.ForeignKey(Author, on_delete=models.CASCADE)
+     ```
+
+3. **Many-to-Many Relationship:**
+   - Use `ManyToManyField` to create a many-to-many relationship between two models.
+   - Example:
+
+     ```python
+     from django.db import models
+
+     class Student(models.Model):
+         name = models.CharField(max_length=100)
+
+     class Course(models.Model):
+         title = models.CharField(max_length=200)
+         students = models.ManyToManyField(Student)
+     ```
+
+4. **Self-Referential Relationship:**
+   - You can create relationships where a model relates to itself. This is useful for hierarchical structures.
+   - Example:
+
+     ```python
+     from django.db import models
+
+     class Employee(models.Model):
+         name = models.CharField(max_length=100)
+         manager = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True)
+     ```
+
+5. **Through Model (for Many-to-Many with Extra Fields):**
+   - When you need to store additional information about a many-to-many relationship, you can use a "through" model.
+   - Example:
+
+     ```python
+     from django.db import models
+
+     class Student(models.Model):
+         name = models.CharField(max_length=100)
+
+     class Course(models.Model):
+         title = models.CharField(max_length=200)
+         students = models.ManyToManyField(Student, through='Enrollment')
+
+     class Enrollment(models.Model):
+         student = models.ForeignKey(Student, on_delete=models.CASCADE)
+         course = models.ForeignKey(Course, on_delete=models.CASCADE)
+         grade = models.CharField(max_length=2)
+     ```
+
+These examples cover the basic types of relationships in Django. When defining relationships, consider using the `on_delete` parameter to specify the behavior when the referenced object is deleted (`models.CASCADE`, `models.PROTECT`, `models.SET_NULL`, etc.).
+
+Remember to run `makemigrations` and `migrate` commands after defining or modifying models to apply the changes to the database schema.
