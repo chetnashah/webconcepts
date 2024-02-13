@@ -1159,13 +1159,16 @@ k.b = 2; // TypeError! Property b does not exist on type {a: number, x: number};
 
 ## Can you declare function type using inteface?
 
+Basically, **Interfaces can be used to describe function types where function object can have properties**.
+
+
 **Yes**, by specifying call singature inside interface.
 https://www.typescriptlang.org/docs/handbook/2/functions.html#call-signatures
 
 ```ts
 interface DescribableFunction = {
   description: string;
-  (someArg: number): boolean;// call signature
+  (someArg: number): boolean;// call signature - nameless because interface itself is a function object, so only one nameless call signature is allowed
 };
 function doSomething(fn: DescribableFunction) {
   console.log(fn.description + " returned " + fn(6));
