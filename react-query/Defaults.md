@@ -10,5 +10,7 @@ Stale queries are refetched automatically in the background when:
 2. The window is refocused
 3. The network is reconnected.
 4. The query is optionally configured with a refetch interval.
+5. React Query will trigger a refetch whenever the query key changes
 
 To change this functionality, you can use options like `refetchOnMount`, `refetchOnWindowFocus`, `refetchOnReconnect` and `refetchInterval`.
+

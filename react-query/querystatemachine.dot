@@ -1,0 +1,26 @@
+digraph QueryStateMachine {
+    rankdir = LR;
+    node [shape = record;];
+    
+    Idle [label = "{<f0> status: idle |<f1> fetchStatus: idle}";];
+    Fetching [label = "{<f0> status: loading |<f1> fetchStatus: fetching}";];
+    Success [label = "{<f0> status: success |<f1> fetchStatus: idle}";];
+    Error [label = "{<f0> status: error |<f1> fetchStatus: idle}";];
+    Refetching [label = "{<f0> status: loading/success |<f1> fetchStatus: refetching}";];
+    Revalidating [label = "{<f0> status: success |<f1> fetchStatus: revalidating}";];
+    Paused [label = "{<f0> status: loading/success |<f1> fetchStatus: paused}";];
+    
+    Idle -> Fetching [label = "fetch()";];
+    Fetching -> Success [label = "fetch success";];
+    Fetching -> Error [label = "fetch error";];
+    Success -> Refetching [label = "refetch()";];
+    Error -> Refetching [label = "refetch()";];
+    Refetching -> Success [label = "fetch success";];
+    Refetching -> Error [label = "fetch error";];
+    Success -> Revalidating [label = "revalidate()";];
+    Revalidating -> Success [label = "fetch success";];
+    Revalidating -> Error [label = "fetch error";];
+    Fetching -> Paused [label = "pause()";];
+    Refetching -> Paused [label = "pause()";];
+    Paused -> Fetching [label = "resume()";];
+}
