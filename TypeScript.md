@@ -279,12 +279,20 @@ var p = new Person("wow");
 console.log(p.name);// wow
 ```
 
-### Object type
+### `Object` type (vs `object` type)
 
 Some functions in javascript would not expect primitive types,
 but only object of any kind.
 In that cases `object` type should be used.
 There is another type `Object`
+
+`object` vs `Object`: `object` means non-primitive(non-string,boolean,undefined,null,number,symbol) types, `Object` means `any`.
+
+```ts
+const k: object = "Asdf";// error! object only allows non-primitive objects
+const ddd: Object = "asdfadf"; // Ok
+const abc: any = "234"; // Ok
+```
 
 ### Making properties and objects immutable
 **Note**: all protection is compile time

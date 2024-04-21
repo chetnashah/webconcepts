@@ -1,4 +1,9 @@
 
+## print $PATH in a readable way
+
+```sh
+echo "$PATH" | tr ':' '\n'
+```
 
 ## Terminals
 
