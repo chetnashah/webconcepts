@@ -1,4 +1,78 @@
 
+
+## Syntax overview
+
+Makefile syntax is used in build automation. Here's an overview of its key components:
+
+1. Rules:
+   ```makefile
+   target: dependencies
+       commands
+   ```
+   - `target`: The file to be created or the action to be executed
+   - `dependencies`: Files that the target depends on
+   - `commands`: Shell commands to create the target (must be indented with a tab)
+
+2. Variables:
+   ```makefile
+   VARIABLE_NAME = value
+   ```
+   Used with `$(VARIABLE_NAME)` or `${VARIABLE_NAME}`
+
+3. Comments:
+   ```makefile
+   # This is a comment
+   ```
+
+4. Phony Targets:
+   ```makefile
+   .PHONY: clean
+   clean:
+       rm *.o
+   ```
+   Targets that don't represent files
+
+5. Pattern Rules:
+   ```makefile
+   %.o: %.c
+       $(CC) -c $< -o $@
+   ```
+   Used for multiple files with the same rule
+
+6. Automatic Variables:
+   - `$@`: The target filename
+   - `$<`: The first dependency filename
+   - `$^`: All dependencies' filenames
+
+7. Conditionals:
+   ```makefile
+   ifeq ($(CC),gcc)
+       # gcc specific commands
+   else
+       # other commands
+   endif
+   ```
+
+8. Include:
+   ```makefile
+   include other_makefile
+   ```
+   Includes another makefile
+
+9. Functions:
+   ```makefile
+   FILES = $(wildcard *.c)
+   ```
+   Built-in functions for string manipulation, file operations, etc.
+
+10. Suffix Rules (older style):
+    ```makefile
+    .c.o:
+        $(CC) -c $<
+    ```
+
+This syntax allows for creating complex build processes, managing dependencies, and automating compilation tasks.
+
 ## make install
 
 When you install software with make install or sudo make install, different files are placed in different directories. Executables that provide commands the user is intended to run usually go in a bin directory, libraries usually go in a lib directory, manual pages usually go in a man directory, and so forth.
