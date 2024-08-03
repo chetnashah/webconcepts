@@ -172,5 +172,93 @@ You can see a Task Group as a container of several child tasks that are dynamica
 
 ## MainActor
 
-Task initializer in a `MainActor` method runs on the main thread.
+The `@MainActor` annotation in Swift is part of the concurrency model introduced in Swift 5.5. **It's used to indicate that a class, structure, or function should only be accessed on the main dispatch queue, which is typically used for UI updates and other tasks that must occur on the main thread.**. Think of it more like **Run on Main Actor**
 
+Here's a breakdown of what `@MainActor` does:
+
+1. Thread Safety: It ensures that the annotated code runs on the main thread, preventing race conditions and other threading issues when dealing with UI-related code.
+
+2. Compile-time Checks: The compiler enforces that any code calling a `@MainActor`-annotated entity does so from the main actor (main thread) or uses `await` if called from a different context.
+
+3. **Implicit Dispatch to main thread**: When you call a `@MainActor`-annotated method from a non-main actor context, Swift automatically dispatches the call to the main thread.
+
+4. Global Actor: `@MainActor` is a global actor, meaning it's a singleton that represents the main thread across your entire app.
+
+Here are some examples to illustrate its use:
+
+1. Annotating a class:
+
+```swift
+@MainActor
+class ViewController: UIViewController {
+    func updateUI() {
+        // This method is guaranteed to run on the main thread
+        label.text = "Updated"
+    }
+}
+```
+
+2. Annotating a specific method:
+
+```swift
+class DataManager {
+    func fetchData() async -> [String] {
+        // Fetch data asynchronously
+        return ["Data1", "Data2"]
+    }
+    
+    @MainActor
+    func updateUI(with data: [String]) {
+        // This method will always be called on the main thread
+        // Update UI components here
+    }
+}
+```
+
+3. Using `@MainActor` with async/await:
+
+```swift
+class ViewModel {
+    @MainActor
+    func refreshData() async {
+        let data = await fetchDataFromNetwork()
+        // Update UI here, guaranteed to be on the main thread
+        updateUIComponents(with: data)
+    }
+    
+    func fetchDataFromNetwork() async -> [String] {
+        // Simulating network call
+        return ["NetworkData1", "NetworkData2"]
+    }
+}
+
+// Usage
+Task {
+    await viewModel.refreshData()
+}
+```
+
+4. Implicit dispatch to main thread:
+
+```swift
+@MainActor
+func updateLabel(_ text: String) {
+    label.text = text
+}
+
+func someBackgroundWork() async {
+    let result = performComputation()
+    await updateLabel(result)  // Automatically dispatched to main thread
+}
+```
+
+Benefits of using `@MainActor`:
+
+1. Improved code safety by preventing accidental UI updates from background threads.
+2. Cleaner code by eliminating explicit dispatch to the main queue.
+3. Better performance through compiler optimizations.
+4. Clearer intent in your code, making it easier for other developers to understand where UI updates occur.
+
+It's important to note that while `@MainActor` is powerful, it should be used judiciously. Overuse can lead to unnecessary main thread congestion. It's best used for UI-related code and other operations that specifically need to run on the main thread.
+
+Would you like me to elaborate on any specific aspect of `@MainActor` or provide more complex examples?

@@ -16,9 +16,9 @@ var person: String
 
 A special type/protocol
 
-equivalent to Objective C's `id` type, essentially meaning pointer to object of an unknown class
+equivalent to Objective C's `id` type, essentially meaning pointer to object of an unknown class (i.e. reference type)
 
-`AnyObject` means any class, but it cannot hold a struct/enum.
+`AnyObject` means any class, but it cannot hold a struct/enum (value types in swift).
 Also, `AnyObject` is different from `Any`.
 e.g.
 ```swift
