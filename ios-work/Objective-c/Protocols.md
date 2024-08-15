@@ -95,3 +95,100 @@ if ([_dataSource respondsToSelector:@selector(numberOfSectionsInTableView:)]) {
 }
 ```
 
+## Access control (All protocol members considered public)
+
+In Objective-C, protocol methods are inherently public. When you define a protocol, the methods declared within that protocol are intended to be implemented publicly by any class that adopts the protocol. There is no concept of private protocol methods in Objective-C.
+
+**The methods declared in the protocol are automatically considered part of the class's public interface when the class conforms to the protocol.**
+
+### Example
+
+Here's an example to illustrate the use of protocols and their methods:
+
+#### MyProtocol.h (Protocol Header File)
+
+```objective-c
+#import <Foundation/Foundation.h>
+
+@protocol MyProtocol <NSObject>
+
+// Required protocol method
+- (void)requiredMethod;
+
+// Optional protocol method
+@optional
+- (void)optionalMethod;
+
+@end
+```
+
+#### MyClass.h (Class Header File)
+
+```objective-c
+#import <Foundation/Foundation.h>
+#import "MyProtocol.h"
+
+@interface MyClass : NSObject <MyProtocol>
+
+// Public properties
+@property (nonatomic, strong) NSString *publicProperty;
+
+// Public methods
+- (void)publicMethod;
+
+@end
+```
+
+#### MyClass.m (Class Implementation File)
+
+```objective-c
+#import "MyClass.h"
+
+@implementation MyClass
+
+// Synthesize public properties
+@synthesize publicProperty = _publicProperty;
+
+// Implement public method
+- (void)publicMethod {
+    NSLog(@"This is a public method.");
+}
+
+// Implement required protocol method
+- (void)requiredMethod {
+    NSLog(@"This is a required protocol method.");
+}
+
+// Implement optional protocol method
+- (void)optionalMethod {
+    NSLog(@"This is an optional protocol method.");
+}
+
+@end
+```
+
+### Explanation
+
+- **MyProtocol.h:**
+  - Defines a protocol `MyProtocol` with a required method `requiredMethod` and an optional method `optionalMethod`.
+
+- **MyClass.h:**
+  - Declares that `MyClass` conforms to the `MyProtocol` protocol.
+  - Declares public properties and methods.
+
+- **MyClass.m:**
+  - Implements the public methods and the required protocol method.
+  - Optionally implements the optional protocol method.
+
+### Key Points
+
+- **Protocol Methods are Public:** All methods declared in a protocol are intended to be implemented as public methods by any class that adopts the protocol.
+- **Required vs. Optional:** Protocols can have required methods and optional methods. Required methods must be implemented by any class adopting the protocol, while optional methods can be implemented if needed.
+- **Conformance:** A class must publicly declare its conformance to a protocol using the `<ProtocolName>` syntax in its interface declaration.
+
+### Important Notes
+
+- **No Private Protocol Methods:** There is no concept of private protocol methods in Objective-C. If you need to define methods that should not be part of the public interface, you should declare them as private methods within the class implementation.
+- **Encapsulation:** While protocol methods are public, you can still encapsulate the internal implementation details of your class by using private methods and properties.
+
+By understanding that protocol methods are public, you can design your classes and protocols effectively, ensuring that the public interface is well-defined and that the internal implementation details are properly encapsulated.
