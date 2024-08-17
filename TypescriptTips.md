@@ -279,3 +279,24 @@ if (isFish(pet)) {// return is boolean, but param type casted/narrowed based on 
   pet.fly();
 }
 ```
+
+## Stopping distributivity in conditional types
+
+By default, conditional checks are distributive, i.e. they distribute over unions of types. To restrict distribution and treat litterally, we can use `[]` around the type.
+
+https://www.typescriptlang.org/docs/handbook/2/conditional-types.html#distributive-conditional-types
+
+```ts
+// without Distribution
+type ToArrayNonDist<Type> = [Type] extends [any] ? Type[] : never;
+ 
+// 'ArrOfStrOrNum' is no longer a union.
+type ArrOfStrOrNum = ToArrayNonDist<string | number>;          
+type ArrOfStrOrNum = (string | number)[]
+
+
+// with Distribution
+type ToArray<Type> = Type extends any ? Type[] : never;
+type ArrOfStrOrNum = ToArray<string | number>;
+type ArrOfStrOrNum = string[] | number[]
+```
