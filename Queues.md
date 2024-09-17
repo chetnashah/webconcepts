@@ -11,4 +11,5 @@
 7. For capacity planning & resource limitations,  queue is used.
 8. For a resource contention, a queue is used.
 9. All logs are queues.
+10. In any actor model, with message passing involved, messages are processed from a queue.
     

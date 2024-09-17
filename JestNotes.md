@@ -29,6 +29,21 @@ Every single test in Jest receives a fresh new copy of all modules, including ne
 1. JSDOM is default env for running tests.
 2. Babel 7 support.
 
+### Code transformation
+
+### Jest code Transformation
+
+https://jestjs.io/docs/code-transformation
+
+Jest's code transformation applies to both source files and test files.
+
+According to the Code Transformation documentation, Jest runs the code in your project as JavaScript. However, if you're using syntax that Node.js does not support natively (like JSX, TypeScript, or Vue templates), you'll need to transform that code into plain JavaScript. This transformation applies not only to the source files but also to the test files, as Jest needs to process any file it imports or requires.
+
+Jest uses its transform configuration option to specify the transformer to use for different file types. For example, if you're using babel-jest, it will transform files matching the `/\.[jt]sx?$/` pattern (which includes `.js`, `.jsx`, `.ts`, and `.tsx` files), covering both source and test files.
+
+In summary, Jest code transformation applies to any file that is imported, required, or executed during testing, which includes both source files and test files.
+
+
 ### Configuration
 
 Configuration is the most important part of any test runner.

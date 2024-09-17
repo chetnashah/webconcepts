@@ -27,7 +27,13 @@ Detox comprises the following components:
 5. `detox/src/devices/runtime/drivers`, `detox/src/devices/common/drivers` - driver code for each platform
 6. `detox/src/client/AsyncWebsocket`, `detox/src/client/Client.js` - client side code for and connection management.
 
+## Websocket setup between mobile and Detox server
 
+1. Mobile app connects to a websocket server running on the host machine at port `8099`
+   1. iOS - https://github.com/wix/Detox/blob/73cd440753aa30b0e83b46909e001a146ac57a0b/detox/ios/Detox/DetoxManager.swift#L124
+   2. Android - https://github.com/wix/Detox/blob/73cd440753aa30b0e83b46909e001a146ac57a0b/detox/android/detox/src/full/java/com/wix/detox/adapters/server/DetoxServerInfo.kt#L8 
+2. Host machine would run a websocket server at port `8099` and listen for connections - https://github.com/wix/Detox/blob/73cd440753aa30b0e83b46909e001a146ac57a0b/detox/local-cli/run-server.js#L21
+3. 
 
 ## Checking logs for issues
 
