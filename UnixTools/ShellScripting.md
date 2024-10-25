@@ -1,6 +1,33 @@
 
 https://www.youtube.com/watch?v=GXu1bZptwf4
 
+
+## Sourcing vs executing a script
+
+Execute `(./script.sh)` or `sh script.sh` or `bash script.sh` when you want isolation
+Source `(. script.sh)` or `source script.sh` when you want changes to affect current shell
+
+e.g. making a `script.sh` with:
+```bash
+MYVAR="hello"
+```
+and try `./script.sh` and `echo $MYVAR` - it won't print anything.
+and try `source script.sh` and `echo $MYVAR` - it will print `hello`.
+
+
+### Configuration files - source them
+source ~/.bashrc
+. /etc/profile
+
+### Independent scripts - execute them
+./backup.sh
+bash process.sh
+
+### Environment setup - source them
+source ./set_env.sh
+source ./activate
+
+
 ### Print user running the script
 
 ```sh
