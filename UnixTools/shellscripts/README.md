@@ -77,3 +77,4 @@ Where as `source script.sh` will execute in same environment.
 ### Error handling with shell and subshell
 
 Errors are returned upstream with status / exit codes.
+
