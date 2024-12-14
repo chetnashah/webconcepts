@@ -1,12 +1,13 @@
 
-https://tldp.org/LDP/abs/html/x23170.html
+https://www.youtube.com/watch?v=l0mKlIswojA
+**sed works on a line-by-line basis, applying specified commands to each line of input.** 
 
-https://tldp.org/LDP/abs/html/wrapper.html#EX3
+This behavior makes it very effective for text processing tasks, such as search and replace, within files or streams
 
 ## Invocation
 
 ```
-sed SCRIPT INPUTFILE...
+sed COMMMAND INPUTFILE...
 ```
 
 the script (or command) is also referred to as pattern regex, e.g.`s/a/b/g`
@@ -93,6 +94,7 @@ While with extended (ERE) syntax it is reversed: these characters are special un
 ## How to execute silently?
 `-n` option disables automatic printing, the `p` command is used instead to print
 suppress automatic printing of pattern.
+Usually `-n` and `p` go together if you want to do selective printing without filtering/substition commands.
 ```sh
 -n
 --quiet
@@ -125,4 +127,12 @@ When the end of the script is reached, unless the -n option is in use, the conte
 Unless special commands (like ‘D’) are used, the pattern space is deleted between two cycles. The hold space, on the other hand, keeps its data between cycles (see commands ‘h’, ‘H’, ‘x’, ‘g’, ‘G’ to move data between both buffers). 
 
 
-## Utilities
+## Recipes
+
+### Print lines 5-10 of a file
+
+```sh
+sed -n '5,10p' myfile.txt
+```
+
+

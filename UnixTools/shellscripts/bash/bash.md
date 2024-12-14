@@ -1,4 +1,11 @@
 
+## Sensible defaults
+```bash
+#!/bin/bash
+set -euo pipefail # setup error reporting, undefined reporting and pipeline error reporting
+IFS=$'\n\t' # split by lines instead of words.
+```
+
 ## Read data (with prompt)
 
 ```sh
@@ -31,3 +38,4 @@ Use -e when you want to check for the existence of any type of file.
 
 ### `-f` for regular file existence
 Use -f when you want to ensure that the file is a regular file and not a directory or other type.
+

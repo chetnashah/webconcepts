@@ -78,3 +78,102 @@ Where as `source script.sh` will execute in same environment.
 
 Errors are returned upstream with status / exit codes.
 
+## Subshells and environment variables
+
+Yes, subshells inherit environment variables from their parent shell, but with some important nuances:
+
+1. They inherit the exported variables only
+2. Changes made to variables in a subshell do not affect the parent shell
+3. Variables that were not exported using `export` are not inherited
+
+For example:
+
+```bash
+# Parent shell
+regular_var="not inherited"
+export exported_var="inherited"
+
+# This subshell will only see exported_var
+(echo $regular_var; echo $exported_var)
+
+# Changes in subshell don't affect parent
+(exported_var="changed")
+echo $exported_var  # Still shows original value
+```
+
+## Scoping of variables (MYVAR=VALUE vs export MYVAR=VALUE)
+
+The key difference is that `export` makes the variable available to child processes (subshells), while simple assignment only makes it available in the current shell:
+
+```bash
+# Simple assignment - only available in current shell
+MYVAR="hello"
+(echo $MYVAR)  # Empty output - subshell can't see it
+
+# Export - available to child processes
+export MYVAR="hello"
+(echo $MYVAR)  # Prints "hello" - subshell can see it
+
+# Or combine assignment and export
+export MYVAR=hello  # One-line version
+```
+
+Think of it as:
+- `MYVAR=VALUE`: Local scope (current shell only)
+- `export MYVAR=VALUE`: Global scope (current shell and all child processes)
+
+## Command local environment variables with inline variables before command
+
+Key-value pairs set in front of a shell command are environment variables that only exist for the duration of that specific command. They create a temporary environment modification without affecting the current shell. For example:
+
+```bash
+FOO=bar command
+# FOO will be set to "bar" only for this command's execution
+
+# Multiple variables can be set:
+API_KEY=123 DEBUG=true python script.py
+# Both API_KEY and DEBUG are only set for script.py's execution
+
+# Compare with:
+FOO=bar
+command
+# This sets FOO in the current shell environment
+```
+
+## Commands that you expect to have non zero status, but have `-e` set
+
+Commands You Expect To Have Nonzero Exit Status, e.g. `grep` returns non-zero when no match found.
+With `-e` set, What happens when you want to run a command that will fail, or which you know will have a nonzero exit code? You don't want it to stop your script, because that's actually correct behavior.
+
+There are two choices here. The simplest, which you will usually want to use, is to append "|| true" after the command:
+```sh
+# "grep -c" reports the number of matching lines. If the number is 0,
+# then grep's exit status is 1, but we don't care - we just want to
+# know the number of matches, even if that number is zero.
+
+# Under strict mode, the next line aborts with an error:
+count=$(grep -c some-string some-file)
+
+# But this one behaves more nicely:
+count=$(grep -c some-string some-file || true)
+
+echo "count: $count"
+```
+This short-circuiting with the boolean operator makes the expression inside $( ... ) always evaluate successfully.
+
+You will probably find that trick almost always solves your problem. But what if you want to know the return value of a command, even if that return value is nonzero? Then you can temporarily disable the exit-immediately option:
+```sh
+# We had started out this script with set -e . And then...
+
+set +e
+count=$(grep -c some-string some-file)
+retval=$?
+set -e
+
+# grep's return code is 0 when one or more lines match;
+# 1 if no lines match; and 2 on an error. This pattern
+# lets us distinguish between them.
+
+echo "return value: $retval"
+echo "count: $count"
+```
