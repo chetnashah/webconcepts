@@ -73,6 +73,12 @@ Makefile syntax is used in build automation. Here's an overview of its key compo
 
 This syntax allows for creating complex build processes, managing dependencies, and automating compilation tasks.
 
+## Preview make steps with `make -n`
+
+`make -n` will show you the steps without actually running them
+
+## `make` usually builds, and `make install` usually installs it to system prefix dirs
+
 ## make install
 
 When you install software with make install or sudo make install, different files are placed in different directories. Executables that provide commands the user is intended to run usually go in a bin directory, libraries usually go in a lib directory, manual pages usually go in a man directory, and so forth.

@@ -27,6 +27,17 @@ bash process.sh
 source ./set_env.sh
 source ./activate
 
+### check if shell is interactive 
+
+This is useful because aliases are disabled in shellscripts (non interactive).
+
+Use `$-` should contain `i` for interactive.
+```bash
+if [[ $- == *i* ]]
+then
+    do_interactive_stuff
+fi
+```
 
 ### Print user running the script
 
