@@ -106,3 +106,31 @@ nix-repl> let
           f { a = 1; }
 1
 ```
+
+**Note**: since list elements are also separated by whitespace, sometimes using parentheses is useful
+```
+let
+ f = x: x + 1;
+ a = 1;
+in [ (f a) ] # calling (f a) and put it in list
+```
+
+## Attribute set destructuring
+
+```
+let
+  f = {a, b}: a + b;
+in
+f { a = 1; b = 2; }
+3
+```
+
+## Rest parameters naming with `@`
+
+```
+let
+  f = {a, b, ...}@args: a + b + args.c;
+in
+f { a = 1; b = 2; c = 3; }
+6
+```
