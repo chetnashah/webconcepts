@@ -35,6 +35,13 @@ protocol AnotherProtocol {
 }
 ```
 
+## Initialisers in protocols
+
+Since constructors/initializers are just functions that create objects, we can have protocols which have more specific init signatures, that confirming types can support
+
+Protocols can include failable initializers (init?) to allow for initializations that might fail.
+
+
 ## Type checking protocol conformance
 
 

@@ -1,6 +1,8 @@
 
 Useful guide: https://developer.apple.com/documentation/swift/choosing-between-structures-and-classes#Use-Structures-When-You-Dont-Control-Identity
 
+
+
 ## Common structs
 
 1. Int
@@ -10,14 +12,92 @@ Useful guide: https://developer.apple.com/documentation/swift/choosing-between-s
 
 ## Structs represent value types
 
-## Copy on assignment semantics
+In Swift, the keywords `func` and `mutating func` are used to define functions, but they have different contexts and use cases.
+
+### `func`
+The `func` keyword is used to define a regular function. Functions defined with `func` can be part of classes, structures, or enumerations. They can also be global functions. Regular functions do not modify the instance of the structure or enumeration they belong to.
+
+```swift
+struct Point {
+    var x: Int
+    var y: Int
+
+    func printPoint() {
+        print("Point(\(x), \(y))")
+    }
+}
+
+let point = Point(x: 10, y: 20)
+point.printPoint()  // Output: Point(10, 20)
+```
+
+### `mutating func`
+The `mutating func` keyword is used to define a function that can modify the properties of a value type (struct or enum) instance. Value types are immutable by default, so if a function needs to modify the instance, it must be marked with the `mutating` keyword.
+
+```swift
+struct Point {
+    var x: Int
+    var y: Int
+
+    mutating func moveBy(xDelta: Int, yDelta: Int) {
+        x += xDelta
+        y += yDelta
+    }
+}
+
+var point = Point(x: 10, y: 20)
+point.moveBy(xDelta: 5, yDelta: 5)
+print("Point(\(point.x), \(point.y))")  // Output: Point(15, 25)
+```
+
+### Key Differences
+
+1. **Modification of Value Types**:
+   - `func`: Cannot modify the properties of a value type instance.
+   - `mutating func`: Can modify the properties of a value type instance.
+
+2. **Use Case**:
+   - `func`: Used for functions that do not need to change the state of the instance.
+   - `mutating func`: Used for functions that need to change the state of the instance.
+
+3. **Applicability**:
+   - `func`: Can be used in classes, structures, enumerations, and globally.
+   - `mutating func`: Can only be used in structures and enumerations.
+
+### Example in Classes
+In classes, you do not need to use `mutating` because classes are reference types and their instances are mutable by default.
+
+```swift
+class Point {
+    var x: Int
+    var y: Int
+
+    init(x: Int, y: Int) {
+        self.x = x
+        self.y = y
+    }
+
+    func moveBy(xDelta: Int, yDelta: Int) {
+        x += xDelta
+        y += yDelta
+    }
+}
+
+let point = Point(x: 10, y: 20)
+point.moveBy(xDelta: 5, yDelta: 5)
+print("Point(\(point.x), \(point.y))")  // Output: Point(15, 25)
+```
+
+In summary, use `func` for functions that do not modify the instance and `mutating func` for functions that need to modify the instance of a value type (struct or enum).
+
+## Structs have Copy on assignment semantics
 
 Like other value types, structs are copied on assignment
 
-## Explicitly marked mutating instance methods
+## Structs need Explicitly marked mutating instance methods
 
 In order to modify the properties of a value type, 
-you have to use the **mutating** keyword in the instance method.
+you have to use the **mutating** keyword in the instance method. This same restriction is not for class based types, only enum/struct which are value types, as they are considered immutable.
 
 ## Initializers
 
@@ -67,4 +147,87 @@ struct PenPalRecord {
 }
 
 var myRecord = try JSONDecoder().decode(PenPalRecord.self, from: jsonResponse)
+```
+
+## Initializers explained for structs
+
+I'll expand on each point about struct initializers:
+
+1. **Memberwise Initializer**
+```swift
+struct Book {
+    let title: String
+    var pages: Int
+}
+// Free memberwise initializer
+let book = Book(title: "Swift", pages: 300)
+```
+
+2. **Custom Initializers & Losing Memberwise**
+```swift
+struct Book {
+    let title: String
+    var pages: Int
+    
+    // Adding this custom initializer removes memberwise
+    init(title: String) {
+        self.title = title
+        self.pages = 0
+    }
+}
+// Now this won't work:
+// let book = Book(title: "Swift", pages: 300)
+```
+
+3. **Preserving Memberwise Using Extension**
+```swift
+struct Book {
+    let title: String
+    var pages: Int
+}
+
+extension Book {
+    // Custom initializers in extension preserve memberwise
+    init(title: String) {
+        self.title = title
+        self.pages = 0
+    }
+}
+// Both work now:
+let book1 = Book(title: "Swift", pages: 300) // memberwise
+let book2 = Book(title: "Swift") // custom
+```
+
+4. **Failable Initializers**
+```swift
+struct Book {
+    let title: String
+    var pages: Int
+    
+    init?(title: String, pages: Int) {
+        guard pages > 0 else { return nil }
+        self.title = title
+        self.pages = pages
+    }
+}
+
+let book = Book(title: "Swift", pages: -1) // returns nil
+```
+
+5. **Delegating Initializers**
+```swift
+struct Book {
+    let title: String
+    var pages: Int
+    
+    init(title: String, pages: Int) {
+        self.title = title
+        self.pages = pages
+    }
+    
+    // Delegates to main initializer
+    init(title: String) {
+        self.init(title: title, pages: 0)
+    }
+}
 ```
