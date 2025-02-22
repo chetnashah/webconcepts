@@ -68,3 +68,48 @@ Inserting other value type gives us datatype mismatch:
 sqlite> insert into example_id values ('hi');
 Runtime error: datatype mismatch (20)
 ```
+
+### `id autoincrement integer primary key`
+
+Aliases to `rowid`, but changes key selection algorithm to autoincrement instead of default one.
+**Also, in order to insert rows, you will not need to explicitly pass the primary key, if set to autoincrement**
+
+```
+// NOTE: autoincrement needs to be at the end of column declaration
+sqlite> create table example_autoincr (id integer primary key autoincrement, txt text);
+
+// Note: if column was declared, pass it.
+sqlite> insert into example_autoincr values('hey');
+Parse error: table example_autoincr has 2 columns but 1 values were supplied
+
+// Or else just specify column changes you wanna insert
+sqlite> insert into example_autoincr (txt) values('hey');
+sqlite> insert into example_autoincr (txt) values('he');
+sqlite> select * from example_autoincr;
+┌────┬─────┐
+│ id │ txt │
+├────┼─────┤
+│ 1  │ hey │
+│ 2  │ he  │
+└────┴─────┘
+```
+
+## Creating a table `without rowid` modifier
+
+Just like `strict`, `without rowid` is also a table  modifier.
+
+**When we use `without rowid`, it is mandatory to declare a primary key when creating a table**
+e.g.
+```
+sqlite> create table kv3 (key text, value any) strict, without rowid;
+Parse error: PRIMARY KEY missing on table kv3 // ERROR!
+```
+
+Correct way (add primary key)
+```
+sqlite> create table kv2 (key text primary key, value any) strict, without rowid;
+```
+
+**Note** - when you use a table without rowid, indexing on primary key is the only lookup you have, otherwise with row id, primary key was acting as a secondary index.
+
+
