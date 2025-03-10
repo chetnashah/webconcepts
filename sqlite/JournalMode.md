@@ -6,16 +6,16 @@ Long answer: SQLite uses a journal file to ensure atomic commits and rollback du
 
 ## Two main ways of journaling
 
-1. Rollback Journal (i.e. rollback mode) 
+1. (Default mode) Rollback Journal (i.e. rollback mode) 
    1. DELETE
    2. TRUNCATE
    3. PERSIST
-2. Write-ahead LOG (WAL) (i.e WAL mode)
+2. (Recommended) Write-ahead LOG (WAL) (i.e WAL mode)
 
-## How journaling works?
+## How rollback mode journaling works?
 
-1. **Before modifying the database**, SQLite writes the original data (from affected pages) to the journal.
-2. **After a successful transaction**, the journal is deleted or invalidated.
+1. **Before modifying the database**, SQLite writes the original data (i.e unmodified one) to the journal.
+2. **After a successful transaction commit**, the journal is deleted or invalidated.
 3. **If a failure occurs**, SQLite uses the journal to roll back uncommitted changes, restoring consistency.
 
 
@@ -29,3 +29,9 @@ sqlite> pragma journal_mode;
 │ memory       │
 └──────────────┘
 ```
+
+## How WAL mode journaling work?
+
+It is quite performant due to append only style.
+
+1. writers keep appending changes to to the db-wal
