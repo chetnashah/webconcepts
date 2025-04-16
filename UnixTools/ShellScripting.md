@@ -30,6 +30,7 @@ source ./activate
 ### check if shell is interactive 
 
 This is useful because aliases are disabled in shellscripts (non interactive).
+In nodejs and other languages, you can check if stdin is interactive via `process.stdin.isTTY`.
 
 Use `$-` should contain `i` for interactive.
 ```bash
