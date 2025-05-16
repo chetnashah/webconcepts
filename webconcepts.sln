@@ -1,0 +1,29 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.2.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "csharpwork", "csharpwork", "{DBBAB1E3-9733-CB0F-E32D-2F79AD2FB990}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "codeexamples", "csharpwork\codeexamples\codeexamples.csproj", "{122AF28E-3D80-E55A-A7D4-C665E6ABB8D3}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{122AF28E-3D80-E55A-A7D4-C665E6ABB8D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{122AF28E-3D80-E55A-A7D4-C665E6ABB8D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{122AF28E-3D80-E55A-A7D4-C665E6ABB8D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{122AF28E-3D80-E55A-A7D4-C665E6ABB8D3}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{122AF28E-3D80-E55A-A7D4-C665E6ABB8D3} = {DBBAB1E3-9733-CB0F-E32D-2F79AD2FB990}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {75FABC14-410D-4D85-B824-53FC7873097E}
+	EndGlobalSection
+EndGlobal
