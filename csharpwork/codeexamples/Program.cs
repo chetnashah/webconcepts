@@ -9,5 +9,8 @@ public class Program
 
         EventsExamples eventsExamples = new EventsExamples();
         eventsExamples.RunExamples();
+
+        TaskExamples taskExamples = new TaskExamples();
+        taskExamples.runTaskExamples().Wait();
     }
 }
