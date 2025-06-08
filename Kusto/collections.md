@@ -1,4 +1,12 @@
 
+
+
+## evaluate bag_unpack
+
+spreads a dynamic bag into multiple columns, one for each key in the bag.
+
+
+
 ---
 
 ## KQL Reference Notes: Collection Data Types
@@ -397,3 +405,13 @@ Okay, let's break down the `in`, `has`, and `contains` operators in KQL, focusin
     *   **To check if a scalar string column `has` any term from a list of terms:** Use `has_any (dynamic_array_of_terms)`.
 
 Remember that `has` is generally faster than `contains` when applicable due to its use of indexing, but it has stricter matching rules (whole terms). `contains` is more flexible for partial matches but might be slower.
+
+## set_has_element for array containment check
+
+```kql
+let KustovBookRfid = '0cbc13e0aa7d487e8e797d3de3823161';
+let KustovBookWeightInGram = 1764;
+
+Shelves
+| where set_has_element( rf_ids, KustovBookRfid);
+```
