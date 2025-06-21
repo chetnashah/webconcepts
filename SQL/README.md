@@ -65,3 +65,8 @@ Below is a concise summary of the key points regarding `CREATE TABLE` syntax opt
 - **Rules:** Specify table-level constraints (unique, composite keys, foreign keys, check constraints) where needed.
 
 This "Name – Columns – Rules" mnemonic helps encapsulate the overall structure of a `CREATE TABLE` statement and guides you in recalling where and how to specify different types of constraints.
+
+## Where vs Having
+
+WHERE filters on values in **individual rows**, versus **HAVING filters values aggregated from groups of rows**
+

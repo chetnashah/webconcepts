@@ -1,7 +1,12 @@
 
 ---
 
-# 🔍 What Are PDB Files?
+
+## Decompiling assemblies
+
+https://github.com/markjprice/cs13net9/blob/main/docs/ch07-decompiling.md
+
+## 🔍 What Are PDB Files?
 
 **PDB** stands for **Program Database**.  
 A PDB file is a _symbol_ file that stores **debugging information** about a compiled binary (EXE, DLL, etc.).

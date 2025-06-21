@@ -1,0 +1,1 @@
+https://github.com/markjprice/cs13net9/blob/main/docs/ch07-source-generators.md
