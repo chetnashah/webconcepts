@@ -1,3 +1,13 @@
+
+## Useful for assert (Guard) and early exit
+
+Guard usually has a - assignment assertion, with an else condition (for early return if guard fails)
+
+All code after the guard assumes that assignment/assertion was valid.
+And it encourages early return pattern for invalid conditions.
+
+For contrast with `if let`, `if let` allows business logic for valid code in braces if assignment passes, whereas `guard condition` allows business logic after the guard.
+
 ## Think of it as assert with else clause (which must exit scope)
 
 In Swift, the `guard` statement is used to enforce certain conditions before executing the rest of the code. If the condition is not met, the `guard` statement exits the current scope, typically by using `return`, `break`, `continue`, or `throw`. This makes the code more readable and helps to avoid deeply nested `if` statements.
@@ -21,7 +31,7 @@ func greet(_ name: String?) {
         print("No name provided")
         return
     }
-
+    // guard passed, all following code has name well defined!
     print("Hello, \(name)!")
 }
 

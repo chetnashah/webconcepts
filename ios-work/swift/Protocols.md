@@ -75,9 +75,11 @@ class NotificationCenterDelegate : NSObject, UNUserNotificationCenterDelegate {
 }
 ```
 
-## Protocol extensions
+## Protocol extensions (commonly used to provide default impl along with protocol contract)
 
 **You can use protocol extensions to provide a default implementation to any method or computed property requirement of that protocol**
+
+This way, instead of being a pure interface, protocol (with extensions), turn from pure contracts to more like mixins with default behavior that shared across confirming types.
 
 `Note` - If a conforming type provides its own implementation of a required method or property, that implementation will be used instead of the one provided by the extension.
 
