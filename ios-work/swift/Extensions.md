@@ -6,6 +6,7 @@
 2. Make a computed property (but not stored property)
 3. Add new methods for instance and type level methods
 4. Define and use new nested types
+5. Add protocol conformance on original classes missing conformance
 
 ## Can you override existing functions in a Extension
 
@@ -33,7 +34,7 @@ https://stackoverflow.com/questions/45467329/extension-may-not-contain-stored-pr
 
 ### Extensions to add protocol conformance
 
-An extension can extend an existing type to make it adopt one or more protocols. To add protocol conformance, you write the protocol names the same way as you write them for a class or structure: 
+**An extension can extend an existing type to make it adopt one or more protocols.** This is one of the most common use cases of extensions, To add protocol conformance, you write the protocol names the same way as you write them for a class or structure: 
 
 ```swift
 extension SomeType: SomeProtocol, AnotherProtocol { 
