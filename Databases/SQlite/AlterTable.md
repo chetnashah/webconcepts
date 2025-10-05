@@ -1,0 +1,2 @@
+SQLite’s `ALTER TABLE` = Rename table, rename column, add column, drop column.
+Everything else = manual rebuild for e.g. constraint changes, column type changes, Also, let's try out the same on this repo. 
