@@ -150,3 +150,99 @@ WHERE
     *   When you need to filter based on the existence of related data.
     *   When you **do not** need to return any columns from the related table.
     *   For performance, especially when the subquery could return many rows.
+*   
+
+Yes — you’ve got the right intuition. **`EXISTS`** is often used *instead of* a join when you only need to filter rows based on whether a matching row exists (or doesn’t), not to actually bring in columns from the joined table. It’s a tool for **filtering by relationship existence** rather than combining data.
+
+Let me explain when and why you’d choose `EXISTS` over a join (or in conjunction with joins), and show a very clear example.
+
+---
+
+## When to prefer EXISTS over a join — motivations & tradeoffs
+
+Here are situations where `EXISTS` is often the better tool (versus using a join):
+
+1. **You don’t need columns from the related table**
+   If your goal is simply “does a related record exist?” and you don’t have to use any fields from that record in the output, `EXISTS` is clearer. A join would force you to carry extra columns (or discard them), and might complicate aliasing.
+
+2. **You want to avoid duplicate outer rows**
+   If the related table has multiple matching rows per outer row, a join can multiply outer rows (you might need `DISTINCT` or grouping to collapse). But `EXISTS` doesn’t duplicate the outer row — each outer row is either included or excluded.
+
+3. **Potential performance advantage via early exit / short-circuit**
+   In many DB engines, `EXISTS` can stop scanning the subquery once it finds one match. A join may have to process or at least consider all matches.
+
+4. **Clarity in expressing “semi-join” or “anti-join” logic**
+   `EXISTS` or `NOT EXISTS` is exactly the pattern for “filter outer rows by existence (or non-existence) of related rows.” It makes intent explicit.
+
+5. **Null / logic safety compared to `IN` / `NOT IN`**
+   `NOT EXISTS` is safer than `NOT IN` when there may be `NULL`s in the related table. `NOT IN` can misbehave (produce unexpected empty results) when any value is `NULL`.
+
+6. **Correlated filtering — relationship depends on outer row**
+   When the subquery’s condition depends on the outer row’s columns, `EXISTS` is typically how you express that (a correlated subquery). A join might achieve the same, but could bring in unintended extra combinations or require careful deduplication/aggregation.
+
+That said, `EXISTS` is not always strictly better — sometimes a join is more natural or even more efficient depending on the data, indexes, optimizer, etc. But `EXISTS` is a key tool in your SQL toolbox for filtering via relationships.
+
+---
+
+## Super clear example
+
+Imagine two tables:
+
+* `Authors(author_id, name)`
+* `Books(book_id, author_id, title, published_year)`
+
+**Goal:** List all authors who have published at least one book after the year 2020.
+
+### Using EXISTS (recommended for this case)
+
+```sql
+SELECT a.author_id, a.name
+FROM Authors a
+WHERE EXISTS (
+  SELECT 1
+  FROM Books b
+  WHERE b.author_id = a.author_id
+    AND b.published_year > 2020
+);
+```
+
+* For each row in `Authors`, the `EXISTS` subquery asks: “Is there at least one `Books.b` row whose `author_id` matches this author, and `published_year > 2020`?”
+* If yes, include that author. If no, exclude.
+
+You don’t need any columns from `Books` in the result; the existence test is sufficient.
+
+### Compare with a join version
+
+```sql
+SELECT DISTINCT a.author_id, a.name
+FROM Authors a
+JOIN Books b
+  ON b.author_id = a.author_id
+WHERE b.published_year > 2020;
+```
+
+Differences / tradeoffs:
+
+* The join will produce one row per matching book. If an author has multiple qualifying books, that author will appear multiple times, so you need `DISTINCT` to collapse duplicates.
+* The join physically combines the rows, which means more intermediate rows to process.
+* If you added other joins or conditions, the complexity of combining multiple table relationships may amplify duplication issues.
+
+In many cases the optimizer will rewrite both queries into the same execution plan (or similar), but logically the `EXISTS` version expresses your intention more directly.
+
+In a situation where the related table is large and many outer rows find a match early, `EXISTS` short-circuiting can avoid scanning all matching rows.
+
+---
+
+## Questions to ask yourself to decide “Should I use EXISTS?”
+
+When you’re writing a query, to decide whether `EXISTS` is appropriate, ask:
+
+* Do I only care *whether* a related row exists, not its contents?
+* Would a join cause duplication of outer rows that I’d have to collapse (via DISTINCT or grouping)?
+* Will the logic of filtering vary per outer row (i.e. is the subquery correlated)?
+* Are there `NULL`s in the related table / matching column that might mess up `IN` / `NOT IN` logic?
+* Does `NOT EXISTS` make more sense for excluding outer rows that have related matches?
+* Which one leads to clearer, more maintainable code? (Clarity often matters more than micro-optimizations.)
+
+---
+
