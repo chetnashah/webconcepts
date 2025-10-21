@@ -395,3 +395,275 @@ In short:
 
 * Use `ON` when you want to **express logic**.
 * Use `USING` when you just want to **express sameness**.
+
+# Joins and NULLs
+
+This is one of those deep corners of SQL that looks simple until you realize NULLs have their own quiet logic.
+Let’s unpack **joins and NULL handling** from first principles — relationally, logically, and then practically for each kind of join.
+
+---
+
+## 1. Foundation: NULL means “unknown”, not “empty” or “zero”
+
+In SQL’s three-valued logic:
+
+* `TRUE` means the condition is known true.
+* `FALSE` means known false.
+* `UNKNOWN` means you don’t know (usually due to `NULL`).
+
+So:
+
+```sql
+5 = NULL      → UNKNOWN
+NULL = NULL   → UNKNOWN
+```
+
+**Important:** UNKNOWN behaves like FALSE in `WHERE` and `ON` filters — the row doesn’t pass.
+
+This rule underlies *every join*.
+
+---
+
+## 2. How joins conceptually work
+
+A join is built on the **Cartesian product** of two tables, filtered by the join condition:
+
+```
+A ⋈ B  ≈  SELECT * FROM A, B WHERE <join_condition>
+```
+
+* `INNER JOIN` keeps only rows where the condition is TRUE.
+* `OUTER JOIN` tries to “fill in” missing matches with NULLs on one side.
+
+So if the join condition evaluates to UNKNOWN (because of NULLs),
+then for inner joins — no match.
+For outer joins — partial match with NULL-fill on one side.
+
+---
+
+## 3. NULLs in INNER JOIN
+
+### Behavior:
+
+An **inner join** keeps rows only when the join condition is **TRUE**.
+If a comparison involves NULL, the result is **UNKNOWN**, so that row is dropped.
+
+### Example:
+
+```sql
+A:                  B:
+id | name           id | value
+1  | Alice          1  | 10
+2  | Bob            2  | NULL
+3  | Carol          3  | 30
+4  | Dave           -  | -
+
+SELECT * FROM A JOIN B ON A.id = B.id;
+```
+
+Rows join fine because IDs match, even if `B.value` is NULL —
+**join keys themselves** are not NULL.
+
+But if join keys contain NULL:
+
+```sql
+A.id = NULL, B.id = NULL
+→ (A.id = B.id) → UNKNOWN → row dropped
+```
+
+So NULL in join keys *never matches anything* (even another NULL).
+
+---
+
+### Key takeaway
+
+> Inner join removes any row where the join condition is FALSE or UNKNOWN.
+> Therefore, rows with NULL in join key will never join.
+
+---
+
+## 4. NULLs in LEFT OUTER JOIN
+
+A **left join** keeps all rows from the left table — even those with no match.
+
+Mechanics:
+
+* For each left row:
+
+  * If right match exists (join condition TRUE) → merge rows.
+  * If none (FALSE/UNKNOWN) → fill right side columns with NULL.
+
+### Example
+
+```sql
+SELECT s.id, s.name, t.course_id
+FROM student s
+LEFT JOIN takes t ON s.id = t.student_id;
+```
+
+If a student has no entries in `takes`, you’ll still get that student with `course_id = NULL`.
+
+If a student has `s.id = NULL`, it never matches any right-side row —
+but since it’s a left join, the left row still appears with NULLs on the right.
+
+---
+
+### Summary:
+
+| Join condition   | Result                      |
+| ---------------- | --------------------------- |
+| TRUE             | row combined                |
+| FALSE or UNKNOWN | left row + right side NULLs |
+
+---
+
+## 5. NULLs in RIGHT OUTER JOIN
+
+Exactly the mirror image:
+
+* Keeps all rows from **right** table.
+* Fills **left** side with NULLs where there’s no match.
+
+PostgreSQL, MySQL, and Oracle support `RIGHT JOIN`;
+SQLite does **not** (but you can swap table order to simulate it).
+
+---
+
+## 6. NULLs in FULL OUTER JOIN
+
+Keeps all rows from both sides:
+
+* Matches (TRUE) → merged row.
+* Left-only (FALSE/UNKNOWN) → left row + right NULLs.
+* Right-only (FALSE/UNKNOWN) → right row + left NULLs.
+
+PostgreSQL, Oracle, SQL Server support it.
+SQLite doesn’t — you simulate it via `UNION` of LEFT and RIGHT joins.
+
+---
+
+## 7. NULLs and equality joins (`ON A.col = B.col`)
+
+Because `NULL = anything` → UNKNOWN,
+rows where either `A.col` or `B.col` is NULL don’t match.
+
+### Example:
+
+```sql
+A: id=1, code=NULL
+B: id=1, code=NULL
+JOIN ON A.code = B.code → no match
+```
+
+If you *want* NULLs to be treated as equal, use:
+
+```sql
+ON COALESCE(A.col, 'x') = COALESCE(B.col, 'x')
+```
+
+or, in databases that support it:
+
+```sql
+ON A.col IS NOT DISTINCT FROM B.col
+```
+
+(PostgreSQL, Oracle, SQLite 3.32+)
+
+That last form treats NULLs as equal — very useful for nullable foreign keys.
+
+---
+
+## 8. NULLs in “USING” joins
+
+When you use:
+
+```sql
+JOIN ... USING (col)
+```
+
+SQL automatically rewrites to:
+
+```sql
+ON A.col = B.col
+```
+
+and merges the column.
+
+So same NULL rules apply — no match if either side’s join key is NULL.
+
+---
+
+## 9. NULLs in NATURAL JOIN
+
+`NATURAL JOIN` is also equivalent to a join with `USING(all common columns)` →
+same rule: if any of the join columns are NULL, row is not matched.
+
+---
+
+## 10. NULLs in filtering after the join
+
+Remember:
+
+* The join condition runs first.
+* Then `WHERE` filters the combined rows.
+
+So if you left-join and then `WHERE right.col IS NULL`,
+you’re selecting the **unmatched** rows (the “anti-join” pattern).
+
+Example:
+
+```sql
+-- find students with no takes entry
+SELECT s.*
+FROM student s
+LEFT JOIN takes t ON s.id = t.student_id
+WHERE t.student_id IS NULL;
+```
+
+This works because unmatched rows have all right-side columns as NULL.
+
+---
+
+## 11. Database differences and gotchas
+
+| Database       | Notes                                                                     |
+| -------------- | ------------------------------------------------------------------------- |
+| **SQLite**     | No `RIGHT` or `FULL` joins. Use `LEFT` or `UNION`.                        |
+| **PostgreSQL** | Has `IS NOT DISTINCT FROM` for NULL-safe equality.                        |
+| **MySQL**      | Has `<=>` operator: `A.col <=> B.col` treats NULLs as equal.              |
+| **SQL Server** | Uses `ISNULL()` or `COALESCE()` for similar handling; supports FULL JOIN. |
+| **Oracle**     | Has `NVL()` and `IS NOT DISTINCT FROM`.                                   |
+
+---
+
+## 12. Quick intuition table
+
+| Join type       | Rows kept from left | Rows kept from right | NULL handling in join condition                                           |
+| --------------- | ------------------- | -------------------- | ------------------------------------------------------------------------- |
+| **INNER**       | Only matching rows  | Only matching rows   | NULL = no match                                                           |
+| **LEFT OUTER**  | All                 | Only matches         | Left rows with NULL key still appear; right side NULL                     |
+| **RIGHT OUTER** | Only matches        | All                  | Right rows with NULL key still appear; left side NULL                     |
+| **FULL OUTER**  | All                 | All                  | NULL in join key breaks match, but both sides still appear with null-fill |
+| **CROSS JOIN**  | All combinations    | All combinations     | NULL irrelevant (no condition)                                            |
+
+---
+
+## 13. Key points to remember
+
+* `NULL = NULL` is **UNKNOWN**, not TRUE — so no match in normal joins.
+* `INNER JOIN` → drops rows where condition is UNKNOWN.
+* `OUTER JOIN` → keeps unmatched side, fills other side with NULLs.
+* Use `IS NOT DISTINCT FROM` (Postgres/SQLite) or `<=>` (MySQL) for NULL-safe joins.
+* For anti-joins (find “no match” cases), use `LEFT JOIN ... WHERE right.col IS NULL`.
+* Beware: NULL logic propagates — a single NULL in a join key can eliminate an entire row in an inner join.
+
+---
+
+In short:
+**NULLs in join keys behave like “holes” — inner joins fall through them, outer joins patch them with more NULLs.**
+
+If the left key is NULL, the row stays — but the right side turns NULL.
+
+If the right join key is NULL, the comparison fails (NULL ≠ anything), so:
+* in an inner join, the row is dropped,
+* in a left join, the left row stays but right side becomes NULL,
